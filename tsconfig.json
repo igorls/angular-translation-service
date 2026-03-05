@@ -17,5 +17,8 @@
       "angular-translation-service/ssr": ["./packages/ssr/src/index.ts"]
     }
   },
+  "angularCompilerOptions": {
+    "strictTemplates": true
+  },
   "exclude": ["node_modules", "dist"]
 }
