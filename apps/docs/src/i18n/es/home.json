@@ -1,0 +1,47 @@
+{
+  "hero": {
+    "badge": "Angular v21+ · Signal-First · SSR Ready",
+    "title": "Traducción tipo seguro para Angular",
+    "subtitle": "Una biblioteca de traducción basada en señales con carga diferida de espacios de nombres, proxy recursivo para plantillas sin errores, y herramientas CLI impulsadas por LLM.",
+    "cta_primary": "Empezar",
+    "cta_secondary": "Ver en GitHub",
+    "install": "bun add angular-translation-service"
+  },
+  "features": {
+    "title": "Diseñado para Angular Moderno",
+    "signal": {
+      "title": "Potenciado por Señales",
+      "description": "Traducciones reactivas mediante señales de Angular. Sin dependencia de Zone.js. Funciona de forma fluida con detección de cambios sin zona."
+    },
+    "proxy": {
+      "title": "Plantillas sin errores",
+      "description": "El proxy recursivo garantiza que expresiones como t().nav.title nunca arrojen errores — incluso cuando los espacios de nombres aún estén cargando."
+    },
+    "ssr": {
+      "title": "Listo para SSR y SSG",
+      "description": "La hidratación de TransferState previene el flash de contenido no traducido. Funciona tanto con renderizado en servidor como con renderizado estático."
+    },
+    "lazy": {
+      "title": "Carga Ponderada",
+      "description": "Carga los espacios de nombres de traducción según demanda por ruta. Solo obtén lo que el usuario necesita, cuando lo necesita."
+    },
+    "types": {
+      "title": "Claves con Tipado Seguro",
+      "description": "CLI genera tipos de TypeScript a partir de tus archivos JSON. Captura claves faltantes en tiempo de compilación, no en tiempo de ejecución."
+    },
+    "llm": {
+      "title": "Traducción con LLM",
+      "description": "Comando CLI integrado para traducir en masa tus archivos JSON usando IA. Mantiene un término consistente en todos los idiomas."
+    }
+  },
+  "demo": {
+    "title": "Verlo en acción",
+    "description": "Este sitio de documentación completo utiliza angular-translation-service para su propio i18n. Cambie el selector de idioma arriba para ver el cambio de idioma en tiempo real — no se necesita recargar la página."
+  },
+  "quick_start": {
+    "title": "Inicio rápido",
+    "step1_title": "1. Instalar",
+    "step2_title": "2. Configurar",
+    "step3_title": "3. Usar"
+  }
+}

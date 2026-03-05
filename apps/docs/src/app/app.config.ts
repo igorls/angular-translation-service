@@ -13,7 +13,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withFetch()),
     provideTranslation({
       defaultLang: 'en',
-      supportedLangs: ['en', 'pt-BR', 'de', 'fr', 'ja', 'zh'],
+      supportedLangs: ['en', 'pt-BR', 'de', 'fr', 'ja', 'zh', 'es', 'ru'],
       coreNamespaces: ['common'],
       loader: httpLoader('/angular-translation-service/i18n'),
       detectLanguage: true,
