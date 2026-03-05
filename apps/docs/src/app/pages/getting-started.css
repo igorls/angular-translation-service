@@ -1,0 +1,44 @@
+.page {
+  padding: var(--space-3xl) 0;
+  max-width: 800px;
+}
+
+h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin-bottom: var(--space-md);
+}
+
+.page-subtitle {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  margin-bottom: var(--space-3xl);
+}
+
+.step {
+  margin-bottom: var(--space-3xl);
+}
+
+.step h2 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: var(--space-md);
+  color: var(--text-primary);
+}
+
+.step p {
+  color: var(--text-secondary);
+  margin-bottom: var(--space-md);
+}
+
+.next-steps {
+  padding-top: var(--space-xl);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.next-links {
+  display: flex;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}

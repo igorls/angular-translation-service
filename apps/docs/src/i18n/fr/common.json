@@ -1,0 +1,18 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "docs": "Docs",
+    "api": "API",
+    "cli": "CLI",
+    "examples": "Exemples",
+    "github": "GitHub"
+  },
+  "footer": {
+    "built_with": "Construit avec Angular Translation Service",
+    "license": "Licence MIT",
+    "copyright": "© 2025–2026 Igor LS"
+  },
+  "lang_switcher": {
+    "label": "Langue"
+  }
+}

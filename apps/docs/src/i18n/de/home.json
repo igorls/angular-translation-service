@@ -1,0 +1,47 @@
+{
+  "hero": {
+    "badge": "Angular v21+ · Signal-First · SSR Ready",
+    "title": "Typensichere i18n für Angular",
+    "subtitle": "Eine signalbasierte Übersetzungsbibliothek mit lazy Load von Namensräumen, rekursivem Proxy für crashfreie Templates und CLI-Tools mit LLM-Unterstützung.",
+    "cta_primary": "Los geht's",
+    "cta_secondary": "Auf GitHub ansehen",
+    "install": "bun add angular-translation-service"
+  },
+  "features": {
+    "title": "Für moderne Angular entwickelt",
+    "signal": {
+      "title": "Signal-basiert",
+      "description": "Reaktive Übersetzungen über Angular-Signals. Keine Abhängigkeit von Zone.js. Funktioniert nahtlos mit zoneless Change Detection."
+    },
+    "proxy": {
+      "title": "Crashfreie Templates",
+      "description": "Rekursiver Proxy stellt sicher, dass Ausdrücke wie t().nav.title niemals auslösen — selbst wenn Namensräume noch geladen werden."
+    },
+    "ssr": {
+      "title": "SSR & SSG bereit",
+      "description": "TransferState-Hydration verhindert den Flash von unübersetztem Inhalt. Funktioniert sowohl mit Server- als auch mit statischem Rendering."
+    },
+    "lazy": {
+      "title": "Lazy Loading",
+      "description": "Lade Übersetzungs-Namensräume nach Bedarf pro Route. Nur das, was der Benutzer braucht, wenn er es braucht."
+    },
+    "types": {
+      "title": "Typensichere Schlüssel",
+      "description": "CLI generiert TypeScript-Typen aus Ihren JSON-Dateien. Fang fehlende Schlüssel zur Compile-Zeit, nicht zur Laufzeit."
+    },
+    "llm": {
+      "title": "LLM-Übersetzung",
+      "description": "Integriertes CLI-Command, um Ihre JSON-Dateien mit KI zu batch-übersetzen. Erhalten Sie konsistente Terminologie über alle Sprachen hinweg."
+    }
+  },
+  "demo": {
+    "title": "Siehe es in Aktion",
+    "description": "Diese gesamte Dokumentationsseite verwendet angular-translation-service für ihre eigene i18n. Wechseln Sie den Sprachwechsler oben, um die Sprachwechsel in Echtzeit zu sehen — ohne Seitenneuladen."
+  },
+  "quick_start": {
+    "title": "Schnellstart",
+    "step1_title": "1. Installieren",
+    "step2_title": "2. Konfigurieren",
+    "step3_title": "3. Verwenden"
+  }
+}

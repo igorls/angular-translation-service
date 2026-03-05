@@ -1,0 +1,228 @@
+<div class="container page">
+  <h1 class="gradient-text">API Reference</h1>
+  <p class="page-subtitle">Complete API documentation for angular-translation-service.</p>
+
+  <!-- TranslationService -->
+  <section class="api-section" id="translation-service">
+    <h2>TranslationService</h2>
+    <p class="api-description">The core service providing reactive i18n for Angular applications. Inject via Angular DI.</p>
+
+    <div class="api-method" id="select">
+      <h3><code>select&lt;K extends string&gt;(scope: K): Signal&lt;Record&lt;string, unknown&gt; | undefined&gt;</code></h3>
+      <p>Returns a scope signal for template access. Automatically triggers lazy loading for the namespace. Data is <code>undefined</code> until the namespace loads, then returns a proxy-wrapped dictionary for safe deep property access.</p>
+      <div class="code-block">
+        <pre><span class="kw">protected readonly</span> common = <span class="kw">this</span>.i18n.<span class="fn">select</span>(<span class="str">'common'</span>);
+<span class="cmt">// template: &#64;let t = common(); &#64;if (t) {{ '{' }} {{ '{{' }} t.nav.title {{ '}}' }} {{ '}' }}</span></pre>
+      </div>
+    </div>
+
+    <div class="api-method" id="translate">
+      <h3><code>translate(key: string, params?: Record&lt;string, string | number&gt;): Signal&lt;string&gt;</code></h3>
+      <p>Returns a cached signal for a single translation key. Automatically triggers namespace loading. Key format: <code>namespace:dotted.path</code>.</p>
+      <div class="code-block">
+        <pre><span class="kw">protected readonly</span> title = <span class="kw">this</span>.i18n.<span class="fn">translate</span>(<span class="str">'common:nav.title'</span>);
+<span class="kw">protected readonly</span> greeting = <span class="kw">this</span>.i18n.<span class="fn">translate</span>(<span class="str">'common:greeting'</span>, {{ '{' }} name: <span class="str">'Igor'</span> {{ '}' }});</pre>
+      </div>
+    </div>
+
+    <div class="api-method" id="instant">
+      <h3><code>instant(key: string, params?: Record&lt;string, string | number&gt;): string</code></h3>
+      <p>Returns the translation synchronously. Non-reactive and does <strong>not</strong> trigger lazy loading — use only for imperative code (toasts, logs) when the namespace is already loaded.</p>
+    </div>
+
+    <div class="api-method" id="setLang">
+      <h3><code>setLang(lang: string): Promise&lt;void&gt;</code></h3>
+      <p>Switches the active language. Reloads all previously requested namespaces for the new language and persists the preference to <code>localStorage</code> (if <code>storageKey</code> is configured). Logs a warning and returns early if the language is not in <code>supportedLangs</code>.</p>
+    </div>
+
+    <div class="api-method" id="ensureNamespaces">
+      <h3><code>ensureNamespaces(ns: string[]): Promise&lt;void&gt;</code></h3>
+      <p>Pre-loads additional namespaces. Deduplicates concurrent loads automatically. Useful for route guards or resolvers.</p>
+    </div>
+
+    <div class="api-method" id="lang">
+      <h3><code>lang: WritableSignal&lt;string&gt;</code></h3>
+      <p>The current language signal. Read in templates to show the active language.</p>
+    </div>
+
+    <div class="api-method" id="ready">
+      <h3><code>ready: Signal&lt;boolean&gt;</code></h3>
+      <p>True when all <code>coreNamespaces</code> have been loaded for the current language.</p>
+    </div>
+  </section>
+
+  <!-- TranslatePipe -->
+  <section class="api-section" id="translate-pipe">
+    <h2>TranslatePipe</h2>
+    <p class="api-description">Template sugar for <code>TranslationService.translate()</code>. The pipe caches its signal internally to avoid recreation on every change detection cycle.</p>
+    <div class="api-method">
+      <h3>Setup</h3>
+      <p>Import <code>TranslatePipe</code> in your component's <code>imports</code> array:</p>
+      <div class="code-block">
+        <pre><span class="kw">import</span> {{ '{' }} <span class="type">TranslatePipe</span> {{ '}' }} <span class="kw">from</span> <span class="str">'angular-translation-service'</span>;
+
+&#64;Component({{ '{' }}
+  <span class="type">imports</span>: [<span class="type">TranslatePipe</span>],
+  <span class="type">template</span>: <span class="str">`...`</span>,
+{{ '}' }})</pre>
+      </div>
+    </div>
+    <div class="api-method">
+      <h3>Usage</h3>
+      <div class="code-block">
+        <pre><span class="cmt">&lt;!-- Basic --&gt;</span>
+&lt;h1&gt;{{ '{{' }} <span class="str">'common:nav.title'</span> | <span class="fn">translate</span> {{ '}}' }}&lt;/h1&gt;
+
+<span class="cmt">&lt;!-- With params --&gt;</span>
+&lt;p&gt;{{ '{{' }} <span class="str">'common:greeting'</span> | <span class="fn">translate</span>:{{ '{' }} name: <span class="str">'Igor'</span> {{ '}' }} {{ '}}' }}&lt;/p&gt;</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- provideTranslation -->
+  <section class="api-section" id="provide-translation">
+    <h2>provideTranslation()</h2>
+    <p class="api-description">Configures the translation service at the application level. Uses <code>APP_INITIALIZER</code> to preload core namespaces before the app renders.</p>
+
+    <div class="config-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Option</th>
+            <th>Type</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>defaultLang</code></td>
+            <td><code>string</code></td>
+            <td>Default language code (e.g., <code>'en'</code>)</td>
+          </tr>
+          <tr>
+            <td><code>supportedLangs</code></td>
+            <td><code>string[]</code></td>
+            <td>All supported language codes</td>
+          </tr>
+          <tr>
+            <td><code>coreNamespaces</code></td>
+            <td><code>string[]</code></td>
+            <td>Namespaces preloaded via <code>APP_INITIALIZER</code> before the app renders</td>
+          </tr>
+          <tr>
+            <td><code>loader</code></td>
+            <td><code>TranslationLoader</code></td>
+            <td>Function that loads translation files. Use <code>httpLoader()</code> or <code>importLoader()</code></td>
+          </tr>
+          <tr>
+            <td><code>detectLanguage</code></td>
+            <td><code>boolean</code></td>
+            <td>Auto-detect from browser via <code>navigator.language</code></td>
+          </tr>
+          <tr>
+            <td><code>storageKey</code></td>
+            <td><code>string</code></td>
+            <td><code>localStorage</code> key for persisting language preference across sessions</td>
+          </tr>
+          <tr>
+            <td><code>namespaceSeparator</code></td>
+            <td><code>string</code></td>
+            <td>Separator between namespace and key path (default: <code>':'</code>)</td>
+          </tr>
+          <tr>
+            <td><code>fallbackChain</code></td>
+            <td><code>Record&lt;string, string[]&gt;</code></td>
+            <td>Fallback language chains for regional locales</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Loaders -->
+  <section class="api-section" id="loaders">
+    <h2>Loaders</h2>
+
+    <div class="api-method" id="httpLoader">
+      <h3><code>httpLoader(basePath: string): TranslationLoader</code></h3>
+      <p>Creates a <code>fetch</code>-based loader. Loads JSON from: <code>basePath/lang/namespace.json</code>. Place your JSON files in the Angular project's <code>public/</code> directory.</p>
+      <div class="code-block">
+        <pre><span class="cmt">// Files at: public/i18n/en/common.json, public/i18n/pt-BR/common.json</span>
+<span class="type">loader</span>: <span class="fn">httpLoader</span>(<span class="str">'/i18n'</span>)</pre>
+      </div>
+    </div>
+
+    <div class="api-method" id="importLoader">
+      <h3><code>importLoader(factory): TranslationLoader</code></h3>
+      <p>Creates a loader using dynamic imports. The bundler can statically analyze import paths for tree-shaking and code splitting. Best for production apps that need optimized bundles.</p>
+      <div class="code-block">
+        <pre><span class="type">loader</span>: <span class="fn">importLoader</span>((lang, ns) =&gt;
+  <span class="fn">import</span>(<span class="str">`./i18n/${{ '{' }}lang{{ '}' }}/${{ '{' }}ns{{ '}' }}.json`</span>)
+)</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- Fallback Chains -->
+  <section class="api-section" id="fallback-chains">
+    <h2>Fallback Chains</h2>
+    <p class="api-description">Define fallback languages for regional locales. When loading translations, all languages in the chain are fetched in parallel and deep-merged — the most specific locale's keys overwrite fallback keys.</p>
+    <div class="code-block">
+      <pre><span class="fn">provideTranslation</span>({{ '{' }}
+  <span class="type">defaultLang</span>: <span class="str">'en'</span>,
+  <span class="type">supportedLangs</span>: [<span class="str">'en'</span>, <span class="str">'es'</span>, <span class="str">'es-AR'</span>],
+  <span class="type">fallbackChain</span>: {{ '{' }}
+    <span class="str">'es-AR'</span>: [<span class="str">'es'</span>, <span class="str">'en'</span>],  <span class="cmt">// es-AR → es → en</span>
+    <span class="str">'es'</span>: [<span class="str">'en'</span>],             <span class="cmt">// es → en</span>
+  {{ '}' }},
+  <span class="cmt">// ...</span>
+{{ '}' }})</pre>
+    </div>
+  </section>
+
+  <!-- Language Detection -->
+  <section class="api-section" id="language-detection">
+    <h2>Language Detection</h2>
+    <p class="api-description">When <code>detectLanguage: true</code> is set, the initial language is resolved using this priority chain (first match wins):</p>
+    <ol class="detection-chain">
+      <li><strong>SSR token</strong> — Language injected via <code>CURRENT_LANGUAGE</code> on the server</li>
+      <li><strong>localStorage</strong> — Previously persisted preference (requires <code>storageKey</code>)</li>
+      <li><strong>Browser</strong> — <code>navigator.language</code> / <code>navigator.languages</code>, including base-language matching (e.g., browser <code>'pt'</code> matches config <code>'pt-BR'</code>)</li>
+      <li><strong>Default</strong> — Falls back to <code>defaultLang</code></li>
+    </ol>
+  </section>
+
+  <!-- Error Behavior -->
+  <section class="api-section" id="error-behavior">
+    <h2>Error Behavior</h2>
+    <p class="api-description">Angular Translation Service is designed to be crash-proof. Here's how errors are handled:</p>
+    <div class="config-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Scenario</th>
+            <th>Behavior</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Namespace fails to load</td>
+            <td>Error logged to console. Template shows empty strings (via recursive proxy)</td>
+          </tr>
+          <tr>
+            <td>Missing translation key</td>
+            <td>Returns the raw key string (e.g., <code>'common:nav.missing'</code>)</td>
+          </tr>
+          <tr>
+            <td><code>setLang()</code> with unsupported language</td>
+            <td>Logs a warning and returns early — no state change</td>
+          </tr>
+          <tr>
+            <td>Accessing nested keys while loading</td>
+            <td>Recursive proxy returns empty strings, preventing template crashes</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

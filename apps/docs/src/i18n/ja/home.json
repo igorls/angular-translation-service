@@ -1,0 +1,47 @@
+{
+  "hero": {
+    "badge": "Angular v21+ · Signal-First · SSR対応",
+    "title": "Angularのためのタイプセーフi18n",
+    "subtitle": "レイジーネームスペース読み込み、クラッシュフリーテンプレート用の再帰的プロキシ、LLMパワードCLIツールを備えたシグナルベースの翻訳ライブラリ",
+    "cta_primary": "始める",
+    "cta_secondary": "GitHubで見る",
+    "install": "bun add angular-translation-service"
+  },
+  "features": {
+    "title": "モダンAngularのために設計",
+    "signal": {
+      "title": "シグナル駆動",
+      "description": "Angularシグナルによる反応的翻訳。Zone.js依存性ゼロ。zoneless変更検出とシームレスに動作。"
+    },
+    "proxy": {
+      "title": "クラッシュフリー",
+      "description": "再帰プロキシにより、t().nav.title のような式は名前空間がまだ読み込み中の場合でも決してスローしません。"
+    },
+    "ssr": {
+      "title": "SSR & SSG 対応",
+      "description": "TransferState の水和により、翻訳されていないコンテンツのフラッシュを防ぎます。サーバーと静的なレンダリングの両方で動作します。"
+    },
+    "lazy": {
+      "title": "遅延読み込み",
+      "description": "ルートごとにオンデマンドで翻訳名前空間を読み込みます。必要なときに、必要なものだけをフェッチします。"
+    },
+    "types": {
+      "title": "タイプセーフキー",
+      "description": "CLIはJSONファイルからTypeScript型を生成します。実行時ではなくコンパイル時に欠落キーを検出します。"
+    },
+    "llm": {
+      "title": "LLM翻訳",
+      "description": "AIを使用してJSONファイルを一括翻訳する組み込みCLIコマンド。言語間で一貫した用語を維持します。"
+    }
+  },
+  "demo": {
+    "title": "実際に見る",
+    "description": "このドキュメントサイト全体は、独自のi18nにangular-translation-serviceを使用しています。上部の言語スイッチャーを切り替えれば、ページを再読み込みせずにリアルタイムで言語を切り替えられます。"
+  },
+  "quick_start": {
+    "title": "クイックスタート",
+    "step1_title": "1. インストール",
+    "step2_title": "2. 設定",
+    "step3_title": "3. 使用"
+  }
+}

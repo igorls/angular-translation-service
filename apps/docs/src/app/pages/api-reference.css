@@ -1,0 +1,113 @@
+.page {
+  padding: var(--space-3xl) 0;
+  max-width: 800px;
+}
+
+h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin-bottom: var(--space-md);
+}
+
+.page-subtitle {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  margin-bottom: var(--space-3xl);
+}
+
+.api-section {
+  margin-bottom: var(--space-3xl);
+  padding-bottom: var(--space-3xl);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.api-section:last-child {
+  border-bottom: none;
+}
+
+.api-section h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: var(--space-sm);
+}
+
+.api-description {
+  color: var(--text-secondary);
+  margin-bottom: var(--space-xl);
+}
+
+.api-method {
+  margin-bottom: var(--space-xl);
+  padding: var(--space-lg);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+}
+
+.api-method h3 {
+  font-size: 0.95rem;
+  margin-bottom: var(--space-sm);
+}
+
+.api-method h3 code {
+  background: none;
+  padding: 0;
+  font-size: 0.9rem;
+}
+
+.api-method p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: var(--space-md);
+}
+
+.api-method p:last-child {
+  margin-bottom: 0;
+}
+
+.config-table {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+th {
+  text-align: left;
+  padding: var(--space-sm) var(--space-md);
+  border-bottom: 2px solid var(--border-subtle);
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+td {
+  padding: var(--space-sm) var(--space-md);
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+}
+
+td code {
+  font-size: 0.82rem;
+}
+
+tr:hover td {
+  background: rgba(139, 92, 246, 0.03);
+}
+
+.detection-chain {
+  padding-left: var(--space-xl);
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.8;
+}
+
+.detection-chain strong {
+  color: var(--text-primary);
+}

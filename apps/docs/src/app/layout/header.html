@@ -1,0 +1,33 @@
+<header>
+  <div class="container header-inner">
+    <a routerLink="/" class="logo">
+      <span class="logo-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg></span>
+      <span class="logo-text">ATS</span>
+    </a>
+
+    <nav>
+      @let t = $any(common());
+      @if (t) {
+        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">{{ t.nav.home }}</a>
+        <a routerLink="/getting-started" routerLinkActive="active">{{ t.nav.docs }}</a>
+        <a routerLink="/api" routerLinkActive="active">{{ t.nav.api }}</a>
+        <a routerLink="/cli" routerLinkActive="active">{{ t.nav.cli }}</a>
+        <a href="https://github.com/igorls/angular-translation-service"
+           target="_blank" rel="noopener" class="github-link">
+          {{ t.nav.github }} ↗
+        </a>
+      }
+    </nav>
+
+    <div class="lang-switcher">
+      @for (lang of i18n.supportedLangs; track lang) {
+        <button
+          [class.active]="i18n.lang() === lang"
+          (click)="i18n.setLang(lang)">
+          {{ lang.split('-')[0].toUpperCase() }}
+          <span class="lang-label">{{ lang }}</span>
+        </button>
+      }
+    </div>
+  </div>
+</header>

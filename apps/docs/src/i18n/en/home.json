@@ -1,0 +1,47 @@
+{
+  "hero": {
+    "badge": "Angular v21+ · Signal-First · SSR Ready",
+    "title": "Type-Safe i18n for Angular",
+    "subtitle": "A signal-based translation library with lazy namespace loading, recursive proxy for crash-free templates, and LLM-powered CLI tooling.",
+    "cta_primary": "Get Started",
+    "cta_secondary": "View on GitHub",
+    "install": "bun add angular-translation-service"
+  },
+  "features": {
+    "title": "Built for Modern Angular",
+    "signal": {
+      "title": "Signal-Powered",
+      "description": "Reactive translations via Angular Signals. Zero Zone.js dependency. Works seamlessly with zoneless change detection."
+    },
+    "proxy": {
+      "title": "Crash-Free Templates",
+      "description": "Recursive proxy ensures expressions like t().nav.title never throw — even when namespaces are still loading."
+    },
+    "ssr": {
+      "title": "SSR & SSG Ready",
+      "description": "TransferState hydration prevents flash of untranslated content. Works with both server and static rendering."
+    },
+    "lazy": {
+      "title": "Lazy Loading",
+      "description": "Load translation namespaces on-demand per route. Only fetch what the user needs, when they need it."
+    },
+    "types": {
+      "title": "Type-Safe Keys",
+      "description": "CLI generates TypeScript types from your JSON files. Catch missing keys at compile time, not runtime."
+    },
+    "llm": {
+      "title": "LLM Translation",
+      "description": "Built-in CLI command to batch-translate your JSON files using AI. Maintain consistent terminology across languages."
+    }
+  },
+  "demo": {
+    "title": "See It In Action",
+    "description": "This entire documentation site uses angular-translation-service for its own i18n. Toggle the language switcher above to see real-time language switching — no page reload needed."
+  },
+  "quick_start": {
+    "title": "Quick Start",
+    "step1_title": "1. Install",
+    "step2_title": "2. Configure",
+    "step3_title": "3. Use"
+  }
+}

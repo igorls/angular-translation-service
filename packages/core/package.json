@@ -1,0 +1,11 @@
+{
+  "name": "angular-translation-service",
+  "version": "0.0.1",
+  "description": "Signal-based Angular i18n library with runtime language switching and SSR hydration",
+  "license": "MIT",
+  "peerDependencies": {
+    "@angular/core": "^19.0.0 || ^20.0.0 || ^21.0.0",
+    "@angular/common": "^19.0.0 || ^20.0.0 || ^21.0.0"
+  },
+  "sideEffects": false
+}

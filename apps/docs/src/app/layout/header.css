@@ -1,0 +1,118 @@
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--header-height);
+  background: rgba(7, 7, 13, 0.85);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-subtle);
+  z-index: 100;
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  gap: var(--space-xl);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.logo-icon {
+  display: flex;
+  align-items: center;
+  color: var(--text-accent);
+}
+
+.logo-text {
+  background: var(--gradient-text);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+nav {
+  display: flex;
+  gap: var(--space-lg);
+  flex: 1;
+}
+
+nav a {
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-size: 0.9rem;
+  padding: var(--space-xs) 0;
+  border-bottom: 2px solid transparent;
+  transition: all var(--transition-fast);
+}
+
+nav a:hover {
+  color: var(--text-primary);
+}
+
+nav a.active {
+  color: var(--text-accent);
+  border-bottom-color: var(--accent-purple);
+}
+
+.github-link {
+  margin-left: auto;
+}
+
+.lang-switcher {
+  display: flex;
+  gap: var(--space-xs);
+  padding: 3px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+}
+
+.lang-switcher button {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border: none;
+  background: transparent;
+  color: var(--text-tertiary);
+  font-size: 0.8rem;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  border-radius: 7px;
+  transition: all var(--transition-fast);
+}
+
+.lang-switcher button:hover {
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.lang-switcher button.active {
+  color: var(--text-primary);
+  background: rgba(139, 92, 246, 0.2);
+  box-shadow: 0 0 10px rgba(139, 92, 246, 0.15);
+}
+
+.lang-label {
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  nav {
+    display: none;
+  }
+
+  .lang-label {
+    display: none;
+  }
+}

@@ -1,0 +1,103 @@
+<div class="container page">
+  <h1 class="gradient-text">Getting Started</h1>
+  <p class="page-subtitle">Set up angular-translation-service in your Angular project in 3 minutes.</p>
+
+  <section class="step">
+    <h2>1. Install</h2>
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-lang">terminal</span>
+      </div>
+      <pre>bun add angular-translation-service</pre>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2>2. Create Translation Files</h2>
+    <p>Create JSON files in your project's <code>public/</code> directory. The loader fetches from  <code>basePath/lang/namespace.json</code>:</p>
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-lang">public/i18n/en/common.json</span>
+      </div>
+      <pre>{{ '{' }}
+  "nav": {{ '{' }}
+    "home": "Home",
+    "about": "About"
+  {{ '}' }},
+  "greeting": "Hello, {{ '{{' }} name {{ '}}' }}!"
+{{ '}' }}</pre>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2>3. Configure the Provider</h2>
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-lang">app.config.ts</span>
+      </div>
+      <pre><span class="kw">import</span> {{ '{' }} <span class="fn">provideTranslation</span>, <span class="fn">httpLoader</span> {{ '}' }} <span class="kw">from</span> <span class="str">'angular-translation-service'</span>;
+
+<span class="kw">export const</span> appConfig = {{ '{' }}
+  providers: [
+    <span class="fn">provideTranslation</span>({{ '{' }}
+      <span class="type">defaultLang</span>: <span class="str">'en'</span>,
+      <span class="type">supportedLangs</span>: [<span class="str">'en'</span>, <span class="str">'pt-BR'</span>],
+      <span class="type">coreNamespaces</span>: [<span class="str">'common'</span>],
+      <span class="type">loader</span>: <span class="fn">httpLoader</span>(<span class="str">'/i18n'</span>),
+    {{ '}' }}),
+  ],
+{{ '}' }};</pre>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2>4. Use in Components</h2>
+    <p>Use <code>select()</code> to get a namespace signal. The <code>&#64;if</code> guard handles the loading state — while the namespace loads, the recursive proxy prevents template crashes.</p>
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-lang">my-component.ts</span>
+      </div>
+      <pre><span class="kw">import</span> {{ '{' }} <span class="type">TranslationService</span> {{ '}' }} <span class="kw">from</span> <span class="str">'angular-translation-service'</span>;
+
+&#64;Component({{ '{' }}
+  template: <span class="str">`
+    &#64;let t = common();
+    &#64;if (t) {{ '{' }}
+      &lt;h1&gt;{{ '{{' }} t.nav.home {{ '}}' }}&lt;/h1&gt;
+    {{ '}' }}
+  `</span>,
+{{ '}' }})
+<span class="kw">export class</span> <span class="type">MyComponent</span> {{ '{' }}
+  <span class="kw">private readonly</span> i18n = <span class="fn">inject</span>(<span class="type">TranslationService</span>);
+  <span class="kw">protected readonly</span> common = <span class="kw">this</span>.i18n.<span class="fn">select</span>(<span class="str">'common'</span>);
+{{ '}' }}</pre>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2>5. Alternative: Use the Pipe</h2>
+    <p>For simpler cases, use <code>TranslatePipe</code> instead of <code>select()</code>:</p>
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-lang">my-component.ts</span>
+      </div>
+      <pre><span class="kw">import</span> {{ '{' }} <span class="type">TranslatePipe</span> {{ '}' }} <span class="kw">from</span> <span class="str">'angular-translation-service'</span>;
+
+&#64;Component({{ '{' }}
+  <span class="type">imports</span>: [<span class="type">TranslatePipe</span>],
+  template: <span class="str">`
+    &lt;h1&gt;{{ '{{' }} 'common:nav.home' | translate {{ '}}' }}&lt;/h1&gt;
+    &lt;p&gt;{{ '{{' }} 'common:greeting' | translate:{{ '{' }} name: 'Igor' {{ '}' }} {{ '}}' }}&lt;/p&gt;
+  `</span>,
+{{ '}' }})</pre>
+    </div>
+  </section>
+
+  <section class="step next-steps">
+    <h2>What's Next?</h2>
+    <div class="next-links">
+      <a routerLink="/api" class="btn btn-primary">API Reference →</a>
+      <a href="https://github.com/igorls/angular-translation-service" target="_blank" class="btn btn-secondary">View Source on GitHub ↗</a>
+    </div>
+  </section>
+</div>

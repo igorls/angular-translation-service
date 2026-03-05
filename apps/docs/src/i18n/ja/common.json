@@ -1,0 +1,18 @@
+{
+  "nav": {
+    "home": "トップ",
+    "docs": "ドキュメント",
+    "api": "API",
+    "cli": "CLI",
+    "examples": "サンプル",
+    "github": "GitHub"
+  },
+  "footer": {
+    "built_with": "Angular Translation Serviceで作成されました",
+    "license": "MITライセンス",
+    "copyright": "© 2025–2026 Igor LS"
+  },
+  "lang_switcher": {
+    "label": "言語"
+  }
+}

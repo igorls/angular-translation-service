@@ -1,0 +1,47 @@
+{
+  "hero": {
+    "badge": "Angular v21+ · Signal-First · SSR 就绪",
+    "title": "Angular 类型安全的 i18n",
+    "subtitle": "基于信号的翻译库，支持延迟命名空间加载、用于无崩溃模板的递归代理，以及 LLM 驱动的 CLI 工具。",
+    "cta_primary": "开始使用",
+    "cta_secondary": "在 GitHub 上查看",
+    "install": "bun add angular-translation-service"
+  },
+  "features": {
+    "title": "为现代 Angular 构建",
+    "signal": {
+      "title": "Signal 驱动",
+      "description": "通过 Angular Signals 实现响应式翻译。零 Zone.js 依赖。与无区域变更检测无缝协作。"
+    },
+    "proxy": {
+      "title": "无崩溃模板",
+      "description": "递归代理确保像 t().nav.title 这样的表达式永远不会抛出错误——即使命名空间还在加载中。"
+    },
+    "ssr": {
+      "title": "SSR 和 SSG 就绪",
+      "description": "TransferState 水合可防止出现未翻译内容的闪烁。支持服务器端渲染和静态渲染。"
+    },
+    "lazy": {
+      "title": "延迟加载",
+      "description": "按需按路由加载翻译命名空间。只在需要时获取用户需要的内容。"
+    },
+    "types": {
+      "title": "类型安全键",
+      "description": "CLI 从您的 JSON 文件生成 TypeScript 类型。在编译时捕获缺失的键，而不是运行时。"
+    },
+    "llm": {
+      "title": "LLM 翻译",
+      "description": "内置 CLI 命令可使用 AI 批量翻译您的 JSON 文件。在不同语言间保持一致的术语。"
+    }
+  },
+  "demo": {
+    "title": "看它实际操作",
+    "description": "整个文档网站使用 angular-translation-service 进行国际化。切换上方的语言切换器即可看到实时语言切换，无需重新加载页面。"
+  },
+  "quick_start": {
+    "title": "快速开始",
+    "step1_title": "1. 安装",
+    "step2_title": "2. 配置",
+    "step3_title": "3. 使用"
+  }
+}

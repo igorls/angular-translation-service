@@ -1,0 +1,47 @@
+{
+  "hero": {
+    "badge": "Angular v21+ · Signal-First · SSR Ready",
+    "title": "i18n Type-Safe para Angular",
+    "subtitle": "Uma biblioteca de tradução baseada em signals com carregamento lazy de namespaces, proxy recursivo para templates sem erros, e ferramentas CLI com IA.",
+    "cta_primary": "Começar",
+    "cta_secondary": "Ver no GitHub",
+    "install": "bun add angular-translation-service"
+  },
+  "features": {
+    "title": "Feito para o Angular Moderno",
+    "signal": {
+      "title": "Powered by Signals",
+      "description": "Traduções reativas via Angular Signals. Zero dependência de Zone.js. Funciona perfeitamente com detecção de mudanças zoneless."
+    },
+    "proxy": {
+      "title": "Templates à Prova de Erros",
+      "description": "Proxy recursivo garante que expressões como t().nav.title nunca dão erro — mesmo quando namespaces ainda estão carregando."
+    },
+    "ssr": {
+      "title": "SSR & SSG Ready",
+      "description": "Hidratação via TransferState previne flash de conteúdo não traduzido. Funciona com renderização server e estática."
+    },
+    "lazy": {
+      "title": "Carregamento Lazy",
+      "description": "Carregue namespaces de tradução sob demanda por rota. Busque apenas o que o usuário precisa, quando precisa."
+    },
+    "types": {
+      "title": "Chaves Type-Safe",
+      "description": "CLI gera tipos TypeScript dos seus arquivos JSON. Encontre chaves faltando em tempo de compilação, não em runtime."
+    },
+    "llm": {
+      "title": "Tradução com IA",
+      "description": "Comando CLI integrado para traduzir seus arquivos JSON em lote usando IA. Mantenha terminologia consistente entre idiomas."
+    }
+  },
+  "demo": {
+    "title": "Veja Em Ação",
+    "description": "Todo este site de documentação usa angular-translation-service para seu próprio i18n. Alterne o seletor de idioma acima para ver troca de idioma em tempo real — sem recarregar a página."
+  },
+  "quick_start": {
+    "title": "Início Rápido",
+    "step1_title": "1. Instalar",
+    "step2_title": "2. Configurar",
+    "step3_title": "3. Usar"
+  }
+}

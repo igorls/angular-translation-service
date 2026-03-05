@@ -1,0 +1,16 @@
+{
+  "name": "@angular-translation-service/cli",
+  "version": "0.0.1",
+  "description": "CLI tooling for angular-translation-service: type generation, validation, LLM translation",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "ats": "./bin/ats.ts"
+  },
+  "dependencies": {
+    "commander": "^13.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.3.3"
+  }
+}
