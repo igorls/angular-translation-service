@@ -1,6 +1,6 @@
 {
   "name": "angular-translation-service",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "private": true,
   "description": "Signal-based Angular i18n library with runtime language switching, SSR hydration, and LLM-powered translation tooling",
   "author": "Igor LS",
@@ -10,14 +10,18 @@
     "apps/*"
   ],
   "scripts": {
-    "build:core": "ng build core",
-    "build:ssr": "ng build ssr",
+    "build:core": "npx ng-packagr -p packages/core/ng-package.json",
     "build:cli": "bun build packages/cli/src/index.ts --outdir packages/cli/dist --target bun",
-    "build": "bun run build:core && bun run build:ssr && bun run build:cli",
+    "build": "bun run build:core && bun run build:cli",
     "test": "bun test",
     "generate": "bun packages/cli/src/index.ts generate",
     "check": "bun packages/cli/src/index.ts check",
-    "validate": "bun packages/cli/src/index.ts validate"
+    "validate": "bun packages/cli/src/index.ts validate",
+    "prepublish:core": "bun run build:core",
+    "publish:core": "cd dist/core && npm publish --access public",
+    "publish:cli": "cd packages/cli && npm publish --access public",
+    "publish:all": "bun run publish:core && bun run publish:cli",
+    "release": "bun run build && bun test && bun run publish:all"
   },
   "devDependencies": {
     "@angular/build": "^21.0.0",
@@ -25,7 +29,7 @@
     "@angular/compiler-cli": "^21.0.0",
     "ng-packagr": "^21.0.0",
     "tslib": "^2.8.1",
-    "typescript": "~5.8.0"
+    "typescript": "~5.9.0"
   },
   "peerDependencies": {
     "@angular/core": "^19.0.0 || ^20.0.0 || ^21.0.0",

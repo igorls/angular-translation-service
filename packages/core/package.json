@@ -1,8 +1,30 @@
 {
   "name": "angular-translation-service",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Signal-based Angular i18n library with runtime language switching and SSR hydration",
+  "author": "Igor LS",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/igorls/angular-translation-service.git",
+    "directory": "packages/core"
+  },
+  "homepage": "https://github.com/igorls/angular-translation-service#readme",
+  "bugs": {
+    "url": "https://github.com/igorls/angular-translation-service/issues"
+  },
+  "keywords": [
+    "angular",
+    "i18n",
+    "translation",
+    "internationalization",
+    "signals",
+    "ssr",
+    "localization",
+    "l10n",
+    "language",
+    "runtime"
+  ],
   "peerDependencies": {
     "@angular/core": "^19.0.0 || ^20.0.0 || ^21.0.0",
     "@angular/common": "^19.0.0 || ^20.0.0 || ^21.0.0"

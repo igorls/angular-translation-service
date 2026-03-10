@@ -1,12 +1,39 @@
 {
   "name": "@angular-translation-service/cli",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "CLI tooling for angular-translation-service: type generation, validation, LLM translation",
+  "author": "Igor LS",
   "license": "MIT",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/igorls/angular-translation-service.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://github.com/igorls/angular-translation-service#readme",
+  "bugs": {
+    "url": "https://github.com/igorls/angular-translation-service/issues"
+  },
+  "keywords": [
+    "angular",
+    "i18n",
+    "translation",
+    "cli",
+    "type-generation",
+    "validation",
+    "llm"
+  ],
   "bin": {
     "ats": "./bin/ats.ts"
   },
+  "files": [
+    "bin/",
+    "src/",
+    "dist/",
+    "!src/**/*.spec.ts",
+    "package.json",
+    "README.md"
+  ],
   "dependencies": {
     "commander": "^13.0.0"
   },

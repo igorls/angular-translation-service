@@ -14,7 +14,7 @@
     "experimentalDecorators": true,
     "paths": {
       "angular-translation-service": ["./packages/core/src/index.ts"],
-      "angular-translation-service/ssr": ["./packages/ssr/src/index.ts"]
+      "angular-translation-service/ssr": ["./packages/core/ssr/src/index.ts"]
     }
   },
   "angularCompilerOptions": {
