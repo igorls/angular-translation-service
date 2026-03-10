@@ -338,18 +338,39 @@ export class TranslationService {
         const path = key.substring(sepIndex + 1);
 
         const langDict = dicts.get(currentLang);
-        const nsData = langDict?.get(namespace);
-        if (!nsData) return key; // namespace not loaded yet
+        if (!langDict?.has(namespace)) {
+            // Namespace not loaded yet — return empty string to prevent FOUC
+            return '';
+        }
+
+        const nsData = langDict.get(namespace);
 
         // Resolve dotted path
         const segments = path.split('.');
         let current: unknown = nsData;
         for (const segment of segments) {
-            if (current == null || typeof current !== 'object') return key;
+            if (current == null || typeof current !== 'object') {
+                // Namespace loaded but key is missing
+                return this.handleMissingKey(key, currentLang, namespace);
+            }
             current = (current as Record<string, unknown>)[segment];
         }
 
-        return typeof current === 'string' ? current : key;
+        if (typeof current === 'string') return current;
+
+        // Leaf is not a string — treat as missing key
+        return this.handleMissingKey(key, currentLang, namespace);
+    }
+
+    /**
+     * Handles a key that is missing from a loaded namespace.
+     * Invokes `missingKeyHandler` if configured, otherwise returns the raw key.
+     */
+    private handleMissingKey(key: string, lang: string, namespace: string): string {
+        if (this.config.missingKeyHandler) {
+            return this.config.missingKeyHandler(key, { lang, namespace });
+        }
+        return key;
     }
 
     private interpolate(

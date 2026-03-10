@@ -48,10 +48,10 @@ describe('createRecursiveProxy', () => {
         expect(result).toBe('');
     });
 
-    it('should return path string for Symbol.toPrimitive on nested', () => {
+    it('should return empty string for Symbol.toPrimitive on nested (FOUC prevention)', () => {
         const proxy = createRecursiveProxy('nav.title');
         const result = `${proxy}`;
-        expect(result).toBe('nav.title');
+        expect(result).toBe('');
     });
 
     it('should return empty string from toString on root proxy', () => {
@@ -59,9 +59,9 @@ describe('createRecursiveProxy', () => {
         expect(proxy.toString()).toBe('');
     });
 
-    it('should return path from toString on named proxy', () => {
+    it('should return empty string from toString on named proxy (FOUC prevention)', () => {
         const proxy = createRecursiveProxy('common');
-        expect(proxy.toString()).toBe('common');
+        expect(proxy.toString()).toBe('');
     });
 
     // ── JSON Serialization Safety ─────────────────────────────────────
@@ -137,11 +137,11 @@ describe('createRecursiveProxy', () => {
         // The proxy must return a child proxy, NOT String.prototype.search
         const search = proxy.search;
         expect(typeof search).not.toBe('function');
-        expect(`${search}`).toBe('actions.search');
+        expect(`${search}`).toBe(''); // FOUC-safe: empty string, not path
 
         const replace = proxy.replace;
         expect(typeof replace).not.toBe('function');
-        expect(`${replace}`).toBe('actions.replace');
+        expect(`${replace}`).toBe(''); // FOUC-safe: empty string, not path
     });
 
     // ── Depth Cap (Deep Think v2) ─────────────────────────────────────

@@ -5,7 +5,7 @@ export { TranslationService } from './translation.service';
 
 // Provider function
 export { provideTranslation } from './provide-translation';
-export type { TranslationConfig } from './types';
+export type { TranslationConfig, MissingKeyContext } from './types';
 export { TRANSLATION_CONFIG, CURRENT_LANGUAGE } from './types';
 
 // Pipe

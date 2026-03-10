@@ -1,9 +1,14 @@
+import { inject } from '@angular/core';
 import { Routes } from '@angular/router';
+import { TranslationService } from 'angular-translation-service';
 
 export const routes: Routes = [
     {
         path: '',
         loadComponent: () => import('./pages/home').then((m) => m.HomePage),
+        resolve: {
+            i18n: () => inject(TranslationService).ensureNamespaces(['home']),
+        },
     },
     {
         path: 'getting-started',

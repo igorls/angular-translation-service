@@ -91,12 +91,12 @@ describe('TranslationService', () => {
             expect(sig()).toBe('Hello');
         });
 
-        it('should return the key itself when namespace is not loaded', () => {
+        it('should return empty string when namespace is not loaded (FOUC prevention)', () => {
             const loader = createMockLoader({});
             const service = createService({ loader });
 
             const sig = service.translate('missing:key.path');
-            expect(sig()).toBe('missing:key.path');
+            expect(sig()).toBe('');
         });
 
         it('should resolve nested dotted paths', async () => {
@@ -181,11 +181,34 @@ describe('TranslationService', () => {
             expect(service.instant('common:title')).toBe('Hello World');
         });
 
-        it('should return the key when not found', () => {
+        it('should return empty string when namespace is not loaded (FOUC prevention)', () => {
             const loader = createMockLoader({});
             const service = createService({ loader });
 
-            expect(service.instant('missing:key')).toBe('missing:key');
+            expect(service.instant('missing:key')).toBe('');
+        });
+
+        it('should return the raw key when namespace IS loaded but key is missing', async () => {
+            const loader = createMockLoader({
+                en: { common: { title: 'Hello' } },
+            });
+            const service = createService({ loader });
+            await service.ensureNamespaces(['common']);
+
+            expect(service.instant('common:nonexistent.key')).toBe('common:nonexistent.key');
+        });
+
+        it('should invoke missingKeyHandler for missing keys in loaded namespaces', async () => {
+            const loader = createMockLoader({
+                en: { common: { title: 'Hello' } },
+            });
+            const service = createService({
+                loader,
+                missingKeyHandler: (key, ctx) => `[MISSING: ${ctx.namespace}/${key}]`,
+            });
+            await service.ensureNamespaces(['common']);
+
+            expect(service.instant('common:nonexistent')).toBe('[MISSING: common/common:nonexistent]');
         });
 
         it('should interpolate params', async () => {

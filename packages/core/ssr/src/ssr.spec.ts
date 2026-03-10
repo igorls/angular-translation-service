@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'bun:test';
-import { TranslationService } from 'angular-translation-service';
-import type { TranslationConfig } from 'angular-translation-service';
+import { TranslationService } from '../../src/translation.service';
+import type { TranslationConfig } from '../../src/types';
 import { TranslationTransferState } from './transfer-state';
 
 /**

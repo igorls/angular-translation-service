@@ -50,18 +50,19 @@ export function createRecursiveProxy(path: string = ''): any {
 
     const proxy = new Proxy(Object.create(null), {
         get(_target: any, prop: string | symbol): any {
-            // String coercion — return the path or empty string
+            // String coercion — return empty string to prevent FOUC
             if (prop === Symbol.toPrimitive || prop === 'valueOf') {
-                return () => path || '';
+                return () => '';
             }
 
             if (prop === Symbol.toStringTag) {
                 return 'TranslationProxy';
             }
 
-            // toString — return path for template interpolation
+            // toString — return empty string to prevent FOUC
+            // Path is still available via Symbol.toStringTag for DevTools
             if (prop === 'toString') {
-                return () => path || '';
+                return () => '';
             }
 
             // JSON serialization — prevent crash
