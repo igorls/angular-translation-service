@@ -1,0 +1,71 @@
+{
+  "title": "Ferramentas CLI",
+  "subtitle": "Utilitários de linha de comando para gerenciar, validar e traduzir automaticamente seus arquivos i18n.",
+  "installation": {
+    "title": "Instalação",
+    "desc": "Adicione o CLI como uma dependência de desenvolvimento para usar o comando curto <code>npx ats</code> — assim como o <code>npx ng</code> com o Angular CLI.",
+    "run_desc": "Em seguida, execute qualquer comando com <code>npx ats &lt;command&gt;</code>, <code>pnpx ats &lt;command&gt;</code> ou <code>bunx ats &lt;command&gt;</code>. Instale globalmente com <code>npm install -g</code> para usar o comando <code>ats</code> em qualquer lugar."
+  },
+  "th_option": "Opção",
+  "th_default": "Padrão",
+  "th_description": "Descrição",
+  "generate": {
+    "desc": "Gera interfaces TypeScript a partir dos seus arquivos de tradução JSON, fornecendo segurança de tipo em tempo de compilação para as chaves de tradução.",
+    "input_desc": "Diretório de origem contendo os arquivos de namespace JSON",
+    "output_desc": "Caminho do arquivo TypeScript de saída",
+    "check_desc": "Modo CI: sai com o código 1 se os tipos estiverem fora de sincronia",
+    "generated_output": "Saída Gerada"
+  },
+  "check": {
+    "desc": "Analisa seu código-fonte (arquivos <code>.ts</code> e <code>.html</code>) em busca do uso de chaves de tradução e faz referências cruzadas com os arquivos JSON para detectar chaves ausentes e não utilizadas.",
+    "i18n_desc": "Diretório de namespace JSON (idioma padrão)",
+    "src_desc": "Diretório de origem para analisar o uso de chaves",
+    "ns_desc": "Limitar a verificação a um namespace específico",
+    "detected_patterns": "Padrões Detectados",
+    "pattern_translate": "<code>translate('ns:key')</code> — chamadas de tradução baseadas em signals",
+    "pattern_instant": "<code>instant('ns:key')</code> — chamadas de tradução síncronas",
+    "pattern_select": "<code>select('ns')</code> — marca o namespace inteiro como usado",
+    "pattern_pipe": "<code>'ns:key' | translate</code> — uso de pipe do Angular em templates"
+  },
+  "validate": {
+    "desc": "Compara arquivos de tradução em todos os idiomas para encontrar inconsistências estruturais: chaves ausentes, chaves extras e valores vazios.",
+    "input_desc": "Diretório i18n raiz contendo os subdiretórios de idiomas",
+    "example_output": "Exemplo de Saída"
+  },
+  "clean": {
+    "desc": "Remove chaves órfãs dos arquivos de idioma de destino — chaves que existem em uma tradução, mas não existem mais no idioma padrão.",
+    "input_desc": "Diretório i18n raiz",
+    "dry_run_desc": "Mostra o que seria removido sem modificar os arquivos"
+  },
+  "translate": {
+    "desc": "Usa um LLM local (via Ollama) para traduzir automaticamente chaves ausentes do idioma padrão para um idioma de destino. Suporta tradução em lote com fallback por chave.",
+    "locale_desc": "Código do idioma de destino",
+    "ns_desc": "Limitar a um namespace específico",
+    "model_desc": "Modelo Ollama a ser usado",
+    "host_desc": "Endereço do servidor Ollama",
+    "auto_accept_desc": "Ignorar confirmação interativa, aceitar todas as traduções",
+    "features": "Funcionalidades",
+    "feature_batch": "Tradução em lote (35 entradas por chamada ao LLM para contexto ideal)",
+    "feature_fallback": "Fallback automático por chave quando a análise em lote falha",
+    "feature_placeholders": "Preserva placeholders de interpolação (<code>{{name}}</code>, <code>{count}</code>)",
+    "feature_codefence": "Lida com respostas JSON em blocos de código do LLM"
+  },
+  "editor": {
+    "desc": "Inicia uma interface web completa do editor de tradução no seu navegador. Inclui um editor de chaves lado a lado, tradução automática via Ollama, rastreamento de uso no código-fonte por chave, barras de progresso e suporte para adicionar/excluir chaves.",
+    "input_desc": "Diretório de origem i18n (descoberta automática do angular.json ou convenção)",
+    "src_desc": "Diretório do código-fonte para analisar o uso de chaves",
+    "port_desc": "Porta para servir o editor",
+    "features": "Funcionalidades",
+    "feature_picker": "Seletor de idioma de origem e destino com edição lado a lado",
+    "feature_llm": "Tradução LLM em tempo real via Ollama com streaming SSE",
+    "feature_badges": "Emblemas de uso no código-fonte por chave (mostra onde cada chave é referenciada)",
+    "feature_progress": "Rastreamento do progresso da tradução por idioma e namespace",
+    "feature_crud": "Adicionar, excluir e pesquisar chaves em todos os namespaces",
+    "feature_validation": "Validação estrutural diretamente na interface de usuário",
+    "feature_autodiscovery": "Descoberta automática do diretório i18n a partir do angular.json ou convenções comuns"
+  },
+  "ci": {
+    "title": "Integração com CI",
+    "desc": "Adicione verificações de tradução ao seu pipeline de CI para detectar problemas antecipadamente."
+  }
+}

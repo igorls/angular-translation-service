@@ -1,0 +1,71 @@
+{
+  "title": "CLI ツール",
+  "subtitle": "i18n ファイルの管理、検証、自動翻訳のためのコマンドラインユーティリティ。",
+  "installation": {
+    "title": "インストール",
+    "desc": "Angular CLI の <code>npx ng</code> と同様に、短い <code>npx ats</code> コマンドを使用するには、CLI を開発用依存関係として追加します。",
+    "run_desc": "その後、<code>npx ats &lt;command&gt;</code>、<code>pnpx ats &lt;command&gt;</code>、または <code>bunx ats &lt;command&gt;</code> で任意のコマンドを実行します。どこでも <code>ats</code> コマンドをそのまま使用するには、<code>npm install -g</code> でグローバルにインストールします。"
+  },
+  "th_option": "オプション",
+  "th_default": "デフォルト",
+  "th_description": "説明",
+  "generate": {
+    "desc": "JSON 翻訳ファイルから TypeScript インターフェースを生成し、翻訳キーにコンパイル時の型安全性を提供します。",
+    "input_desc": "JSON 名前空間ファイルを含むソースディレクトリ",
+    "output_desc": "出力する TypeScript ファイルのパス",
+    "check_desc": "CI モード：型が同期されていない場合に終了コード 1 で終了します",
+    "generated_output": "生成された出力"
+  },
+  "check": {
+    "desc": "ソースコード（<code>.ts</code> および <code>.html</code> ファイル）をスキャンして翻訳キーの使用状況を確認し、JSON ファイルと照合して不足しているキーや未使用のキーを検出します。",
+    "i18n_desc": "JSON 名前空間ディレクトリ（デフォルト言語）",
+    "src_desc": "キーの使用状況をスキャンするソースディレクトリ",
+    "ns_desc": "特定の名前空間にチェックを制限する",
+    "detected_patterns": "検出されたパターン",
+    "pattern_translate": "<code>translate('ns:key')</code> — シグナルベースの翻訳呼び出し",
+    "pattern_instant": "<code>instant('ns:key')</code> — 同期的な翻訳呼び出し",
+    "pattern_select": "<code>select('ns')</code> — 名前空間全体を使用済みとしてマークする",
+    "pattern_pipe": "<code>'ns:key' | translate</code> — テンプレートでの Angular パイプの使用"
+  },
+  "validate": {
+    "desc": "すべての言語の翻訳ファイルを比較し、不足しているキー、余分なキー、空の値などの構造的な不一致を見つけます。",
+    "input_desc": "言語サブディレクトリを含むルート i18n ディレクトリ",
+    "example_output": "出力例"
+  },
+  "clean": {
+    "desc": "ターゲット言語ファイルから、デフォルト言語には存在しなくなった孤立したキーを削除します。",
+    "input_desc": "ルート i18n ディレクトリ",
+    "dry_run_desc": "ファイルを変更せずに削除される内容を表示する"
+  },
+  "translate": {
+    "desc": "ローカル LLM（Ollama 経由）を使用して、デフォルト言語からターゲット言語に不足しているキーを自動的に翻訳します。キーごとのフォールバックを備えたバッチ翻訳をサポートしています。",
+    "locale_desc": "ターゲット言語コード",
+    "ns_desc": "特定の名前空間に制限する",
+    "model_desc": "使用する Ollama モデル",
+    "host_desc": "Ollama サーバーのアドレス",
+    "auto_accept_desc": "対話的な確認をスキップし、すべての翻訳を承認する",
+    "features": "機能",
+    "feature_batch": "バッチ翻訳（最適なコンテキストのために 1 回の LLM 呼び出しにつき 35 エントリ）",
+    "feature_fallback": "バッチ解析が失敗した場合の自動的なキーごとのフォールバック",
+    "feature_placeholders": "補間プレースホルダー（<code>{{name}}</code>、<code>{count}</code>）を保持する",
+    "feature_codefence": "LLM からのコードフェンス付き JSON レスポンスを処理する"
+  },
+  "editor": {
+    "desc": "ブラウザでフル機能の翻訳エディタ Web UI を起動します。サイドバイサイドのキーエディタ、Ollama による LLM 駆動の自動翻訳、キーごとのソースコード使用状況追跡、プログレスバー、キーの追加/削除サポートが含まれています。",
+    "input_desc": "i18n ソースディレクトリ（angular.json または慣習から自動検出）",
+    "src_desc": "キーの使用状況をスキャンするためのソースコードディレクトリ",
+    "port_desc": "エディタを提供するポート",
+    "features": "機能",
+    "feature_picker": "サイドバイサイド編集が可能なソース言語とターゲット言語のピッカー",
+    "feature_llm": "Ollama による SSE ストリーミングを用いたリアルタイム LLM 翻訳",
+    "feature_badges": "キーごとのソースコード使用状況バッジ（各キーがどこで参照されているかを表示）",
+    "feature_progress": "言語および名前空間ごとの翻訳進捗追跡",
+    "feature_crud": "すべての名前空間にわたるキーの追加、削除、検索",
+    "feature_validation": "UI で直接行える構造検証",
+    "feature_autodiscovery": "angular.json または一般的な慣習からの i18n ディレクトリの自動検出"
+  },
+  "ci": {
+    "title": "CI 統合",
+    "desc": "CI パイプラインに翻訳チェックを追加して、問題を早期に発見します。"
+  }
+}

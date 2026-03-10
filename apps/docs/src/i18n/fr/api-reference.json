@@ -1,0 +1,107 @@
+{
+  "title": "Référence API",
+  "subtitle": "Documentation API complète pour @angular-translation-service/core.",
+  "translation_service": {
+    "title": "TranslationService",
+    "desc": "Le service central fournissant l'i18n réactif pour les applications Angular. Injecter via Angular DI.",
+    "select_desc": "Renvoie un signal de portée pour l'accès aux templates. Déclenche automatiquement le chargement lazy de l'espace de noms. Les données sont <code>undefined</code> jusqu'à ce que l'espace de noms soit chargé, puis renvoie un dictionnaire enveloppé par un proxy pour un accès sécurisé aux propriétés profondes.",
+    "translate_desc": "Renvoie un signal mis en cache pour une seule clé de traduction. Déclenche automatiquement le chargement de l'espace de noms. Format de clé : <code>namespace:dotted.path</code>.",
+    "instant_desc": "Renvoie la traduction de manière synchrone. Non réactif et ne déclenche <strong>pas</strong> le chargement lazy — à utiliser uniquement pour le code impératif (toasts, logs) lorsque l'espace de noms est déjà chargé.",
+    "setlang_desc": "Change la langue active. Recharge tous les espaces de noms précédemment demandés pour la nouvelle langue et conserve la préférence dans le <code>localStorage</code> (si <code>storageKey</code> est configuré). Enregistre un avertissement et s'arrête si la langue n'est pas dans <code>supportedLangs</code>.",
+    "ensure_desc": "Précharge des espaces de noms supplémentaires. Déduplique automatiquement les chargements simultanés. Utile pour les route guards ou les resolvers.",
+    "lang_desc": "Le signal de la langue actuelle. À lire dans les templates pour afficher la langue active.",
+    "supported_desc": "Tableau en lecture seule de tous les codes de langue pris en charge à partir de la configuration. Utile pour construire des sélecteurs de langue.",
+    "ready_desc": "Vrai quand tous les <code>coreNamespaces</code> ont été chargés pour la langue actuelle."
+  },
+  "translate_pipe": {
+    "title": "TranslatePipe",
+    "desc": "Sucre syntaxique de template pour <code>TranslationService.translate()</code>. Le pipe met en cache son signal en interne pour éviter la recréation à chaque cycle de détection de changement.",
+    "setup": "Configuration",
+    "setup_desc": "Importez <code>TranslatePipe</code> dans le tableau <code>imports</code> de votre composant :",
+    "usage": "Utilisation"
+  },
+  "provide_translation": {
+    "title": "provideTranslation()",
+    "desc": "Configure le service de traduction au niveau de l'application. Utilise <code>APP_INITIALIZER</code> pour précharger les espaces de noms de base avant le rendu de l'application.",
+    "th_option": "Option",
+    "th_type": "Type",
+    "th_description": "Description",
+    "default_lang": "Code de langue par défaut (ex: <code>'en'</code>)",
+    "supported_langs": "Tous les codes de langue pris en charge",
+    "core_ns": "Espaces de noms préchargés via <code>APP_INITIALIZER</code> avant le rendu de l'application",
+    "loader": "Fonction qui charge les fichiers de traduction. Utilisez <code>httpLoader()</code> ou <code>importLoader()</code>",
+    "detect_lang": "Activer la détection de la langue du navigateur via <code>navigator.language</code>",
+    "storage_key": "Clé <code>localStorage</code> pour conserver la préférence de langue à travers les sessions",
+    "ns_separator": "Séparateur entre l'espace de noms et le chemin de la clé (par défaut : <code>':'</code>)",
+    "fallback_chain": "Chaînes de repli de langue pour les locales régionales"
+  },
+  "loaders": {
+    "title": "Chargeurs",
+    "http_desc": "Crée un chargeur basé sur <code>fetch</code>. Charge le JSON depuis : <code>basePath/lang/namespace.json</code>. Placez vos fichiers JSON dans le répertoire <code>public/</code> du projet Angular (les fichiers dans <code>public/</code> sont servis à l'URL racine).",
+    "import_desc": "Crée un chargeur utilisant des importations dynamiques. Le callback de la factory doit renvoyer un module avec un export <code>default</code> contenant le dictionnaire de traduction. Le bundler peut analyser statiquement les chemins d'importation pour le tree-shaking et le code splitting."
+  },
+  "injection_tokens": {
+    "title": "Injection Tokens",
+    "config_desc": "Jeton d'injection pour la configuration de la traduction. Fourni automatiquement par <code>provideTranslation()</code>. Utile pour les fournisseurs personnalisés qui ont besoin d'accéder à la configuration.",
+    "current_lang_desc": "Jeton d'injection pour la détection de la langue côté serveur. Fourni par <code>provideTranslationSSR()</code> sur le serveur pour injecter la langue de la requête HTTP. Sur le client, la langue est résolue à partir du <code>TransferState</code> ou de la détection locale."
+  },
+  "recursive_proxy": {
+    "title": "createRecursiveProxy()",
+    "desc": "Crée un objet proxy résistant aux plantages qui intercepte en toute sécurité tous les accès aux propriétés. Utilisé en interne par <code>select()</code> pour éviter les erreurs de template lorsque les espaces de noms sont encore en cours de chargement. Le proxy renvoie des proxys imbriqués pour tout accès aux propriétés, garantissant que des expressions comme <code>t().nav.title</code> ne lancent jamais d'exception — elles s'affichent sous forme de chaînes vides à la place.",
+    "behavior": "Comportement",
+    "th_access": "Accès",
+    "th_result": "Résultat",
+    "string_coercion": "Coercition de chaîne / interpolation de template",
+    "string_coercion_result": "Renvoie le chemin de la clé (ex : <code>'common.nav.title'</code>)",
+    "property_access": "Accès aux propriétés",
+    "property_access_result": "Renvoie un autre proxy récursif",
+    "json_serialization": "Sérialisation JSON",
+    "json_serialization_result": "Renvoie <code>{}</code>",
+    "promise_detection": "Détection de Promise (<code>then</code>/<code>catch</code>)",
+    "promise_detection_result": "Renvoie <code>undefined</code> (empêche le déballage asynchrone)",
+    "iteration": "Itération (boucles <code>@for</code>)",
+    "iteration_result": "Ne produit rien (itérateur vide)"
+  },
+  "fallback_chains": {
+    "title": "Chaînes de repli",
+    "desc": "Définissez des langues de repli pour les locales régionales. Lors du chargement des traductions, toutes les langues de la chaîne sont récupérées en parallèle et fusionnées en profondeur — les clés de la locale la plus spécifique écrasent les clés de repli."
+  },
+  "language_detection": {
+    "title": "Détection de la langue",
+    "desc": "La langue initiale est résolue en utilisant la chaîne de priorité suivante (le premier match gagne). Les étapes 1 et 2 s'exécutent toujours ; l'étape 3 nécessite <code>detectLanguage: true</code>.",
+    "ssr_token": "<strong>Jeton SSR</strong> — Langue injectée via <code>CURRENT_LANGUAGE</code> sur le serveur <em>(toujours vérifié)</em>",
+    "local_storage": "<strong>localStorage</strong> — Préférence précédemment conservée <em>(toujours vérifié si <code>storageKey</code> est configuré)</em>",
+    "browser": "<strong>Navigateur</strong> — <code>navigator.language</code> avec correspondance de la langue de base (ex : le <code>'pt'</code> du navigateur correspond à la config <code>'pt-BR'</code>) <em>(uniquement si <code>detectLanguage: true</code>)</em>",
+    "default_lang": "<strong>Par défaut</strong> — Repli sur <code>defaultLang</code>"
+  },
+  "ssr": {
+    "title": "SSR & Hydratation",
+    "desc": "Le point d'entrée secondaire <code>@angular-translation-service/core/ssr</code> permet un rendu côté serveur transparent, sans flash de contenu non traduit (FOUC) et sans incohérence d'hydratation.",
+    "provide_desc": "Ajoutez à votre configuration d'application <strong>serveur</strong>. Sur le serveur, il fournit <code>CURRENT_LANGUAGE</code> à partir de la requête HTTP et capture toutes les traductions chargées dans le <code>TransferState</code>. Sur le client, il hydrate les traductions de manière synchrone — aucune requête HTTP n'est nécessaire pour le rendu initial.",
+    "how_it_works": "Comment ça marche",
+    "th_phase": "Phase",
+    "th_what_happens": "Ce qui se passe",
+    "server_render": "Rendu serveur",
+    "server_render_desc": "<code>CURRENT_LANGUAGE</code> est défini à partir de la requête, les espaces de noms de base se chargent, puis toutes les traductions chargées sont sérialisées dans le <code>TransferState</code>",
+    "client_hydration": "Hydratation client",
+    "client_hydration_desc": "Les traductions sont restaurées à partir du <code>TransferState</code> de manière synchrone — pas de requêtes HTTP, pas de FOUC, pas de NG0501",
+    "after_hydration": "Après l'hydratation",
+    "after_hydration_desc": "L'entrée <code>TransferState</code> est supprimée pour libérer de la mémoire. Les chargements ultérieurs d'espaces de noms utilisent le chargement HTTP normal",
+    "config_title": "TranslationSSRConfig",
+    "config_lang_from_request": "Extraire la langue de la requête HTTP entrante"
+  },
+  "error_behavior": {
+    "title": "Comportement en cas d'erreur",
+    "desc": "Angular Translation Service est conçu pour être résistant aux plantages. Voici comment les erreurs sont gérées :",
+    "th_scenario": "Scénario",
+    "th_behavior": "Comportement",
+    "ns_fail": "L'espace de noms ne parvient pas à se charger",
+    "ns_fail_behavior": "Erreur enregistrée dans la console. Le template affiche des chaînes vides (via le proxy récursif)",
+    "missing_key": "Clé de traduction manquante",
+    "missing_key_behavior": "Renvoie la chaîne de clé brute (ex : <code>'common:nav.missing'</code>)",
+    "unsupported_lang": "<code>setLang()</code> avec une langue non prise en charge",
+    "unsupported_lang_behavior": "Enregistre un avertissement et s'arrête prématurément — pas de changement d'état",
+    "nested_loading": "Accès aux clés imbriquées pendant le chargement",
+    "nested_loading_behavior": "Le proxy récursif renvoie des chaînes vides, empêchant les plantages de template"
+  }
+}
