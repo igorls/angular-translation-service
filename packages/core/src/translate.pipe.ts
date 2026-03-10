@@ -13,7 +13,7 @@ import { TranslationService } from './translation.service';
  * - Triggers ensureNamespaces via translate() for lazy loading support
  * - Works in zoneless Angular v21 (no Zone.js dependency)
  */
-@Pipe({ name: 'translate' })
+@Pipe({ name: 'translate', pure: false })
 export class TranslatePipe implements PipeTransform {
     private readonly i18n = inject(TranslationService);
 

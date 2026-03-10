@@ -1,4 +1,5 @@
 import {
+    ApplicationRef,
     Injectable,
     Signal,
     computed,
@@ -57,6 +58,9 @@ export class TranslationService {
     /** Signal cache for select() — keyed by namespace */
     private readonly scopeCache = new Map<string, Signal<Record<string, unknown> | undefined>>();
 
+    /** ApplicationRef for triggering CD in zoneless mode after async loads */
+    private readonly appRef: ApplicationRef | null;
+
     /**
      * Angular DI constructor.
      * For testing, use TranslationService.create() instead.
@@ -64,6 +68,7 @@ export class TranslationService {
     constructor() {
         this.config = inject(TRANSLATION_CONFIG);
         const ssrLang = inject(CURRENT_LANGUAGE, { optional: true });
+        this.appRef = inject(ApplicationRef, { optional: true });
         this.sep = this.config.namespaceSeparator ?? ':';
         this.supportedLangs = Object.freeze([...this.config.supportedLangs]);
         this.dictionaries = signal(new Map());
@@ -86,6 +91,7 @@ export class TranslationService {
 
         // Initialize private fields manually
         (instance as any).config = config;
+        (instance as any).appRef = null; // No DI in static factory
         (instance as any).sep = config.namespaceSeparator ?? ':';
         (instance as any).supportedLangs = Object.freeze([...config.supportedLangs]);
         (instance as any).dictionaries = signal(new Map() as DictionaryMap);
@@ -309,6 +315,11 @@ export class TranslationService {
                 next.set(lang, nextLangDict);
                 return next;
             });
+
+            // In zoneless mode, fetch() isn't patched by Angular so signal
+            // updates from async callbacks don't automatically trigger CD.
+            // Explicitly notify Angular to re-render affected views.
+            this.appRef?.tick();
         } catch (err) {
             console.error(
                 `[angular-translation-service] Failed to load ${lang}/${namespace}:`,
