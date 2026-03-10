@@ -74,12 +74,18 @@ export function provideTranslation(
                 if (cached) {
                     const langMap = new Map<string, Record<string, unknown>>();
                     for (const [ns, data] of Object.entries(cached.namespaces)) {
-                        langMap.set(ns, data);
+                        // Skip empty namespace data (failed SSR fetches)
+                        if (Object.keys(data).length > 0) {
+                            langMap.set(ns, data);
+                        }
                     }
-                    const dicts = new Map<string, Map<string, Record<string, unknown>>>();
-                    dicts.set(cached.lang, langMap);
-                    i18n.setDictionaries(dicts);
-                    i18n.lang.set(cached.lang);
+                    // Only hydrate if we have actual data
+                    if (langMap.size > 0) {
+                        const dicts = new Map<string, Map<string, Record<string, unknown>>>();
+                        dicts.set(cached.lang, langMap);
+                        i18n.setDictionaries(dicts);
+                        i18n.lang.set(cached.lang);
+                    }
                 }
             }
 

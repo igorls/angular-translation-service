@@ -283,6 +283,14 @@ export class TranslationService {
                 uniqueChain.map((l) => this.config.loader(l, namespace)),
             );
 
+            // Check if at least one fetch succeeded
+            const hasData = results.some((r) => r.status === 'fulfilled');
+            if (!hasData) {
+                // All fetches failed — do NOT store empty data, let the namespace
+                // remain "unloaded" so client-side can retry via HTTP
+                return;
+            }
+
             // Deep merge: fallback first, then more specific locale overwrites
             let merged: Record<string, unknown> = {};
             for (let i = results.length - 1; i >= 0; i--) {
