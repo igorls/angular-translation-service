@@ -1,6 +1,6 @@
 {
   "name": "angular-translation-service",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "private": true,
   "description": "Signal-based Angular i18n library with runtime language switching, SSR hydration, and LLM-powered translation tooling",
   "author": "Igor LS",
@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "build:core": "npx ng-packagr -p packages/core/ng-package.json",
-    "build:cli": "bun build packages/cli/src/index.ts --outdir packages/cli/dist --target bun",
+    "build:cli": "bun build packages/cli/src/index.ts --outdir packages/cli/dist --target node",
     "build": "bun run build:core && bun run build:cli",
     "test": "bun test",
     "generate": "bun packages/cli/src/index.ts generate",

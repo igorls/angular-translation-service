@@ -43,5 +43,12 @@
     "step1_title": "1. Instalar",
     "step2_title": "2. Configurar",
     "step3_title": "3. Usar"
+  },
+  "agent_skill": {
+    "title": "Vibe Code sua i18n",
+    "description": "Instale o Agent Skill para ensinar seu assistente de codificação de IA a usar a biblioteca, executar o scanner e internacionalizar seu aplicativo — funciona com Claude Code, Cursor, Windsurf, Copilot e mais de 30 agentes.",
+    "install_label": "Instalar a skill",
+    "manual_label": "Ou copie o SKILL.md manualmente do",
+    "repo_link": "repositório"
   }
 }

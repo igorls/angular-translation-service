@@ -254,6 +254,15 @@ export function scoreCandidate(rawText: string, element: string): ScoreResult {
     // Looks like a URL or path
     if (/^(https?:\/\/|\/[\w/.-]+|\.\/|\.\.\/)/i.test(text)) return { text, score: 0, reasons };
 
+    // Starts with an unclosed HTML tag (residual from multi-line tag stripping)
+    if (/^\s*<\w+/.test(text)) return { text, score: 0, reasons };
+
+    // Contains raw attribute assignments (href="...", src="...", etc.)
+    if (/\w+=["']/.test(text) && !/\s{2,}/.test(text)) return { text, score: 0, reasons };
+
+    // Angular template bindings: (event)="...", [prop]="...", [(twoWay)]="...", *ngIf="..."
+    if (/^\s*([\[\(][a-zA-Z0-9_.-]+[\]\)]|\*[a-zA-Z0-9_.-]+)\s*=/.test(text)) return { text, score: 0, reasons };
+
     // Looks like a CLI flag (--flag, -f, --flag-name)
     if (/^-{1,2}[\w][\w-]*(\s+\S+)?$/.test(text)) return { text, score: 0, reasons };
 

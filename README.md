@@ -1,52 +1,25 @@
-# angular-translation-service
+# Angular Translation Service
 
-[![CI](https://github.com/igorls/angular-translation-service/actions/workflows/ci.yml/badge.svg)](https://github.com/igorls/angular-translation-service/actions/workflows/ci.yml)
-[![npm](https://img.shields.io/npm/v/angular-translation-service)](https://www.npmjs.com/package/angular-translation-service)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+Signal-based Angular i18n library with runtime language switching, SSR hydration, and LLM-powered CLI tooling.
 
-Signal-based Angular i18n library with runtime language switching, SSR hydration, and developer tooling.
+## Packages
 
-## Features
-
-- **Signals-first** — All reactive state via Angular Signals, zero RxJS dependency
-- **Runtime language switching** — No page reload, no separate builds
-- **Namespace-scoped lazy loading** — Only load what you need, when you need it
-- **SSR + Hydration safe** — TransferState integration via `angular-translation-service/ssr`
-- **Type-safe** — Auto-generated interfaces from JSON files
-- **Crash-proof** — Recursive proxy prevents template errors during loading
-- **Tiny** — Zero dependencies beyond `@angular/core`, target < 4kb gzipped
-- **CLI tooling** — Type generation, validation, LLM-powered translation
-
-## Installation
-
-```bash
-# Core library
-bun add angular-translation-service
-
-# SSR support (included in the core package)
-# Import from 'angular-translation-service/ssr'
-
-# CLI tooling (optional)
-bun add -D @angular-translation-service/cli
-```
+| Package | npm | Description |
+|---------|-----|-------------|
+| [@angular-translation-service/core](./packages/core) | [![npm](https://img.shields.io/npm/v/@angular-translation-service/core)](https://www.npmjs.com/package/@angular-translation-service/core) | Signal-based i18n library for Angular |
+| [@angular-translation-service/cli](./packages/cli) | [![npm](https://img.shields.io/npm/v/@angular-translation-service/cli)](https://www.npmjs.com/package/@angular-translation-service/cli) | CLI for type generation, validation, and LLM translation |
 
 ## Quick Start
 
-### 1. Create translation files
-
-```
-src/i18n/
-├── en/
-│   └── common.json    # { "greeting": "Hello", "nav": { "home": "Home" } }
-└── pt-BR/
-    └── common.json    # { "greeting": "Olá", "nav": { "home": "Início" } }
+```bash
+npm install @angular-translation-service/core
+npm install -D @angular-translation-service/cli
 ```
 
-### 2. Configure the provider
+### 1. Configure
 
 ```typescript
-// app.config.ts
-import { provideTranslation, httpLoader } from 'angular-translation-service';
+import { provideTranslation, httpLoader } from '@angular-translation-service/core';
 
 export const appConfig = {
   providers: [
@@ -54,71 +27,60 @@ export const appConfig = {
       defaultLang: 'en',
       supportedLangs: ['en', 'pt-BR'],
       coreNamespaces: ['common'],
-      loader: httpLoader({ prefix: '/i18n' }),
+      loader: httpLoader('/i18n'),
     }),
   ],
 };
 ```
 
-### 3. Use in components
+### 2. Use in Templates
 
 ```typescript
-import { TranslationService, TranslatePipe } from 'angular-translation-service';
+import { TranslationService } from '@angular-translation-service/core';
 
 @Component({
   template: `
-    <h1>{{ i18n.translate('common:greeting')() }}</h1>
-    <p>{{ 'common:nav.home' | translate }}</p>
+    @let t = common();
+    @if (t) {
+      <h1>{{ t.nav.home }}</h1>
+    }
   `,
-  imports: [TranslatePipe],
 })
-export class AppComponent {
-  i18n = inject(TranslationService);
+export class MyComponent {
+  private readonly i18n = inject(TranslationService);
+  protected readonly common = this.i18n.select('common');
 }
 ```
 
-### 4. SSR Support
+### 3. SSR Support
 
 ```typescript
 // app.config.server.ts
-import { provideTranslationSSR } from 'angular-translation-service/ssr';
+import { provideTranslationSSR } from '@angular-translation-service/core/ssr';
 
 const serverConfig = {
   providers: [
     provideTranslationSSR({
-      langFromRequest: (req) => {
-        const accept = (req as Request).headers.get('accept-language') ?? 'en';
-        return accept.split(',')[0].split('-')[0];
-      },
+      resolveLanguage: (req) => req.headers['accept-language']?.split(',')[0] ?? 'en',
     }),
   ],
 };
 ```
 
-## Packages
-
-| Package | npm | Description |
-| ------- | --- | ----------- |
-| Core + SSR | `angular-translation-service` | Angular runtime library with SSR secondary entry point |
-| CLI | `@angular-translation-service/cli` | CLI tooling (type gen, validation, LLM translation) |
-
-## CLI Commands
+### 4. CLI Tools
 
 ```bash
-bunx ats generate   # Generate TypeScript types from JSON translation files
-bunx ats validate   # Validate translation files for missing/extra keys
-bunx ats check      # Check code for missing/unused translation keys
-bunx ats clean      # Remove orphaned keys from target languages
-bunx ats scan       # Scan templates for hardcoded strings
-bunx ats translate  # LLM-powered translation
+npx ats generate    # Generate TypeScript types from JSON
+npx ats check       # Find missing/unused keys
+npx ats validate    # Detect structural issues
+npx ats translate   # Auto-translate with LLM
+npx ats editor      # Launch visual editor
 ```
 
-## Angular Compatibility
+## Documentation
 
-| Version | Angular |
-| ------- | ------- |
-| 0.x | 19, 20, 21 |
+Full documentation: [angular-translation-service.pages.dev](https://igorls.github.io/angular-translation-service/)
 
 ## License
 
-MIT
+MIT © [Igor LS](https://github.com/igorls)

@@ -2,7 +2,7 @@ import {
     EnvironmentProviders,
     makeEnvironmentProviders,
 } from '@angular/core';
-import { CURRENT_LANGUAGE } from 'angular-translation-service';
+import { CURRENT_LANGUAGE } from '@angular-translation-service/core';
 
 export interface TranslationSSRConfig {
     /** Extract language from the incoming HTTP request */
@@ -26,7 +26,7 @@ export interface TranslationSSRConfig {
  * @example
  * ```ts
  * // app.config.server.ts
- * import { provideTranslationSSR } from 'angular-translation-service/ssr';
+ * import { provideTranslationSSR } from '@angular-translation-service/core/ssr';
  *
  * const serverConfig: ApplicationConfig = {
  *   providers: [

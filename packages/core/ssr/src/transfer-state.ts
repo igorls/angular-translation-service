@@ -1,4 +1,4 @@
-import { TranslationService } from 'angular-translation-service';
+import { TranslationService } from '@angular-translation-service/core';
 
 /**
  * Payload serialized into Angular's TransferState.

@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { TranslationService } from 'angular-translation-service';
+import { TranslationService } from '@angular-translation-service/core';
 
 @Component({
   selector: 'docs-header',

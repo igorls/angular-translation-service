@@ -5,7 +5,7 @@
     "subtitle": "A signal-based translation library with lazy namespace loading, recursive proxy for crash-free templates, and LLM-powered CLI tooling.",
     "cta_primary": "Get Started",
     "cta_secondary": "View on GitHub",
-    "install": "bun add angular-translation-service"
+    "install": "bun add @angular-translation-service/core"
   },
   "features": {
     "title": "Built for Modern Angular",
@@ -43,5 +43,12 @@
     "step1_title": "1. Install",
     "step2_title": "2. Configure",
     "step3_title": "3. Use"
+  },
+  "agent_skill": {
+    "title": "Vibe Code your i18n",
+    "description": "Install the Agent Skill to teach your AI coding assistant how to use the library, run the scanner, and internationalize your app — works with Claude Code, Cursor, Windsurf, Copilot, and 30+ agents.",
+    "install_label": "Install the skill",
+    "manual_label": "Or copy the SKILL.md manually from the",
+    "repo_link": "repository"
   }
 }

@@ -43,5 +43,12 @@
     "step1_title": "1. インストール",
     "step2_title": "2. 設定",
     "step3_title": "3. 使用"
+  },
+  "agent_skill": {
+    "title": "i18nのVibe Code化",
+    "description": "Agent Skillをインストールして、AIコーディングアシスタントにライブラリの使い方、スキャナーの実行方法、アプリの国際化（i18n）の手順を教えましょう。Claude Code、Cursor、Windsurf、Copilotなど、30種類以上のエージェントで動作します。",
+    "install_label": "スキルをインストール",
+    "manual_label": "または、以下からSKILL.mdを手動でコピーしてください：",
+    "repo_link": "リポジトリ"
   }
 }

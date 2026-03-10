@@ -1,22 +1,21 @@
+@let t = $any(gs());
+
 <div class="container page">
-  <h1 class="gradient-text">Getting Started</h1>
-  <p class="page-subtitle">Set up angular-translation-service in your Angular v19+ project in 3 minutes.</p>
+  @if (t) {
+  <h1 class="gradient-text" [innerHTML]="t.title"></h1>
+  <p class="page-subtitle" [innerHTML]="t.subtitle"></p>
 
   <section class="step">
-    <h2>1. Install</h2>
-    <div class="code-block">
-      <div class="code-header">
-        <span class="code-lang">terminal</span>
-      </div>
-      <pre>bun add angular-translation-service</pre>
-    </div>
+    <h2 [innerHTML]="t.step1_title"></h2>
+    <pm-tabs
+      command="install @angular-translation-service/core"
+      bunCommand="bun add @angular-translation-service/core"
+    />
   </section>
 
   <section class="step">
-    <h2>2. Create Translation Files</h2>
-    <p>Create JSON files in your project's <code>public/</code> directory.
-      Angular serves files from <code>public/</code> at the root URL, so <code>public/i18n/en/common.json</code> is available at <code>/i18n/en/common.json</code>.
-      The loader uses the pattern <code>basePath/lang/namespace.json</code>:</p>
+    <h2 [innerHTML]="t.step2_title"></h2>
+    <p [innerHTML]="t.step2_desc"></p>
     <div class="code-block">
       <div class="code-header">
         <span class="code-lang">public/i18n/en/common.json</span>
@@ -32,12 +31,12 @@
   </section>
 
   <section class="step">
-    <h2>3. Configure the Provider</h2>
+    <h2 [innerHTML]="t.step3_title"></h2>
     <div class="code-block">
       <div class="code-header">
         <span class="code-lang">app.config.ts</span>
       </div>
-      <pre><span class="kw">import</span> {{ '{' }} <span class="fn">provideTranslation</span>, <span class="fn">httpLoader</span> {{ '}' }} <span class="kw">from</span> <span class="str">'angular-translation-service'</span>;
+      <pre><span class="kw">import</span> {{ '{' }} <span class="fn">provideTranslation</span>, <span class="fn">httpLoader</span> {{ '}' }} <span class="kw">from</span> <span class="str">'@angular-translation-service/core'</span>;
 
 <span class="kw">export const</span> appConfig = {{ '{' }}
   providers: [
@@ -53,13 +52,13 @@
   </section>
 
   <section class="step">
-    <h2>4. Use in Components</h2>
-    <p>Use <code>select()</code> to get a namespace signal. The <code>&#64;if</code> guard handles the loading state — while the namespace loads, the recursive proxy prevents template crashes.</p>
+    <h2 [innerHTML]="t.step4_title"></h2>
+    <p [innerHTML]="t.step4_desc"></p>
     <div class="code-block">
       <div class="code-header">
         <span class="code-lang">my-component.ts</span>
       </div>
-      <pre><span class="kw">import</span> {{ '{' }} <span class="type">TranslationService</span> {{ '}' }} <span class="kw">from</span> <span class="str">'angular-translation-service'</span>;
+      <pre><span class="kw">import</span> {{ '{' }} <span class="type">TranslationService</span> {{ '}' }} <span class="kw">from</span> <span class="str">'@angular-translation-service/core'</span>;
 
 &#64;Component({{ '{' }}
   template: <span class="str">`
@@ -77,13 +76,13 @@
   </section>
 
   <section class="step">
-    <h2>5. Alternative: Use the Pipe</h2>
-    <p>For simpler cases, use <code>TranslatePipe</code> instead of <code>select()</code>:</p>
+    <h2 [innerHTML]="t.step5_title"></h2>
+    <p [innerHTML]="t.step5_desc"></p>
     <div class="code-block">
       <div class="code-header">
         <span class="code-lang">my-component.ts</span>
       </div>
-      <pre><span class="kw">import</span> {{ '{' }} <span class="type">TranslatePipe</span> {{ '}' }} <span class="kw">from</span> <span class="str">'angular-translation-service'</span>;
+      <pre><span class="kw">import</span> {{ '{' }} <span class="type">TranslatePipe</span> {{ '}' }} <span class="kw">from</span> <span class="str">'@angular-translation-service/core'</span>;
 
 &#64;Component({{ '{' }}
   <span class="type">imports</span>: [<span class="type">TranslatePipe</span>],
@@ -96,10 +95,11 @@
   </section>
 
   <section class="step next-steps">
-    <h2>What's Next?</h2>
+    <h2>{{ t.whats_next }}</h2>
     <div class="next-links">
-      <a routerLink="/api" class="btn btn-primary">API Reference →</a>
-      <a href="https://github.com/igorls/angular-translation-service" target="_blank" class="btn btn-secondary">View Source on GitHub ↗</a>
+      <a routerLink="/api" class="btn btn-primary">{{ t.btn_api_reference }}</a>
+      <a href="https://github.com/igorls/angular-translation-service" target="_blank" class="btn btn-secondary">{{ t.btn_view_source }}</a>
     </div>
   </section>
+  }
 </div>

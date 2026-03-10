@@ -1,13 +1,13 @@
-#!/usr/bin/env bun
+#!/usr/bin/env node
 /**
  * angular-translation-service CLI
  *
  * Usage:
- *   bunx angular-translation-service generate    # Generate TS types from JSON
- *   bunx angular-translation-service check       # Find missing/unused keys
- *   bunx angular-translation-service validate    # Detect duplicates/orphans
- *   bunx angular-translation-service translate   # LLM batch translation via Ollama
- *   bunx angular-translation-service clean       # Remove orphaned keys
+ *   npx ats generate    # Generate TS types from JSON
+ *   npx ats check       # Find missing/unused keys
+ *   npx ats validate    # Detect duplicates/orphans
+ *   npx ats translate   # LLM batch translation via Ollama
+ *   npx ats clean       # Remove orphaned keys
  */
 
 import { program } from 'commander';
@@ -15,7 +15,7 @@ import { program } from 'commander';
 program
     .name('ats')
     .description('CLI tooling for angular-translation-service')
-    .version('0.0.1');
+    .version('0.2.0');
 
 program
     .command('generate')
@@ -91,9 +91,9 @@ program
     .description('Launch the translation editor in your browser')
     .option('-i, --input <dir>', 'i18n source directory (auto-detected if omitted)')
     .option('-s, --src <dir>', 'Source code directory for usage scanning', 'src')
-    .option('-p, --port <port>', 'Port to serve the editor on', '4500')
+    .option('-p, --port <port>', 'Port to serve the editor on', '4800')
     .action(async (options) => {
-        const { startEditor } = await import('./commands/editor-server');
+        const { startEditor } = await import('./commands/editor');
         await startEditor(options);
     });
 

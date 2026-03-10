@@ -1,0 +1,19 @@
+<div class="pm-tabs">
+  <div class="tabs-bar">
+    <button
+      [class.active]="active === 'npm'"
+      (click)="active = 'npm'"
+    >npm</button>
+    <button
+      [class.active]="active === 'pnpm'"
+      (click)="active = 'pnpm'"
+    >pnpm</button>
+    <button
+      [class.active]="active === 'bun'"
+      (click)="active = 'bun'"
+    >bun</button>
+  </div>
+  <div class="tab-content">
+    <pre>{{ activeCmd }}</pre>
+  </div>
+</div>

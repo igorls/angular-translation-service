@@ -1,0 +1,71 @@
+{
+  "title": "Herramientas CLI",
+  "subtitle": "Utilidades de línea de comandos para gestionar, validar y traducir automáticamente tus archivos i18n.",
+  "installation": {
+    "title": "Instalación",
+    "desc": "Añade la CLI como una dependencia de desarrollo para usar el comando corto <code>npx ats</code>, igual que <code>npx ng</code> con Angular CLI.",
+    "run_desc": "Luego ejecuta cualquier comando con <code>npx ats &lt;command&gt;</code>, <code>pnpx ats &lt;command&gt;</code> o <code>bunx ats &lt;command&gt;</code>. Instálalo globalmente con <code>npm install -g</code> para usar el comando <code>ats</code> directamente en todas partes."
+  },
+  "th_option": "Opción",
+  "th_default": "Predeterminado",
+  "th_description": "Descripción",
+  "generate": {
+    "desc": "Genera interfaces de TypeScript a partir de tus archivos de traducción JSON, proporcionando seguridad de tipos en tiempo de compilación para las claves de traducción.",
+    "input_desc": "Directorio fuente que contiene los archivos de espacio de nombres JSON",
+    "output_desc": "Ruta del archivo TypeScript de salida",
+    "check_desc": "Modo CI: termina con el código 1 si los tipos no están sincronizados",
+    "generated_output": "Salida generada"
+  },
+  "check": {
+    "desc": "Escanea tu código fuente (archivos <code>.ts</code> y <code>.html</code>) en busca del uso de claves de traducción y realiza referencias cruzadas con los archivos JSON para detectar claves faltantes o no utilizadas.",
+    "i18n_desc": "Directorio de espacios de nombres JSON (idioma predeterminado)",
+    "src_desc": "Directorio fuente para escanear el uso de claves",
+    "ns_desc": "Limitar la verificación a un espacio de nombres específico",
+    "detected_patterns": "Patrones detectados",
+    "pattern_translate": "<code>translate('ns:key')</code> — llamadas de traducción basadas en señales",
+    "pattern_instant": "<code>instant('ns:key')</code> — llamadas de traducción síncronas",
+    "pattern_select": "<code>select('ns')</code> — marca el espacio de nombres completo como utilizado",
+    "pattern_pipe": "<code>'ns:key' | translate</code> — uso del pipe de Angular en plantillas"
+  },
+  "validate": {
+    "desc": "Compara archivos de traducción en todos los idiomas para encontrar inconsistencias estructurales: claves faltantes, claves adicionales y valores vacíos.",
+    "input_desc": "Directorio raíz de i18n que contiene los subdirectorios de idiomas",
+    "example_output": "Ejemplo de salida"
+  },
+  "clean": {
+    "desc": "Elimina las claves huérfanas de los archivos de idioma de destino: claves que existen en una traducción pero que ya no existen en el idioma predeterminado.",
+    "input_desc": "Directorio raíz de i18n",
+    "dry_run_desc": "Muestra lo que se eliminaría sin modificar los archivos"
+  },
+  "translate": {
+    "desc": "Utiliza un LLM local (a través de Ollama) para traducir automáticamente las claves faltantes del idioma predeterminado a un idioma de destino. Admite traducción por lotes con respaldo por clave.",
+    "locale_desc": "Código del idioma de destino",
+    "ns_desc": "Limitar a un espacio de nombres específico",
+    "model_desc": "Modelo de Ollama a utilizar",
+    "host_desc": "Dirección del servidor de Ollama",
+    "auto_accept_desc": "Omitir confirmación interactiva, aceptar todas las traducciones",
+    "features": "Características",
+    "feature_batch": "Traducción por lotes (35 entradas por llamada al LLM para un contexto óptimo)",
+    "feature_fallback": "Respaldo automático por clave cuando falla el análisis por lotes",
+    "feature_placeholders": "Preserva los marcadores de posición de interpolación (<code>{{name}}</code>, <code>{count}</code>)",
+    "feature_codefence": "Maneja respuestas JSON con bloques de código del LLM"
+  },
+  "editor": {
+    "desc": "Inicia una interfaz web de edición de traducciones con todas las funciones en su navegador. Incluye un editor de claves lado a lado, traducción automática impulsada por LLM a través de Ollama, seguimiento del uso del código fuente por clave, barras de progreso y soporte para agregar/eliminar claves.",
+    "input_desc": "Directorio fuente de i18n (se detecta automáticamente desde angular.json o por convención)",
+    "src_desc": "Directorio del código fuente para escanear el uso de claves",
+    "port_desc": "Puerto en el que servir el editor",
+    "features": "Funcionalidades",
+    "feature_picker": "Selector de idioma de origen y destino con edición lado a lado",
+    "feature_llm": "Traducción LLM en tiempo real mediante Ollama con streaming SSE",
+    "feature_badges": "Insignias de uso en el código fuente por clave (muestra dónde se referencia cada clave)",
+    "feature_progress": "Seguimiento del progreso de traducción por idioma y espacio de nombres",
+    "feature_crud": "Agregar, eliminar y buscar claves en todos los espacios de nombres",
+    "feature_validation": "Validación estructural directamente en la interfaz de usuario",
+    "feature_autodiscovery": "Detección automática del directorio i18n desde angular.json o convenciones comunes"
+  },
+  "ci": {
+    "title": "Integración CI",
+    "desc": "Añada comprobaciones de traducción a su pipeline de CI para detectar problemas a tiempo."
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "title": "Erste Schritte",
+  "subtitle": "Richten Sie @angular-translation-service/core in 3 Minuten in Ihrem Angular v19+ Projekt ein.",
+  "step1_title": "1. Installieren",
+  "step2_title": "2. Übersetzungsdateien erstellen",
+  "step2_desc": "Erstellen Sie JSON-Dateien im <code>public/</code>-Verzeichnis Ihres Projekts. Angular stellt Dateien aus <code>public/</code> unter der Root-URL bereit, daher ist <code>public/i18n/en/common.json</code> unter <code>/i18n/en/common.json</code> verfügbar. Der Loader verwendet das Muster <code>basePath/lang/namespace.json</code>:",
+  "step3_title": "3. Provider konfigurieren",
+  "step4_title": "4. In Komponenten verwenden",
+  "step4_desc": "Verwenden Sie <code>select()</code>, um ein Namespace-Signal zu erhalten. Der <code>@if</code>-Guard übernimmt den Ladestatus – während der Namespace geladen wird, verhindert der rekursive Proxy Abstürze im Template.",
+  "step5_title": "5. Alternative: Die Pipe verwenden",
+  "step5_desc": "Für einfachere Fälle verwenden Sie <code>TranslatePipe</code> anstelle von <code>select()</code>:",
+  "whats_next": "Was kommt als Nächstes?",
+  "btn_api_reference": "API-Referenz →",
+  "btn_view_source": "Quellcode auf GitHub ansehen ↗"
+}

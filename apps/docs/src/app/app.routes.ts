@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { Routes } from '@angular/router';
-import { TranslationService } from 'angular-translation-service';
+import { TranslationService } from '@angular-translation-service/core';
 
 export const routes: Routes = [
     {

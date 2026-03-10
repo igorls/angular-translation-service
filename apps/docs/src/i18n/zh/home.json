@@ -43,5 +43,12 @@
     "step1_title": "1. 安装",
     "step2_title": "2. 配置",
     "step3_title": "3. 使用"
+  },
+  "agent_skill": {
+    "title": "为您的 i18n 进行 Vibe Code",
+    "description": "安装 Agent Skill，教会您的 AI 编程助手如何使用该库、运行扫描器并实现应用的国际化——适用于 Claude Code、Cursor、Windsurf、Copilot 以及 30 多种智能体。",
+    "install_label": "安装技能",
+    "manual_label": "或者从以下位置手动复制 SKILL.md：",
+    "repo_link": "仓库"
   }
 }

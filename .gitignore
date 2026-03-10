@@ -7,3 +7,4 @@ out-tsc/
 bun.lockb
 .env
 .env.*
+docs/

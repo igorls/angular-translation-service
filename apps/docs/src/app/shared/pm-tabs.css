@@ -1,0 +1,65 @@
+:host {
+  display: block;
+}
+
+.pm-tabs {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-bottom: var(--space-xl);
+}
+
+.tabs-bar {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--border-subtle);
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.tabs-bar button {
+  flex: 1;
+  padding: var(--space-sm) var(--space-md);
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+  position: relative;
+}
+
+.tabs-bar button:hover {
+  color: var(--text-primary);
+  background: rgba(139, 92, 246, 0.05);
+}
+
+.tabs-bar button.active {
+  color: var(--accent, #8b5cf6);
+  background: rgba(139, 92, 246, 0.08);
+}
+
+.tabs-bar button.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--accent, #8b5cf6);
+}
+
+.tab-content {
+  padding: var(--space-lg);
+}
+
+.tab-content pre {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  margin: 0;
+  white-space: pre;
+  color: var(--text-primary);
+}

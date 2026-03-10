@@ -1,0 +1,71 @@
+{
+  "title": "CLI-Tools",
+  "subtitle": "Befehlszeilen-Dienstprogramme zum Verwalten, Validieren und automatischen Übersetzen Ihrer i18n-Dateien.",
+  "installation": {
+    "title": "Installation",
+    "desc": "Fügen Sie die CLI als Dev-Abhängigkeit hinzu, um den kurzen Befehl <code>npx ats</code> zu verwenden – genau wie <code>npx ng</code> bei der Angular CLI.",
+    "run_desc": "Führen Sie dann jeden Befehl mit <code>npx ats &lt;command&gt;</code>, <code>pnpx ats &lt;command&gt;</code> oder <code>bunx ats &lt;command&gt;</code> aus. Installieren Sie es global mit <code>npm install -g</code>, um den einfachen <code>ats</code>-Befehl überall zu verwenden."
+  },
+  "th_option": "Option",
+  "th_default": "Standard",
+  "th_description": "Beschreibung",
+  "generate": {
+    "desc": "Generiert TypeScript-Interfaces aus Ihren JSON-Übersetzungsdateien und bietet so Typsicherheit zur Kompilierzeit für Übersetzungsschlüssel.",
+    "input_desc": "Quellverzeichnis mit JSON-Namensraumdateien",
+    "output_desc": "Ausgabepfad für die TypeScript-Datei",
+    "check_desc": "CI-Modus: beendet den Prozess mit Code 1, wenn die Typen nicht synchron sind",
+    "generated_output": "Generierte Ausgabe"
+  },
+  "check": {
+    "desc": "Durchsucht Ihren Quellcode (<code>.ts</code>- und <code>.html</code>-Dateien) nach der Verwendung von Übersetzungsschlüsseln und gleicht diese mit JSON-Dateien ab, um fehlende oder ungenutzte Schlüssel zu erkennen.",
+    "i18n_desc": "JSON-Namensraumverzeichnis (Standardsprache)",
+    "src_desc": "Quellverzeichnis, das nach Schlüsselverwendung durchsucht werden soll",
+    "ns_desc": "Überprüfung auf einen bestimmten Namensraum beschränken",
+    "detected_patterns": "Erkannte Muster",
+    "pattern_translate": "<code>translate('ns:key')</code> — signalbasierte Übersetzungsaufrufe",
+    "pattern_instant": "<code>instant('ns:key')</code> — synchrone Übersetzungsaufrufe",
+    "pattern_select": "<code>select('ns')</code> — markiert den gesamten Namespace als verwendet",
+    "pattern_pipe": "<code>'ns:key' | translate</code> — Verwendung des Angular-Pipes in Templates"
+  },
+  "validate": {
+    "desc": "Vergleicht Übersetzungsdateien über alle Sprachen hinweg, um strukturelle Inkonsistenzen zu finden: fehlende Schlüssel, zusätzliche Schlüssel und leere Werte.",
+    "input_desc": "I18n-Stammverzeichnis, das die Sprach-Unterverzeichnisse enthält",
+    "example_output": "Beispielausgabe"
+  },
+  "clean": {
+    "desc": "Entfernt verwaiste Schlüssel aus Zielsprachdateien — Schlüssel, die in einer Übersetzung existieren, aber nicht mehr in der Standardsprache vorhanden sind.",
+    "input_desc": "I18n-Stammverzeichnis",
+    "dry_run_desc": "Zeigt an, was entfernt würde, ohne Dateien zu ändern"
+  },
+  "translate": {
+    "desc": "Verwendet ein lokales LLM (via Ollama), um fehlende Schlüssel automatisch von der Standardsprache in eine Zielsprache zu übersetzen. Unterstützt Batch-Übersetzung mit Fallback pro Schlüssel.",
+    "locale_desc": "Zielsprachencode",
+    "ns_desc": "Auf einen bestimmten Namespace beschränken",
+    "model_desc": "Zu verwendendes Ollama-Modell",
+    "host_desc": "Ollama-Serveradresse",
+    "auto_accept_desc": "Interaktive Bestätigung überspringen, alle Übersetzungen akzeptieren",
+    "features": "Funktionen",
+    "feature_batch": "Batch-Übersetzung (35 Einträge pro LLM-Aufruf für optimalen Kontext)",
+    "feature_fallback": "Automatischer Fallback pro Schlüssel, wenn das Batch-Parsing fehlschlägt",
+    "feature_placeholders": "Bewahrt Interpolations-Platzhalter (<code>{{name}}</code>, <code>{count}</code>)",
+    "feature_codefence": "Verarbeitet Code-gekapselte JSON-Antworten vom LLM"
+  },
+  "editor": {
+    "desc": "Startet eine voll ausgestattete Übersetzungs-Editor-Web-UI in Ihrem Browser. Enthält einen Side-by-Side-Schlüssel-Editor, LLM-gestützte automatische Übersetzung via Ollama, Quellcode-Verfolgung pro Schlüssel, Fortschrittsbalken sowie Unterstützung zum Hinzufügen/Löschen von Schlüsseln.",
+    "input_desc": "i18n-Quellverzeichnis (wird automatisch aus angular.json oder nach Konvention erkannt)",
+    "src_desc": "Quellcode-Verzeichnis zum Scannen der Schlüsselverwendung",
+    "port_desc": "Port, auf dem der Editor bereitgestellt werden soll",
+    "features": "Funktionen",
+    "feature_picker": "Quell- und Zielsprachenauswahl mit Side-by-Side-Bearbeitung",
+    "feature_llm": "Echtzeit-LLM-Übersetzung via Ollama mit SSE-Streaming",
+    "feature_badges": "Badges für die Schlüsselverwendung im Quellcode (zeigt an, wo jeder Schlüssel referenziert wird)",
+    "feature_progress": "Verfolgung des Übersetzungsfortschritts pro Sprache und Namespace",
+    "feature_crud": "Schlüssel über alle Namespaces hinweg hinzufügen, löschen und suchen",
+    "feature_validation": "Strukturelle Validierung direkt in der Benutzeroberfläche",
+    "feature_autodiscovery": "Automatische Erkennung des i18n-Verzeichnisses aus angular.json oder gängigen Konventionen"
+  },
+  "ci": {
+    "title": "CI-Integration",
+    "desc": "Fügen Sie Ihrer CI-Pipeline Übersetzungsprüfungen hinzu, um Probleme frühzeitig zu erkennen."
+  }
+}

@@ -1,12 +1,12 @@
 {
-  "name": "angular-translation-service",
-  "version": "0.1.0",
+  "name": "@angular-translation-service/core",
+  "version": "0.3.0",
   "description": "Signal-based Angular i18n library with runtime language switching and SSR hydration",
   "author": "Igor LS",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/igorls/angular-translation-service.git",
+    "url": "git+https://github.com/igorls/angular-translation-service.git",
     "directory": "packages/core"
   },
   "homepage": "https://github.com/igorls/angular-translation-service#readme",

@@ -1,15 +1,18 @@
+@let t = $any(api());
+
+@if (t) {
 <div class="container page">
-  <h1 class="gradient-text">API Reference</h1>
-  <p class="page-subtitle">Complete API documentation for angular-translation-service.</p>
+  <h1 class="gradient-text">{{ t.title }}</h1>
+  <p class="page-subtitle" [innerHTML]="t.subtitle"></p>
 
   <!-- TranslationService -->
   <section class="api-section" id="translation-service">
-    <h2>TranslationService</h2>
-    <p class="api-description">The core service providing reactive i18n for Angular applications. Inject via Angular DI.</p>
+    <h2>{{ t.translation_service.title }}</h2>
+    <p class="api-description" [innerHTML]="t.translation_service.desc"></p>
 
     <div class="api-method" id="select">
       <h3><code>select&lt;K extends string&gt;(scope: K): Signal&lt;Record&lt;string, unknown&gt; | undefined&gt;</code></h3>
-      <p>Returns a scope signal for template access. Automatically triggers lazy loading for the namespace. Data is <code>undefined</code> until the namespace loads, then returns a proxy-wrapped dictionary for safe deep property access.</p>
+      <p [innerHTML]="t.translation_service.select_desc"></p>
       <div class="code-block">
         <pre><span class="kw">protected readonly</span> common = <span class="kw">this</span>.i18n.<span class="fn">select</span>(<span class="str">'common'</span>);
 <span class="cmt">// template: &#64;let t = common(); &#64;if (t) {{ '{' }} {{ '{{' }} t.nav.title {{ '}}' }} {{ '}' }}</span></pre>
@@ -18,7 +21,7 @@
 
     <div class="api-method" id="translate">
       <h3><code>translate(key: string, params?: Record&lt;string, string | number&gt;): Signal&lt;string&gt;</code></h3>
-      <p>Returns a cached signal for a single translation key. Automatically triggers namespace loading. Key format: <code>namespace:dotted.path</code>.</p>
+      <p [innerHTML]="t.translation_service.translate_desc"></p>
       <div class="code-block">
         <pre><span class="kw">protected readonly</span> title = <span class="kw">this</span>.i18n.<span class="fn">translate</span>(<span class="str">'common:nav.title'</span>);
 <span class="kw">protected readonly</span> greeting = <span class="kw">this</span>.i18n.<span class="fn">translate</span>(<span class="str">'common:greeting'</span>, {{ '{' }} name: <span class="str">'Igor'</span> {{ '}' }});</pre>
@@ -27,27 +30,27 @@
 
     <div class="api-method" id="instant">
       <h3><code>instant(key: string, params?: Record&lt;string, string | number&gt;): string</code></h3>
-      <p>Returns the translation synchronously. Non-reactive and does <strong>not</strong> trigger lazy loading — use only for imperative code (toasts, logs) when the namespace is already loaded.</p>
+      <p [innerHTML]="t.translation_service.instant_desc"></p>
     </div>
 
     <div class="api-method" id="setLang">
       <h3><code>setLang(lang: string): Promise&lt;void&gt;</code></h3>
-      <p>Switches the active language. Reloads all previously requested namespaces for the new language and persists the preference to <code>localStorage</code> (if <code>storageKey</code> is configured). Logs a warning and returns early if the language is not in <code>supportedLangs</code>.</p>
+      <p [innerHTML]="t.translation_service.setlang_desc"></p>
     </div>
 
     <div class="api-method" id="ensureNamespaces">
       <h3><code>ensureNamespaces(ns: string[]): Promise&lt;void&gt;</code></h3>
-      <p>Pre-loads additional namespaces. Deduplicates concurrent loads automatically. Useful for route guards or resolvers.</p>
+      <p [innerHTML]="t.translation_service.ensure_desc"></p>
     </div>
 
     <div class="api-method" id="lang">
       <h3><code>lang: WritableSignal&lt;string&gt;</code></h3>
-      <p>The current language signal. Read in templates to show the active language.</p>
+      <p [innerHTML]="t.translation_service.lang_desc"></p>
     </div>
 
     <div class="api-method" id="supportedLangs">
       <h3><code>supportedLangs: readonly string[]</code></h3>
-      <p>Read-only array of all supported language codes from the configuration. Useful for building language switchers.</p>
+      <p [innerHTML]="t.translation_service.supported_desc"></p>
       <div class="code-block">
         <pre><span class="cmt">// Build a language switcher</span>
 <span class="kw">protected readonly</span> languages = <span class="kw">this</span>.i18n.supportedLangs;
@@ -57,19 +60,19 @@
 
     <div class="api-method" id="ready">
       <h3><code>ready: Signal&lt;boolean&gt;</code></h3>
-      <p>True when all <code>coreNamespaces</code> have been loaded for the current language.</p>
+      <p [innerHTML]="t.translation_service.ready_desc"></p>
     </div>
   </section>
 
   <!-- TranslatePipe -->
   <section class="api-section" id="translate-pipe">
-    <h2>TranslatePipe</h2>
-    <p class="api-description">Template sugar for <code>TranslationService.translate()</code>. The pipe caches its signal internally to avoid recreation on every change detection cycle.</p>
+    <h2>{{ t.translate_pipe.title }}</h2>
+    <p class="api-description" [innerHTML]="t.translate_pipe.desc"></p>
     <div class="api-method">
-      <h3>Setup</h3>
-      <p>Import <code>TranslatePipe</code> in your component's <code>imports</code> array:</p>
+      <h3>{{ t.translate_pipe.setup }}</h3>
+      <p [innerHTML]="t.translate_pipe.setup_desc"></p>
       <div class="code-block">
-        <pre><span class="kw">import</span> {{ '{' }} <span class="type">TranslatePipe</span> {{ '}' }} <span class="kw">from</span> <span class="str">'angular-translation-service'</span>;
+        <pre><span class="kw">import</span> {{ '{' }} <span class="type">TranslatePipe</span> {{ '}' }} <span class="kw">from</span> <span class="str">'@angular-translation-service/core'</span>;
 
 &#64;Component({{ '{' }}
   <span class="type">imports</span>: [<span class="type">TranslatePipe</span>],
@@ -78,7 +81,7 @@
       </div>
     </div>
     <div class="api-method">
-      <h3>Usage</h3>
+      <h3>{{ t.translate_pipe.usage }}</h3>
       <div class="code-block">
         <pre><span class="cmt">&lt;!-- Basic --&gt;</span>
 &lt;h1&gt;{{ '{{' }} <span class="str">'common:nav.title'</span> | <span class="fn">translate</span> {{ '}}' }}&lt;/h1&gt;
@@ -91,58 +94,58 @@
 
   <!-- provideTranslation -->
   <section class="api-section" id="provide-translation">
-    <h2>provideTranslation()</h2>
-    <p class="api-description">Configures the translation service at the application level. Uses <code>APP_INITIALIZER</code> to preload core namespaces before the app renders.</p>
+    <h2>{{ t.provide_translation.title }}</h2>
+    <p class="api-description" [innerHTML]="t.provide_translation.desc"></p>
 
     <div class="config-table">
       <table>
         <thead>
           <tr>
-            <th>Option</th>
-            <th>Type</th>
-            <th>Description</th>
+            <th>{{ t.provide_translation.th_option }}</th>
+            <th>{{ t.provide_translation.th_type }}</th>
+            <th>{{ t.provide_translation.th_description }}</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td><code>defaultLang</code></td>
             <td><code>string</code></td>
-            <td>Default language code (e.g., <code>'en'</code>)</td>
+            <td [innerHTML]="t.provide_translation.default_lang"></td>
           </tr>
           <tr>
             <td><code>supportedLangs</code></td>
             <td><code>string[]</code></td>
-            <td>All supported language codes</td>
+            <td>{{ t.provide_translation.supported_langs }}</td>
           </tr>
           <tr>
             <td><code>coreNamespaces</code></td>
             <td><code>string[]</code></td>
-            <td>Namespaces preloaded via <code>APP_INITIALIZER</code> before the app renders</td>
+            <td [innerHTML]="t.provide_translation.core_ns"></td>
           </tr>
           <tr>
             <td><code>loader</code></td>
             <td><code>TranslationLoader</code></td>
-            <td>Function that loads translation files. Use <code>httpLoader()</code> or <code>importLoader()</code></td>
+            <td [innerHTML]="t.provide_translation.loader"></td>
           </tr>
           <tr>
             <td><code>detectLanguage</code></td>
             <td><code>boolean</code></td>
-            <td>Enable browser language detection via <code>navigator.language</code></td>
+            <td [innerHTML]="t.provide_translation.detect_lang"></td>
           </tr>
           <tr>
             <td><code>storageKey</code></td>
             <td><code>string</code></td>
-            <td><code>localStorage</code> key for persisting language preference across sessions</td>
+            <td [innerHTML]="t.provide_translation.storage_key"></td>
           </tr>
           <tr>
             <td><code>namespaceSeparator</code></td>
             <td><code>string</code></td>
-            <td>Separator between namespace and key path (default: <code>':'</code>)</td>
+            <td [innerHTML]="t.provide_translation.ns_separator"></td>
           </tr>
           <tr>
             <td><code>fallbackChain</code></td>
             <td><code>Record&lt;string, string[]&gt;</code></td>
-            <td>Fallback language chains for regional locales</td>
+            <td>{{ t.provide_translation.fallback_chain }}</td>
           </tr>
         </tbody>
       </table>
@@ -151,11 +154,11 @@
 
   <!-- Loaders -->
   <section class="api-section" id="loaders">
-    <h2>Loaders</h2>
+    <h2>{{ t.loaders.title }}</h2>
 
     <div class="api-method" id="httpLoader">
       <h3><code>httpLoader(basePath: string): TranslationLoader</code></h3>
-      <p>Creates a <code>fetch</code>-based loader. Loads JSON from: <code>basePath/lang/namespace.json</code>. Place your JSON files in the Angular project's <code>public/</code> directory (files in <code>public/</code> are served at the root URL).</p>
+      <p [innerHTML]="t.loaders.http_desc"></p>
       <div class="code-block">
         <pre><span class="cmt">// Files at: public/i18n/en/common.json → served at /i18n/en/common.json</span>
 <span class="type">loader</span>: <span class="fn">httpLoader</span>(<span class="str">'/i18n'</span>)</pre>
@@ -164,7 +167,7 @@
 
     <div class="api-method" id="importLoader">
       <h3><code>importLoader(factory: (lang, ns) =&gt; Promise&lt;{{ '{' }} default: Record {{ '}' }}&gt;): TranslationLoader</code></h3>
-      <p>Creates a loader using dynamic imports. The factory callback must return a module with a <code>default</code> export containing the translation dictionary. The bundler can statically analyze import paths for tree-shaking and code splitting.</p>
+      <p [innerHTML]="t.loaders.import_desc"></p>
       <div class="code-block">
         <pre><span class="type">loader</span>: <span class="fn">importLoader</span>((lang, ns) =&gt;
   <span class="fn">import</span>(<span class="str">`./i18n/${{ '{' }}lang{{ '}' }}/${{ '{' }}ns{{ '}' }}.json`</span>)
@@ -175,53 +178,53 @@
 
   <!-- Injection Tokens -->
   <section class="api-section" id="injection-tokens">
-    <h2>Injection Tokens</h2>
+    <h2>{{ t.injection_tokens.title }}</h2>
 
     <div class="api-method" id="translation-config-token">
       <h3><code>TRANSLATION_CONFIG: InjectionToken&lt;TranslationConfig&gt;</code></h3>
-      <p>Injection token for the translation configuration. Automatically provided by <code>provideTranslation()</code>. Useful for custom providers that need access to the configuration.</p>
+      <p [innerHTML]="t.injection_tokens.config_desc"></p>
     </div>
 
     <div class="api-method" id="current-language-token">
       <h3><code>CURRENT_LANGUAGE: InjectionToken&lt;string&gt;</code></h3>
-      <p>Injection token for server-side language detection. Provided by <code>provideTranslationSSR()</code> on the server to inject the language from the HTTP request. On the client, language is resolved from <code>TransferState</code> or local detection.</p>
+      <p [innerHTML]="t.injection_tokens.current_lang_desc"></p>
     </div>
   </section>
 
   <!-- Recursive Proxy -->
   <section class="api-section" id="recursive-proxy">
-    <h2>createRecursiveProxy()</h2>
-    <p class="api-description">Creates a crash-proof proxy object that safely intercepts all property access. Used internally by <code>select()</code> to prevent template errors when namespaces are still loading. The proxy returns nested proxies for any property access, ensuring expressions like <code>t().nav.title</code> never throw — they render as empty strings instead.</p>
+    <h2>{{ t.recursive_proxy.title }}</h2>
+    <p class="api-description" [innerHTML]="t.recursive_proxy.desc"></p>
     <div class="api-method">
-      <h3>Behavior</h3>
+      <h3>{{ t.recursive_proxy.behavior }}</h3>
       <div class="config-table">
         <table>
           <thead>
             <tr>
-              <th>Access</th>
-              <th>Result</th>
+              <th>{{ t.recursive_proxy.th_access }}</th>
+              <th>{{ t.recursive_proxy.th_result }}</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td>String coercion / template interpolation</td>
-              <td>Returns the key path (e.g., <code>'common.nav.title'</code>)</td>
+              <td>{{ t.recursive_proxy.string_coercion }}</td>
+              <td [innerHTML]="t.recursive_proxy.string_coercion_result"></td>
             </tr>
             <tr>
-              <td>Property access</td>
-              <td>Returns another recursive proxy</td>
+              <td>{{ t.recursive_proxy.property_access }}</td>
+              <td>{{ t.recursive_proxy.property_access_result }}</td>
             </tr>
             <tr>
-              <td>JSON serialization</td>
-              <td>Returns <code>{{ '{}' }}</code></td>
+              <td>{{ t.recursive_proxy.json_serialization }}</td>
+              <td [innerHTML]="t.recursive_proxy.json_serialization_result"></td>
             </tr>
             <tr>
-              <td>Promise detection (<code>then</code>/<code>catch</code>)</td>
-              <td>Returns <code>undefined</code> (prevents async unwrapping)</td>
+              <td [innerHTML]="t.recursive_proxy.promise_detection"></td>
+              <td [innerHTML]="t.recursive_proxy.promise_detection_result"></td>
             </tr>
             <tr>
-              <td>Iteration (<code>&#64;for</code> loops)</td>
-              <td>Yields nothing (empty iterator)</td>
+              <td [innerHTML]="t.recursive_proxy.iteration"></td>
+              <td>{{ t.recursive_proxy.iteration_result }}</td>
             </tr>
           </tbody>
         </table>
@@ -231,8 +234,8 @@
 
   <!-- Fallback Chains -->
   <section class="api-section" id="fallback-chains">
-    <h2>Fallback Chains</h2>
-    <p class="api-description">Define fallback languages for regional locales. When loading translations, all languages in the chain are fetched in parallel and deep-merged — the most specific locale's keys overwrite fallback keys.</p>
+    <h2>{{ t.fallback_chains.title }}</h2>
+    <p class="api-description" [innerHTML]="t.fallback_chains.desc"></p>
     <div class="code-block">
       <pre><span class="fn">provideTranslation</span>({{ '{' }}
   <span class="type">defaultLang</span>: <span class="str">'en'</span>,
@@ -248,27 +251,27 @@
 
   <!-- Language Detection -->
   <section class="api-section" id="language-detection">
-    <h2>Language Detection</h2>
-    <p class="api-description">The initial language is resolved using the following priority chain (first match wins). Steps 1–2 always run; step 3 requires <code>detectLanguage: true</code>.</p>
+    <h2>{{ t.language_detection.title }}</h2>
+    <p class="api-description" [innerHTML]="t.language_detection.desc"></p>
     <ol class="detection-chain">
-      <li><strong>SSR token</strong> — Language injected via <code>CURRENT_LANGUAGE</code> on the server <em>(always checked)</em></li>
-      <li><strong>localStorage</strong> — Previously persisted preference <em>(always checked if <code>storageKey</code> is configured)</em></li>
-      <li><strong>Browser</strong> — <code>navigator.language</code> with base-language matching (e.g., browser <code>'pt'</code> matches config <code>'pt-BR'</code>) <em>(only when <code>detectLanguage: true</code>)</em></li>
-      <li><strong>Default</strong> — Falls back to <code>defaultLang</code></li>
+      <li [innerHTML]="t.language_detection.ssr_token"></li>
+      <li [innerHTML]="t.language_detection.local_storage"></li>
+      <li [innerHTML]="t.language_detection.browser"></li>
+      <li [innerHTML]="t.language_detection.default_lang"></li>
     </ol>
   </section>
 
   <!-- SSR -->
   <section class="api-section" id="ssr">
-    <h2>SSR &amp; Hydration</h2>
-    <p class="api-description">The <code>angular-translation-service/ssr</code> secondary entry point provides seamless server-side rendering with zero flash-of-untranslated-content (FOUC) and no hydration mismatch.</p>
+    <h2 [innerHTML]="t.ssr.title"></h2>
+    <p class="api-description" [innerHTML]="t.ssr.desc"></p>
 
     <div class="api-method" id="provideTranslationSSR">
       <h3><code>provideTranslationSSR(config: TranslationSSRConfig): EnvironmentProviders</code></h3>
-      <p>Add to your <strong>server</strong> application config. On the server, it provides <code>CURRENT_LANGUAGE</code> from the HTTP request and snapshots all loaded translations into <code>TransferState</code>. On the client, it hydrates translations synchronously — no HTTP requests needed for the initial render.</p>
+      <p [innerHTML]="t.ssr.provide_desc"></p>
       <div class="code-block">
         <pre><span class="cmt">// app.config.server.ts</span>
-<span class="kw">import</span> {{ '{' }} <span class="fn">provideTranslationSSR</span> {{ '}' }} <span class="kw">from</span> <span class="str">'angular-translation-service/ssr'</span>;
+<span class="kw">import</span> {{ '{' }} <span class="fn">provideTranslationSSR</span> {{ '}' }} <span class="kw">from</span> <span class="str">'@angular-translation-service/core/ssr'</span>;
 
 <span class="kw">export const</span> serverConfig = {{ '{' }}
   providers: [
@@ -284,27 +287,27 @@
     </div>
 
     <div class="api-method">
-      <h3>How it works</h3>
+      <h3>{{ t.ssr.how_it_works }}</h3>
       <div class="config-table">
         <table>
           <thead>
             <tr>
-              <th>Phase</th>
-              <th>What happens</th>
+              <th>{{ t.ssr.th_phase }}</th>
+              <th>{{ t.ssr.th_what_happens }}</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td>Server render</td>
-              <td><code>CURRENT_LANGUAGE</code> is set from the request, core namespaces load, then all loaded translations are serialized into <code>TransferState</code></td>
+              <td>{{ t.ssr.server_render }}</td>
+              <td [innerHTML]="t.ssr.server_render_desc"></td>
             </tr>
             <tr>
-              <td>Client hydration</td>
-              <td>Translations are restored from <code>TransferState</code> synchronously — no HTTP requests, no FOUC, no NG0501</td>
+              <td>{{ t.ssr.client_hydration }}</td>
+              <td [innerHTML]="t.ssr.client_hydration_desc"></td>
             </tr>
             <tr>
-              <td>After hydration</td>
-              <td><code>TransferState</code> entry is removed to free memory. Subsequent namespace loads use normal HTTP loading</td>
+              <td>{{ t.ssr.after_hydration }}</td>
+              <td [innerHTML]="t.ssr.after_hydration_desc"></td>
             </tr>
           </tbody>
         </table>
@@ -312,21 +315,21 @@
     </div>
 
     <div class="api-method">
-      <h3>TranslationSSRConfig</h3>
+      <h3>{{ t.ssr.config_title }}</h3>
       <div class="config-table">
         <table>
           <thead>
             <tr>
-              <th>Option</th>
-              <th>Type</th>
-              <th>Description</th>
+              <th>{{ t.provide_translation.th_option }}</th>
+              <th>{{ t.provide_translation.th_type }}</th>
+              <th>{{ t.provide_translation.th_description }}</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td><code>langFromRequest</code></td>
               <td><code>(req: unknown) =&gt; string</code></td>
-              <td>Extract the language from the incoming HTTP request</td>
+              <td>{{ t.ssr.config_lang_from_request }}</td>
             </tr>
           </tbody>
         </table>
@@ -336,35 +339,36 @@
 
   <!-- Error Behavior -->
   <section class="api-section" id="error-behavior">
-    <h2>Error Behavior</h2>
-    <p class="api-description">Angular Translation Service is designed to be crash-proof. Here's how errors are handled:</p>
+    <h2>{{ t.error_behavior.title }}</h2>
+    <p class="api-description" [innerHTML]="t.error_behavior.desc"></p>
     <div class="config-table">
       <table>
         <thead>
           <tr>
-            <th>Scenario</th>
-            <th>Behavior</th>
+            <th>{{ t.error_behavior.th_scenario }}</th>
+            <th>{{ t.error_behavior.th_behavior }}</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td>Namespace fails to load</td>
-            <td>Error logged to console. Template shows empty strings (via recursive proxy)</td>
+            <td>{{ t.error_behavior.ns_fail }}</td>
+            <td>{{ t.error_behavior.ns_fail_behavior }}</td>
           </tr>
           <tr>
-            <td>Missing translation key</td>
-            <td>Returns the raw key string (e.g., <code>'common:nav.missing'</code>)</td>
+            <td>{{ t.error_behavior.missing_key }}</td>
+            <td [innerHTML]="t.error_behavior.missing_key_behavior"></td>
           </tr>
           <tr>
-            <td><code>setLang()</code> with unsupported language</td>
-            <td>Logs a warning and returns early — no state change</td>
+            <td [innerHTML]="t.error_behavior.unsupported_lang"></td>
+            <td>{{ t.error_behavior.unsupported_lang_behavior }}</td>
           </tr>
           <tr>
-            <td>Accessing nested keys while loading</td>
-            <td>Recursive proxy returns empty strings, preventing template crashes</td>
+            <td>{{ t.error_behavior.nested_loading }}</td>
+            <td>{{ t.error_behavior.nested_loading_behavior }}</td>
           </tr>
         </tbody>
       </table>
     </div>
   </section>
 </div>
+}
