@@ -28,7 +28,6 @@ jobs:
           bun-version: latest
 
       - name: Install dependencies
-        working-directory: apps/docs
         run: bun install --frozen-lockfile
 
       - name: Build docs
