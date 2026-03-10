@@ -542,6 +542,63 @@ async function handleAPI(
             }, { headers: corsHeaders });
         }
 
+        // GET /api/scan — scan HTML templates for hardcoded strings
+        if (path === '/api/scan' && req.method === 'GET') {
+            const { extractHardcodedStrings, extractTranslatableAttributes, scoreCandidate } = await import('./scan');
+            const url = new URL(req.url);
+            const minScore = parseInt(url.searchParams.get('minScore') ?? '3', 10);
+
+            const htmlFiles = findFiles(srcDir, ['.html']);
+            const candidates: Array<{
+                text: string;
+                score: number;
+                reasons: string[];
+                file: string;
+                line: number;
+                element: string;
+            }> = [];
+
+            for (const filePath of htmlFiles) {
+                if (filePath.includes('.spec.') || filePath.includes('.test.')) continue;
+                const content = readFileSync(filePath, 'utf-8');
+                const relPath = relative(process.cwd(), filePath);
+
+                const textCandidates = extractHardcodedStrings(content, relPath);
+                const attrCandidates = extractTranslatableAttributes(content, relPath);
+                const all = [...textCandidates, ...attrCandidates];
+
+                for (const c of all) {
+                    if (c.score >= minScore) {
+                        candidates.push({
+                            text: c.text,
+                            score: c.score,
+                            reasons: c.reasons,
+                            file: c.file,
+                            line: c.line,
+                            element: c.element,
+                        });
+                    }
+                }
+            }
+
+            // Deduplicate
+            const deduped = new Map<string, typeof candidates[0]>();
+            for (const c of candidates) {
+                const key = `${c.file}:${c.line}:${c.text}`;
+                const existing = deduped.get(key);
+                if (!existing || c.score > existing.score) deduped.set(key, c);
+            }
+
+            const sorted = Array.from(deduped.values())
+                .sort((a, b) => b.score - a.score || a.file.localeCompare(b.file) || a.line - b.line);
+
+            return Response.json({
+                totalFiles: htmlFiles.length,
+                totalCandidates: sorted.length,
+                candidates: sorted,
+            }, { headers: corsHeaders });
+        }
+
         return Response.json({ error: 'Not found' }, { status: 404, headers: corsHeaders });
 
     } catch (err) {

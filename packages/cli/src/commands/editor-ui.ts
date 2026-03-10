@@ -688,6 +688,7 @@ main { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
 
 .toolbar-badge.danger { background: rgba(248, 113, 113, 0.2); color: var(--danger); }
 .toolbar-badge.success { background: rgba(52, 211, 153, 0.2); color: var(--success); }
+.toolbar-badge.info { background: rgba(96, 165, 250, 0.2); color: #60a5fa; }
 
 .toolbar-spacer { flex: 1; }
 
@@ -809,6 +810,89 @@ main { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
 .key-row:hover .btn-translate-key { opacity: 1; }
 .btn-translate-key:hover { color: var(--accent); background: var(--accent-dim); }
 .btn-translate-key.translating { opacity: 1; color: var(--warning); }
+
+/* Scan results */
+.scan-row {
+  display: grid;
+  grid-template-columns: 50px 1fr 80px 120px;
+  padding: 6px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.75rem;
+  align-items: center;
+  gap: 8px;
+}
+
+.scan-row:hover { background: rgba(139, 92, 246, 0.03); }
+
+.scan-score-bar {
+  display: flex;
+  gap: 1px;
+  align-items: center;
+}
+
+.scan-score-bar .filled {
+  width: 5px;
+  height: 12px;
+  border-radius: 1px;
+  background: var(--accent);
+}
+
+.scan-score-bar .empty {
+  width: 5px;
+  height: 12px;
+  border-radius: 1px;
+  background: var(--border);
+}
+
+.scan-text {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.scan-element {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--text-muted);
+}
+
+.scan-reasons {
+  display: flex;
+  gap: 3px;
+  flex-wrap: wrap;
+}
+
+.scan-reason-tag {
+  font-size: 0.58rem;
+  padding: 0 4px;
+  border-radius: 3px;
+  background: var(--bg-input);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.scan-file-header {
+  padding: 8px 16px 4px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--accent);
+  font-family: 'JetBrains Mono', monospace;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-sidebar);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.scan-file-count {
+  font-size: 0.62rem;
+  color: var(--text-muted);
+  font-weight: 400;
+}
 `;
 
 // ─────────────────────────────────────────────────────────────
@@ -883,6 +967,7 @@ const HTML_BODY = /* html */ `
       <div class="bottom-toolbar">
         <button id="btn-translate" class="toolbar-btn">🤖 Translate</button>
         <button id="btn-validate" class="toolbar-btn">⚡ Validate <span id="validate-badge" class="toolbar-badge"></span></button>
+        <button id="btn-scan" class="toolbar-btn">🔍 Scan <span id="scan-badge" class="toolbar-badge"></span></button>
         <span class="toolbar-spacer"></span>
         <span id="ollama-status" class="ollama-status"></span>
       </div>
@@ -934,7 +1019,8 @@ var ollamaModel = '';
 var ollamaHost = 'localhost:11434';
 var ollamaBatchSize = 20;
 var validationIssues = [];
-var activePanel = null;  // 'translate' | 'validate' | null
+var activePanel = null;  // 'translate' | 'validate' | 'scan' | null
+var scanResults = null;
 
 // Init
 async function init() {
@@ -1535,6 +1621,10 @@ function setupEventListeners() {
     // Bottom toolbar panels
     document.getElementById('btn-translate').addEventListener('click', function() { togglePanel('translate'); });
     document.getElementById('btn-validate').addEventListener('click', function() { togglePanel('validate'); });
+    document.getElementById('btn-scan').addEventListener('click', function() {
+        if (!scanResults) loadScan().then(function() { if (activePanel === 'scan') renderScanPanel(); });
+        togglePanel('scan');
+    });
 }
 
 // Add Key Modal
@@ -1652,15 +1742,18 @@ function togglePanel(panelName) {
         drawer.classList.remove('open');
         document.getElementById('btn-translate').classList.remove('active');
         document.getElementById('btn-validate').classList.remove('active');
+        document.getElementById('btn-scan').classList.remove('active');
         return;
     }
     activePanel = panelName;
     drawer.classList.add('open');
     document.getElementById('btn-translate').classList.toggle('active', panelName === 'translate');
     document.getElementById('btn-validate').classList.toggle('active', panelName === 'validate');
+    document.getElementById('btn-scan').classList.toggle('active', panelName === 'scan');
 
     if (panelName === 'translate') renderTranslatePanel();
     if (panelName === 'validate') renderValidatePanel();
+    if (panelName === 'scan') renderScanPanel();
 }
 
 function renderTranslatePanel() {
@@ -1960,6 +2053,96 @@ function setTargetLang(lang) {
     renderSidebar();
     renderEditor();
     savePrefs();
+}
+
+// Scan panel
+async function loadScan() {
+    try {
+        var badge = document.getElementById('scan-badge');
+        badge.textContent = '…';
+        badge.className = 'toolbar-badge info';
+        var res = await fetch('/api/scan?minScore=3');
+        scanResults = await res.json();
+        if (scanResults.totalCandidates > 0) {
+            badge.textContent = scanResults.totalCandidates;
+            badge.className = 'toolbar-badge danger';
+        } else {
+            badge.textContent = '✓';
+            badge.className = 'toolbar-badge success';
+        }
+    } catch(e) {
+        document.getElementById('scan-badge').textContent = '!';
+    }
+}
+
+function renderScanPanel() {
+    var drawer = document.getElementById('panel-drawer');
+    var count = scanResults ? scanResults.totalCandidates : 0;
+    var html = '<div class="panel-header">' +
+        '<h4>🔍 Hardcoded String Scanner (' + count + ' candidates)</h4>' +
+        '<div class="panel-actions">' +
+        '<button class="btn btn-secondary" id="btn-refresh-scan" style="padding:4px 12px;font-size:0.75rem">↻ Rescan</button>' +
+        '<button class="btn-icon" id="btn-close-panel3" title="Close" style="width:24px;height:24px;font-size:0.8rem">✕</button>' +
+        '</div></div>';
+
+    if (!scanResults || scanResults.totalCandidates === 0) {
+        html += '<div style="padding:20px;text-align:center;color:var(--success)">✓ No hardcoded strings found — looking good!</div>';
+    } else {
+        // Group by file
+        var byFile = {};
+        for (var i = 0; i < scanResults.candidates.length; i++) {
+            var c = scanResults.candidates[i];
+            if (!byFile[c.file]) byFile[c.file] = [];
+            byFile[c.file].push(c);
+        }
+
+        for (var file in byFile) {
+            var items = byFile[file];
+            html += '<div class="scan-file-header">📄 ' + file + ' <span class="scan-file-count">(' + items.length + ')</span></div>';
+            for (var j = 0; j < items.length; j++) {
+                var item = items[j];
+                var scoreMax = 8;
+                var filled = Math.min(item.score, scoreMax);
+                var barHtml = '<div class="scan-score-bar">';
+                for (var k = 0; k < scoreMax; k++) {
+                    barHtml += '<div class="' + (k < filled ? 'filled' : 'empty') + '"></div>';
+                }
+                barHtml += '</div>';
+
+                var truncText = item.text.length > 55 ? item.text.substring(0, 52) + '...' : item.text;
+                var reasonsHtml = '';
+                for (var r = 0; r < item.reasons.length; r++) {
+                    reasonsHtml += '<span class="scan-reason-tag">' + item.reasons[r] + '</span>';
+                }
+
+                html += '<div class="scan-row">' +
+                    '<div>' + barHtml + '</div>' +
+                    '<div><div class="scan-text" title="' + escapeAttr(item.text) + '">' + escapeHtml(truncText) + '</div>' +
+                    '<div class="scan-reasons">' + reasonsHtml + '</div></div>' +
+                    '<div class="scan-element">&lt;' + item.element + '&gt; L' + item.line + '</div>' +
+                    '<div></div>' +
+                    '</div>';
+            }
+        }
+    }
+
+    drawer.innerHTML = html;
+
+    var btnRefresh = document.getElementById('btn-refresh-scan');
+    if (btnRefresh) btnRefresh.addEventListener('click', function() {
+        loadScan().then(function() { renderScanPanel(); });
+    });
+
+    var btnClose = document.getElementById('btn-close-panel3');
+    if (btnClose) btnClose.addEventListener('click', function() { togglePanel(activePanel); });
+}
+
+function escapeHtml(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function escapeAttr(s) {
+    return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
 // Boot

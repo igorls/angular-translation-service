@@ -1,6 +1,6 @@
 <div class="container page">
   <h1 class="gradient-text">Getting Started</h1>
-  <p class="page-subtitle">Set up angular-translation-service in your Angular project in 3 minutes.</p>
+  <p class="page-subtitle">Set up angular-translation-service in your Angular v19+ project in 3 minutes.</p>
 
   <section class="step">
     <h2>1. Install</h2>
@@ -14,7 +14,9 @@
 
   <section class="step">
     <h2>2. Create Translation Files</h2>
-    <p>Create JSON files in your project's <code>public/</code> directory. The loader fetches from  <code>basePath/lang/namespace.json</code>:</p>
+    <p>Create JSON files in your project's <code>public/</code> directory.
+      Angular serves files from <code>public/</code> at the root URL, so <code>public/i18n/en/common.json</code> is available at <code>/i18n/en/common.json</code>.
+      The loader uses the pattern <code>basePath/lang/namespace.json</code>:</p>
     <div class="code-block">
       <div class="code-header">
         <span class="code-lang">public/i18n/en/common.json</span>

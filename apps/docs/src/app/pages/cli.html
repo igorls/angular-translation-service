@@ -165,18 +165,18 @@
     <div class="output-example">
       <h4>Example Output</h4>
       <div class="code-block terminal">
-        <pre>▸ Validating translations...
+        <pre>🔍 Validating translations...
    Reference: en
    Targets:   pt-BR, es
 
-● pt-BR/settings.json
-   ✗ Missing: 2 keys
+📦 pt-BR/settings.json
+   ❌ Missing: 2 keys
       - notifications.email
       - notifications.push
-   ○ Empty: 1 values
+   📭 Empty: 1 values
       - theme.label
 
-✓ es — all translations in sync.</pre>
+✅ All translations are structurally valid across 3 languages.</pre>
       </div>
     </div>
   </section>
@@ -278,6 +278,59 @@
         <li>Automatic per-key fallback when batch parsing fails</li>
         <li>Preserves interpolation placeholders (<code>{{ '{{name}}' }}</code>, <code>{{ '{count}' }}</code>)</li>
         <li>Handles code-fenced JSON responses from the LLM</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ats editor -->
+  <section class="cli-section">
+    <h2><code>ats editor</code></h2>
+    <p class="section-desc">
+      Launches a full-featured translation editor web UI in your browser. Includes a side-by-side key editor, LLM-powered auto-translation via Ollama, per-key source code usage tracking, progress bars, and add/delete key support.
+    </p>
+    <div class="code-block">
+      <pre><span class="fn">bunx</span> ats editor</pre>
+    </div>
+
+    <div class="options-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Option</th>
+            <th>Default</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>-i, --input &lt;dir&gt;</code></td>
+            <td>auto-detected</td>
+            <td>i18n source directory (auto-discovers from angular.json or convention)</td>
+          </tr>
+          <tr>
+            <td><code>-s, --src &lt;dir&gt;</code></td>
+            <td><code>src</code></td>
+            <td>Source code directory for scanning key usage</td>
+          </tr>
+          <tr>
+            <td><code>-p, --port &lt;port&gt;</code></td>
+            <td><code>4500</code></td>
+            <td>Port to serve the editor on</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="feature-highlight">
+      <h4>Features</h4>
+      <ul>
+        <li>Source and target language picker with side-by-side editing</li>
+        <li>Real-time LLM translation via Ollama with SSE streaming</li>
+        <li>Per-key source code usage badges (shows where each key is referenced)</li>
+        <li>Translation progress tracking per language and namespace</li>
+        <li>Add, delete, and search keys across all namespaces</li>
+        <li>Structural validation directly in the UI</li>
+        <li>Auto-discovery of i18n directory from angular.json or common conventions</li>
       </ul>
     </div>
   </section>

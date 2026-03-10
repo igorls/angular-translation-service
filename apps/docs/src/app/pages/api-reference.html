@@ -45,6 +45,16 @@
       <p>The current language signal. Read in templates to show the active language.</p>
     </div>
 
+    <div class="api-method" id="supportedLangs">
+      <h3><code>supportedLangs: readonly string[]</code></h3>
+      <p>Read-only array of all supported language codes from the configuration. Useful for building language switchers.</p>
+      <div class="code-block">
+        <pre><span class="cmt">// Build a language switcher</span>
+<span class="kw">protected readonly</span> languages = <span class="kw">this</span>.i18n.supportedLangs;
+<span class="cmt">// template: &#64;for (lang of languages; track lang) {{ '{' }} ... {{ '}' }}</span></pre>
+      </div>
+    </div>
+
     <div class="api-method" id="ready">
       <h3><code>ready: Signal&lt;boolean&gt;</code></h3>
       <p>True when all <code>coreNamespaces</code> have been loaded for the current language.</p>
@@ -117,7 +127,7 @@
           <tr>
             <td><code>detectLanguage</code></td>
             <td><code>boolean</code></td>
-            <td>Auto-detect from browser via <code>navigator.language</code></td>
+            <td>Enable browser language detection via <code>navigator.language</code></td>
           </tr>
           <tr>
             <td><code>storageKey</code></td>
@@ -145,20 +155,76 @@
 
     <div class="api-method" id="httpLoader">
       <h3><code>httpLoader(basePath: string): TranslationLoader</code></h3>
-      <p>Creates a <code>fetch</code>-based loader. Loads JSON from: <code>basePath/lang/namespace.json</code>. Place your JSON files in the Angular project's <code>public/</code> directory.</p>
+      <p>Creates a <code>fetch</code>-based loader. Loads JSON from: <code>basePath/lang/namespace.json</code>. Place your JSON files in the Angular project's <code>public/</code> directory (files in <code>public/</code> are served at the root URL).</p>
       <div class="code-block">
-        <pre><span class="cmt">// Files at: public/i18n/en/common.json, public/i18n/pt-BR/common.json</span>
+        <pre><span class="cmt">// Files at: public/i18n/en/common.json → served at /i18n/en/common.json</span>
 <span class="type">loader</span>: <span class="fn">httpLoader</span>(<span class="str">'/i18n'</span>)</pre>
       </div>
     </div>
 
     <div class="api-method" id="importLoader">
-      <h3><code>importLoader(factory): TranslationLoader</code></h3>
-      <p>Creates a loader using dynamic imports. The bundler can statically analyze import paths for tree-shaking and code splitting. Best for production apps that need optimized bundles.</p>
+      <h3><code>importLoader(factory: (lang, ns) =&gt; Promise&lt;{{ '{' }} default: Record {{ '}' }}&gt;): TranslationLoader</code></h3>
+      <p>Creates a loader using dynamic imports. The factory callback must return a module with a <code>default</code> export containing the translation dictionary. The bundler can statically analyze import paths for tree-shaking and code splitting.</p>
       <div class="code-block">
         <pre><span class="type">loader</span>: <span class="fn">importLoader</span>((lang, ns) =&gt;
   <span class="fn">import</span>(<span class="str">`./i18n/${{ '{' }}lang{{ '}' }}/${{ '{' }}ns{{ '}' }}.json`</span>)
 )</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- Injection Tokens -->
+  <section class="api-section" id="injection-tokens">
+    <h2>Injection Tokens</h2>
+
+    <div class="api-method" id="translation-config-token">
+      <h3><code>TRANSLATION_CONFIG: InjectionToken&lt;TranslationConfig&gt;</code></h3>
+      <p>Injection token for the translation configuration. Automatically provided by <code>provideTranslation()</code>. Useful for custom providers that need access to the configuration.</p>
+    </div>
+
+    <div class="api-method" id="current-language-token">
+      <h3><code>CURRENT_LANGUAGE: InjectionToken&lt;string&gt;</code></h3>
+      <p>Injection token for server-side language detection. Provided by <code>provideTranslationSSR()</code> on the server to inject the language from the HTTP request. On the client, language is resolved from <code>TransferState</code> or local detection.</p>
+    </div>
+  </section>
+
+  <!-- Recursive Proxy -->
+  <section class="api-section" id="recursive-proxy">
+    <h2>createRecursiveProxy()</h2>
+    <p class="api-description">Creates a crash-proof proxy object that safely intercepts all property access. Used internally by <code>select()</code> to prevent template errors when namespaces are still loading. The proxy returns nested proxies for any property access, ensuring expressions like <code>t().nav.title</code> never throw — they render as empty strings instead.</p>
+    <div class="api-method">
+      <h3>Behavior</h3>
+      <div class="config-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Access</th>
+              <th>Result</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>String coercion / template interpolation</td>
+              <td>Returns the key path (e.g., <code>'common.nav.title'</code>)</td>
+            </tr>
+            <tr>
+              <td>Property access</td>
+              <td>Returns another recursive proxy</td>
+            </tr>
+            <tr>
+              <td>JSON serialization</td>
+              <td>Returns <code>{{ '{}' }}</code></td>
+            </tr>
+            <tr>
+              <td>Promise detection (<code>then</code>/<code>catch</code>)</td>
+              <td>Returns <code>undefined</code> (prevents async unwrapping)</td>
+            </tr>
+            <tr>
+              <td>Iteration (<code>&#64;for</code> loops)</td>
+              <td>Yields nothing (empty iterator)</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </section>
@@ -183,13 +249,89 @@
   <!-- Language Detection -->
   <section class="api-section" id="language-detection">
     <h2>Language Detection</h2>
-    <p class="api-description">When <code>detectLanguage: true</code> is set, the initial language is resolved using this priority chain (first match wins):</p>
+    <p class="api-description">The initial language is resolved using the following priority chain (first match wins). Steps 1–2 always run; step 3 requires <code>detectLanguage: true</code>.</p>
     <ol class="detection-chain">
-      <li><strong>SSR token</strong> — Language injected via <code>CURRENT_LANGUAGE</code> on the server</li>
-      <li><strong>localStorage</strong> — Previously persisted preference (requires <code>storageKey</code>)</li>
-      <li><strong>Browser</strong> — <code>navigator.language</code> / <code>navigator.languages</code>, including base-language matching (e.g., browser <code>'pt'</code> matches config <code>'pt-BR'</code>)</li>
+      <li><strong>SSR token</strong> — Language injected via <code>CURRENT_LANGUAGE</code> on the server <em>(always checked)</em></li>
+      <li><strong>localStorage</strong> — Previously persisted preference <em>(always checked if <code>storageKey</code> is configured)</em></li>
+      <li><strong>Browser</strong> — <code>navigator.language</code> with base-language matching (e.g., browser <code>'pt'</code> matches config <code>'pt-BR'</code>) <em>(only when <code>detectLanguage: true</code>)</em></li>
       <li><strong>Default</strong> — Falls back to <code>defaultLang</code></li>
     </ol>
+  </section>
+
+  <!-- SSR -->
+  <section class="api-section" id="ssr">
+    <h2>SSR &amp; Hydration</h2>
+    <p class="api-description">The <code>angular-translation-service/ssr</code> secondary entry point provides seamless server-side rendering with zero flash-of-untranslated-content (FOUC) and no hydration mismatch.</p>
+
+    <div class="api-method" id="provideTranslationSSR">
+      <h3><code>provideTranslationSSR(config: TranslationSSRConfig): EnvironmentProviders</code></h3>
+      <p>Add to your <strong>server</strong> application config. On the server, it provides <code>CURRENT_LANGUAGE</code> from the HTTP request and snapshots all loaded translations into <code>TransferState</code>. On the client, it hydrates translations synchronously — no HTTP requests needed for the initial render.</p>
+      <div class="code-block">
+        <pre><span class="cmt">// app.config.server.ts</span>
+<span class="kw">import</span> {{ '{' }} <span class="fn">provideTranslationSSR</span> {{ '}' }} <span class="kw">from</span> <span class="str">'angular-translation-service/ssr'</span>;
+
+<span class="kw">export const</span> serverConfig = {{ '{' }}
+  providers: [
+    <span class="fn">provideTranslationSSR</span>({{ '{' }}
+      <span class="type">langFromRequest</span>: (req) =&gt; {{ '{' }}
+        <span class="kw">const</span> accept = (req <span class="kw">as</span> Request).headers.get(<span class="str">'accept-language'</span>) ?? <span class="str">'en'</span>;
+        <span class="kw">return</span> accept.split(<span class="str">','</span>)[0].split(<span class="str">'-'</span>)[0];
+      {{ '}' }},
+    {{ '}' }}),
+  ],
+{{ '}' }};</pre>
+      </div>
+    </div>
+
+    <div class="api-method">
+      <h3>How it works</h3>
+      <div class="config-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Phase</th>
+              <th>What happens</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Server render</td>
+              <td><code>CURRENT_LANGUAGE</code> is set from the request, core namespaces load, then all loaded translations are serialized into <code>TransferState</code></td>
+            </tr>
+            <tr>
+              <td>Client hydration</td>
+              <td>Translations are restored from <code>TransferState</code> synchronously — no HTTP requests, no FOUC, no NG0501</td>
+            </tr>
+            <tr>
+              <td>After hydration</td>
+              <td><code>TransferState</code> entry is removed to free memory. Subsequent namespace loads use normal HTTP loading</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="api-method">
+      <h3>TranslationSSRConfig</h3>
+      <div class="config-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Option</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>langFromRequest</code></td>
+              <td><code>(req: unknown) =&gt; string</code></td>
+              <td>Extract the language from the incoming HTTP request</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </section>
 
   <!-- Error Behavior -->

@@ -72,6 +72,21 @@ program
     });
 
 program
+    .command('scan')
+    .description('Scan HTML templates for hardcoded strings that should be translated')
+    .option('--src <dir>', 'Source directory to scan', 'src')
+    .option('--extensions <ext>', 'Comma-separated file extensions to scan', '.html')
+    .option('--min-score <n>', 'Minimum heuristic score to report', '2')
+    .option('--verify', 'Use LLM to verify candidates (requires Ollama)')
+    .option('--model <model>', 'Ollama model for verification', 'gemma3:12b')
+    .option('--host <host>', 'Ollama host', '127.0.0.1:11434')
+    .option('--json', 'Output results as JSON')
+    .action(async (options) => {
+        const { scanTemplates } = await import('./commands/scan');
+        await scanTemplates(options);
+    });
+
+program
     .command('editor')
     .description('Launch the translation editor in your browser')
     .option('-i, --input <dir>', 'i18n source directory (auto-detected if omitted)')
