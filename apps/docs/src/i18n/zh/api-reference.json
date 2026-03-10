@@ -1,0 +1,107 @@
+{
+  "title": "API 参考",
+  "subtitle": "@angular-translation-service/core 的完整 API 文档。",
+  "translation_service": {
+    "title": "TranslationService",
+    "desc": "为 Angular 应用程序提供响应式 i18n 的核心服务。通过 Angular DI 注入。",
+    "select_desc": "返回用于模板访问的范围信号。自动触发命名空间的延迟加载。在命名空间加载之前，数据为 <code>undefined</code>，之后返回一个经过代理封装的字典，用于安全的深层属性访问。",
+    "translate_desc": "返回单个翻译键的缓存信号。自动触发命名空间加载。键格式：<code>namespace:dotted.path</code>。",
+    "instant_desc": "同步返回翻译。非响应式且<strong>不会</strong>触发延迟加载 — 仅在命名空间已加载时用于命令式代码（提示、日志）。",
+    "setlang_desc": "切换活动语言。为新语言重新加载所有先前请求的命名空间，并将偏好持久化到 <code>localStorage</code>（如果配置了 <code>storageKey</code>）。如果语言不在 <code>supportedLangs</code> 中，则记录警告并提前返回。",
+    "ensure_desc": "预加载额外的命名空间。自动去重并发加载。适用于路由守卫或解析器。",
+    "lang_desc": "当前语言信号。在模板中读取以显示活动语言。",
+    "supported_desc": "配置中所有支持的语言代码的只读数组。适用于构建语言切换器。",
+    "ready_desc": "当当前语言的所有 <code>coreNamespaces</code> 都已加载时为 true。"
+  },
+  "translate_pipe": {
+    "title": "TranslatePipe",
+    "desc": "<code>TranslationService.translate()</code> 的模板语法糖。管道在内部缓存其信号，以避免在每次变更检测周期中重新创建。",
+    "setup": "设置",
+    "setup_desc": "在组件的 <code>imports</code> 数组中导入 <code>TranslatePipe</code>：",
+    "usage": "用法"
+  },
+  "provide_translation": {
+    "title": "provideTranslation()",
+    "desc": "在应用级别配置翻译服务。使用 <code>APP_INITIALIZER</code> 在应用渲染前预加载核心命名空间。",
+    "th_option": "选项",
+    "th_type": "类型",
+    "th_description": "描述",
+    "default_lang": "默认语言代码（例如：<code>'en'</code>）",
+    "supported_langs": "所有支持的语言代码",
+    "core_ns": "在应用渲染前通过 <code>APP_INITIALIZER</code> 预加载的命名空间",
+    "loader": "加载翻译文件的函数。使用 <code>httpLoader()</code> 或 <code>importLoader()</code>",
+    "detect_lang": "通过 <code>navigator.language</code> 启用浏览器语言检测",
+    "storage_key": "用于跨会话持久化语言偏好的 <code>localStorage</code> 键",
+    "ns_separator": "命名空间和键路径之间的分隔符（默认为：<code>':'</code>）",
+    "fallback_chain": "区域设置的备用语言链"
+  },
+  "loaders": {
+    "title": "加载器",
+    "http_desc": "创建基于 <code>fetch</code> 的加载器。从 <code>basePath/lang/namespace.json</code> 加载 JSON。将 JSON 文件放在 Angular 项目的 <code>public/</code> 目录中（<code>public/</code> 中的文件由根 URL 提供）。",
+    "import_desc": "使用动态导入创建加载器。工厂回调必须返回一个带有 <code>default</code> 导出的模块，该导出包含翻译字典。构建工具可以静态分析导入路径以进行摇树优化（tree-shaking）和代码拆分。"
+  },
+  "injection_tokens": {
+    "title": "注入令牌",
+    "config_desc": "翻译配置的注入令牌。由 <code>provideTranslation()</code> 自动提供。适用于需要访问配置的自定义提供者。",
+    "current_lang_desc": "用于服务器端语言检测的注入令牌。在服务器上由 <code>provideTranslationSSR()</code> 提供，以从 HTTP 请求中注入语言。在客户端，语言从 <code>TransferState</code> 或本地检测中解析。"
+  },
+  "recursive_proxy": {
+    "title": "createRecursiveProxy()",
+    "desc": "创建一个防崩溃的代理对象，安全地拦截所有属性访问。由 <code>select()</code> 在内部使用，以防止在命名空间仍在加载时出现模板错误。代理为任何属性访问返回嵌套代理，确保像 <code>t().nav.title</code> 这样的表达式永远不会抛出错误 — 它们会渲染为空字符串。",
+    "behavior": "行为",
+    "th_access": "访问",
+    "th_result": "结果",
+    "string_coercion": "字符串强制转换 / 模板插值",
+    "string_coercion_result": "返回键路径（例如：<code>'common.nav.title'</code>）",
+    "property_access": "属性访问",
+    "property_access_result": "返回另一个递归代理",
+    "json_serialization": "JSON 序列化",
+    "json_serialization_result": "返回 <code>{}</code>",
+    "promise_detection": "Promise 检测（<code>then</code>/<code>catch</code>）",
+    "promise_detection_result": "返回 <code>undefined</code>（防止异步解包）",
+    "iteration": "迭代（<code>@for</code> 循环）",
+    "iteration_result": "不产出任何内容（空迭代器）"
+  },
+  "fallback_chains": {
+    "title": "回退链",
+    "desc": "定义区域设置的备用语言。加载翻译时，链中的所有语言都会并行获取并进行深层合并 — 最具体的区域设置的键会覆盖备用键。"
+  },
+  "language_detection": {
+    "title": "语言检测",
+    "desc": "初始语言通过以下优先级链解析（第一个匹配项获胜）。步骤 1-2 始终运行；步骤 3 需要 <code>detectLanguage: true</code>。",
+    "ssr_token": "<strong>SSR 令牌</strong> — 通过服务器上的 <code>CURRENT_LANGUAGE</code> 注入的语言 <em>（始终检查）</em>",
+    "local_storage": "<strong>localStorage</strong> — 之前持久化的偏好 <em>（如果配置了 <code>storageKey</code>，则始终检查）</em>",
+    "browser": "<strong>浏览器</strong> — 带基础语言匹配的 <code>navigator.language</code>（例如：浏览器的 <code>'pt'</code> 匹配配置 <code>'pt-BR'</code>） <em>（仅当 <code>detectLanguage: true</code> 时）</em>",
+    "default_lang": "<strong>默认</strong> — 回退到 <code>defaultLang</code>"
+  },
+  "ssr": {
+    "title": "SSR 与水合",
+    "desc": "<code>@angular-translation-service/core/ssr</code> 二级入口点提供无缝的服务器端渲染，零翻译内容闪烁（FOUC）且无水合不匹配。",
+    "provide_desc": "添加到您的<strong>服务器</strong>应用配置中。在服务器上，它从 HTTP 请求提供 <code>CURRENT_LANGUAGE</code>，并将所有加载的翻译快照到 <code>TransferState</code> 中。在客户端，它同步水合翻译 — 初始渲染无需 HTTP 请求。",
+    "how_it_works": "工作原理",
+    "th_phase": "阶段",
+    "th_what_happens": "发生了什么",
+    "server_render": "服务器渲染",
+    "server_render_desc": "从请求中设置 <code>CURRENT_LANGUAGE</code>，加载核心命名空间，然后将所有加载的翻译序列化到 <code>TransferState</code> 中",
+    "client_hydration": "客户端水合",
+    "client_hydration_desc": "翻译从 <code>TransferState</code> 同步恢复 — 无 HTTP 请求，无 FOUC，无 NG0501",
+    "after_hydration": "水合后",
+    "after_hydration_desc": "删除 <code>TransferState</code> 条目以释放内存。后续的命名空间加载使用正常的 HTTP 加载",
+    "config_title": "TranslationSSRConfig",
+    "config_lang_from_request": "从传入的 HTTP 请求中提取语言"
+  },
+  "error_behavior": {
+    "title": "错误行为",
+    "desc": "Angular Translation Service 旨在防崩溃。以下是错误的处理方式：",
+    "th_scenario": "场景",
+    "th_behavior": "行为",
+    "ns_fail": "命名空间加载失败",
+    "ns_fail_behavior": "错误记录到控制台。模板显示空字符串（通过递归代理）",
+    "missing_key": "缺失翻译键",
+    "missing_key_behavior": "返回原始键字符串（例如：<code>'common:nav.missing'</code>）",
+    "unsupported_lang": "使用不支持的语言调用 <code>setLang()</code>",
+    "unsupported_lang_behavior": "记录警告并提前返回 — 无状态更改",
+    "nested_loading": "在加载时访问嵌套键",
+    "nested_loading_behavior": "递归代理返回空字符串，防止模板崩溃"
+  }
+}

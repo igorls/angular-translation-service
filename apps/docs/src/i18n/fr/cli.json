@@ -1,0 +1,71 @@
+{
+  "title": "Outils CLI",
+  "subtitle": "Utilitaires en ligne de commande pour gérer, valider et traduire automatiquement vos fichiers i18n.",
+  "installation": {
+    "title": "Installation",
+    "desc": "Ajoutez le CLI comme dépendance de développement pour utiliser la commande courte <code>npx ats</code> — tout comme <code>npx ng</code> avec Angular CLI.",
+    "run_desc": "Exécutez ensuite n'importe quelle commande avec <code>npx ats &lt;command&gt;</code>, <code>pnpx ats &lt;command&gt;</code> ou <code>bunx ats &lt;command&gt;</code>. Installez globalement avec <code>npm install -g</code> pour utiliser la commande <code>ats</code> partout."
+  },
+  "th_option": "Option",
+  "th_default": "Défaut",
+  "th_description": "Description",
+  "generate": {
+    "desc": "Génère des interfaces TypeScript à partir de vos fichiers de traduction JSON, offrant une sécurité de type au moment de la compilation pour les clés de traduction.",
+    "input_desc": "Répertoire source contenant les fichiers d'espace de noms JSON",
+    "output_desc": "Chemin du fichier TypeScript de sortie",
+    "check_desc": "Mode CI : quitte avec le code 1 si les types ne sont pas synchronisés",
+    "generated_output": "Sortie générée"
+  },
+  "check": {
+    "desc": "Analyse votre code source (fichiers <code>.ts</code> et <code>.html</code>) pour l'utilisation des clés de traduction et effectue des références croisées avec les fichiers JSON pour détecter les clés manquantes et inutilisées.",
+    "i18n_desc": "Répertoire d'espace de noms JSON (langue par défaut)",
+    "src_desc": "Répertoire source à analyser pour l'utilisation des clés",
+    "ns_desc": "Limiter la vérification à un espace de noms spécifique",
+    "detected_patterns": "Modèles détectés",
+    "pattern_translate": "<code>translate('ns:key')</code> — appels de traduction basés sur les signaux",
+    "pattern_instant": "<code>instant('ns:key')</code> — appels de traduction synchrones",
+    "pattern_select": "<code>select('ns')</code> — marque l'espace de noms complet comme utilisé",
+    "pattern_pipe": "<code>'ns:key' | translate</code> — utilisation du pipe Angular dans les templates"
+  },
+  "validate": {
+    "desc": "Compare les fichiers de traduction dans toutes les langues pour trouver des incohérences structurelles : clés manquantes, clés superflues et valeurs vides.",
+    "input_desc": "Répertoire i18n racine contenant les sous-répertoires de langues",
+    "example_output": "Exemple de sortie"
+  },
+  "clean": {
+    "desc": "Supprime les clés orphelines des fichiers de langue cible — les clés qui existent dans une traduction mais n'existent plus dans la langue par défaut.",
+    "input_desc": "Répertoire i18n racine",
+    "dry_run_desc": "Afficher ce qui serait supprimé sans modifier les fichiers"
+  },
+  "translate": {
+    "desc": "Utilise un LLM local (via Ollama) pour traduire automatiquement les clés manquantes de la langue par défaut vers une langue cible. Prend en charge la traduction par lots avec repli par clé.",
+    "locale_desc": "Code de la langue cible",
+    "ns_desc": "Limiter à un espace de noms spécifique",
+    "model_desc": "Modèle Ollama à utiliser",
+    "host_desc": "Adresse du serveur Ollama",
+    "auto_accept_desc": "Sauter la confirmation interactive, accepter toutes les traductions",
+    "features": "Fonctionnalités",
+    "feature_batch": "Traduction par lots (35 entrées par appel LLM pour un contexte optimal)",
+    "feature_fallback": "Repli automatique par clé en cas d'échec de l'analyse par lots",
+    "feature_placeholders": "Préserve les espaces réservés d'interpolation (<code>{{name}}</code>, <code>{count}</code>)",
+    "feature_codefence": "Gère les réponses JSON délimitées par du code du LLM"
+  },
+  "editor": {
+    "desc": "Lance une interface utilisateur web d'éditeur de traduction complète dans votre navigateur. Comprend un éditeur de clés côte à côte, une traduction automatique alimentée par LLM via Ollama, un suivi de l'utilisation du code source par clé, des barres de progression et la prise en charge de l'ajout/suppression de clés.",
+    "input_desc": "Répertoire source i18n (découverte automatique à partir d'angular.json ou convention)",
+    "src_desc": "Répertoire du code source pour l'analyse de l'utilisation des clés",
+    "port_desc": "Port pour servir l'éditeur",
+    "features": "Fonctionnalités",
+    "feature_picker": "Sélecteur de langue source et cible avec édition côte à côte",
+    "feature_llm": "Traduction LLM en temps réel via Ollama avec streaming SSE",
+    "feature_badges": "Badges d'utilisation du code source par clé (montre où chaque clé est référencée)",
+    "feature_progress": "Suivi de la progression de la traduction par langue et par espace de noms",
+    "feature_crud": "Ajouter, supprimer et rechercher des clés dans tous les espaces de noms",
+    "feature_validation": "Validation structurelle directement dans l'interface utilisateur",
+    "feature_autodiscovery": "Découverte automatique du répertoire i18n à partir d'angular.json ou des conventions courantes"
+  },
+  "ci": {
+    "title": "Intégration CI",
+    "desc": "Ajoutez des vérifications de traduction à votre pipeline CI pour détecter les problèmes rapidement."
+  }
+}

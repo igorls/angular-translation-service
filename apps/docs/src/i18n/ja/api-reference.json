@@ -1,0 +1,107 @@
+{
+  "title": "API リファレンス",
+  "subtitle": "@angular-translation-service/core の完全な API ドキュメント。",
+  "translation_service": {
+    "title": "TranslationService",
+    "desc": "Angular アプリケーションに反応的な i18n を提供するコアサービス。Angular DI 経由で注入します。",
+    "select_desc": "テンプレートアクセスのためのスコープシグナルを返します。自動的に名前空間の遅延読み込みをトリガーします。名前空間がロードされるまでデータは <code>undefined</code> であり、その後、深いプロパティへの安全なアクセスのためにプロキシでラップされた辞書を返します。",
+    "translate_desc": "単一の翻訳キーに対するキャッシュされたシグナルを返します。自動的に名前空間のロードをトリガーします。キーの形式：<code>namespace:dotted.path</code>。",
+    "instant_desc": "翻訳を同期的に返します。非反応的であり、遅延読み込みを<strong>トリガーしません</strong>。名前空間がすでにロードされている場合にのみ、命令的なコード（トースト、ログ）に使用してください。",
+    "setlang_desc": "アクティブな言語を切り替えます。新しい言語に対して以前にリクエストされたすべての名前空間を再ロードし、言語設定を <code>localStorage</code> に保存します（<code>storageKey</code> が設定されている場合）。言語が <code>supportedLangs</code> に含まれていない場合は警告をログに記録し、早期に復帰します。",
+    "ensure_desc": "追加の名前空間を事前ロードします。重複する同時ロードを自動的に排除します。ルートガードやリゾルバに便利です。",
+    "lang_desc": "現在の言語シグナル。テンプレートで読み取ってアクティブな言語を表示します。",
+    "supported_desc": "設定されたすべてのサポート対象言語コードの読み取り専用配列。言語スイッチャーの構築に便利です。",
+    "ready_desc": "現在の言語に対してすべての <code>coreNamespaces</code> がロードされたときに true になります。"
+  },
+  "translate_pipe": {
+    "title": "TranslatePipe",
+    "desc": "<code>TranslationService.translate()</code> のためのテンプレート糖衣。パイプは、変更検出サイクルごとの再作成を避けるために、内部でシグナルをキャッシュします。",
+    "setup": "セットアップ",
+    "setup_desc": "コンポーネントの <code>imports</code> 配列に <code>TranslatePipe</code> をインポートします：",
+    "usage": "使い方"
+  },
+  "provide_translation": {
+    "title": "provideTranslation()",
+    "desc": "アプリケーションレベルで翻訳サービスを設定します。アプリがレンダリングされる前にコア名前空間を事前ロードするために <code>APP_INITIALIZER</code> を使用します。",
+    "th_option": "オプション",
+    "th_type": "型",
+    "th_description": "説明",
+    "default_lang": "デフォルトの言語コード（例：<code>'en'</code>）",
+    "supported_langs": "サポートされているすべての言語コード",
+    "core_ns": "アプリがレンダリングされる前に <code>APP_INITIALIZER</code> 経由で事前ロードされる名前空間",
+    "loader": "翻訳ファイルをロードする関数。<code>httpLoader()</code> または <code>importLoader()</code> を使用します",
+    "detect_lang": "<code>navigator.language</code> 経由でブラウザの言語検出を有効にする",
+    "storage_key": "セッションをまたいで言語設定を維持するための <code>localStorage</code> キー",
+    "ns_separator": "名前空間とキーパスの間のセパレータ（デフォルト：<code>':'</code>）",
+    "fallback_chain": "地域ロケールのためのフォールバック言語チェーン"
+  },
+  "loaders": {
+    "title": "ローダー",
+    "http_desc": "<code>fetch</code> ベースのローダーを作成します。<code>basePath/lang/namespace.json</code> から JSON をロードします。JSON ファイルは Angular プロジェクトの <code>public/</code> ディレクトリに配置してください（<code>public/</code> 内のファイルはルート URL で提供されます）。",
+    "import_desc": "動的インポートを使用してローダーを作成します。ファクトリコールバックは、翻訳辞書を含む <code>default</code> エクスポートを持つモジュールを返す必要があります。バンドラーは、ツリーシェイキングやコード分割のためにインポートパスを静的に分析できます。"
+  },
+  "injection_tokens": {
+    "title": "インジェクショントークン",
+    "config_desc": "翻訳設定用のインジェクショントークン。<code>provideTranslation()</code> によって自動的に提供されます。設定にアクセスする必要があるカスタムプロバイダーに便利です。",
+    "current_lang_desc": "サーバー側の言語検出用のインジェクショントークン。サーバー上の HTTP リクエストから言語を注入するために <code>provideTranslationSSR()</code> によって提供されます。クライアント上では、言語は <code>TransferState</code> またはローカル検出から解決されます。"
+  },
+  "recursive_proxy": {
+    "title": "createRecursiveProxy()",
+    "desc": "すべてのプロパティアクセスを安全にインターセプトする、クラッシュ防止プロキシオブジェクトを作成します。名前空間がまだロード中のときにテンプレートエラーを防ぐために、<code>select()</code> によって内部的に使用されます。プロキシは、プロパティアクセスに対してネストされたプロキシを返し、<code>t().nav.title</code> のような式がスローされないことを保証します（代わりに空の文字列としてレンダリングされます）。",
+    "behavior": "振る舞い",
+    "th_access": "アクセス",
+    "th_result": "結果",
+    "string_coercion": "文字列強制 / テンプレート補間",
+    "string_coercion_result": "キーパスを返します（例：<code>'common.nav.title'</code>）",
+    "property_access": "プロパティアクセス",
+    "property_access_result": "別の再帰プロキシを返します",
+    "json_serialization": "JSON シリアライズ",
+    "json_serialization_result": "<code>{}</code> を返します",
+    "promise_detection": "Promise 検出（<code>then</code>/<code>catch</code>）",
+    "promise_detection_result": "<code>undefined</code> を返します（非同期の展開を防ぎます）",
+    "iteration": "反復（<code>@for</code> ループ）",
+    "iteration_result": "何も生成しません（空のイテレータ）"
+  },
+  "fallback_chains": {
+    "title": "フォールバックチェーン",
+    "desc": "地域ロケールのためのフォールバック言語を定義します。翻訳をロードするとき、チェーン内のすべての言語が並行してフェッチされ、ディープマージされます。最も具体的なロケールのキーがフォールバックキーを上書きします。"
+  },
+  "language_detection": {
+    "title": "言語検出",
+    "desc": "初期言語は、次の優先順位チェーン（最初に一致したものが優先）を使用して解決されます。ステップ 1〜2 は常に実行されます。ステップ 3 には <code>detectLanguage: true</code> が必要です。",
+    "ssr_token": "<strong>SSR トークン</strong> — サーバー上の <code>CURRENT_LANGUAGE</code> 経由で注入された言語 <em>（常にチェックされます）</em>",
+    "local_storage": "<strong>localStorage</strong> — 以前に保存された設定 <em>（<code>storageKey</code> が設定されている場合、常にチェックされます）</em>",
+    "browser": "<strong>ブラウザ</strong> — 基本言語一致を伴う <code>navigator.language</code>（例：ブラウザの <code>'pt'</code> は設定の <code>'pt-BR'</code> と一致します） <em>（<code>detectLanguage: true</code> の場合のみ）</em>",
+    "default_lang": "<strong>デフォルト</strong> — <code>defaultLang</code> にフォールバックします"
+  },
+  "ssr": {
+    "title": "SSR とハイドレーション",
+    "desc": "<code>@angular-translation-service/core/ssr</code> セカンダリエントリポイントは、翻訳されていないコンテンツのフラッシュ（FOUC）やハイドレーションの不一致なしに、シームレスなサーバーサイドレンダリングを提供します。",
+    "provide_desc": "<strong>サーバー</strong> アプリケーション設定に追加します。サーバー上では HTTP リクエストから <code>CURRENT_LANGUAGE</code> を提供し、ロードされたすべての翻訳を <code>TransferState</code> にスナップショットします。クライアント上では、翻訳を同期的にハイドレートします。初期レンダリングに HTTP リクエストは不要です。",
+    "how_it_works": "仕組み",
+    "th_phase": "フェーズ",
+    "th_what_happens": "何が起こるか",
+    "server_render": "サーバーレンダリング",
+    "server_render_desc": "リクエストから <code>CURRENT_LANGUAGE</code> が設定され、コア名前空間がロードされ、その後、ロードされたすべての翻訳が <code>TransferState</code> にシリアライズされます",
+    "client_hydration": "クライアントハイドレーション",
+    "client_hydration_desc": "翻訳は <code>TransferState</code> から同期的に復元されます — HTTP リクエストなし、FOUC なし、NG0501 なし",
+    "after_hydration": "ハイドレーション後",
+    "after_hydration_desc": "メモリを解放するために <code>TransferState</code> エントリが削除されます。その後の名前空間のロードは通常の HTTP ロードを使用します",
+    "config_title": "TranslationSSRConfig",
+    "config_lang_from_request": "着信 HTTP リクエストから言語を抽出します"
+  },
+  "error_behavior": {
+    "title": "エラー時の振る舞い",
+    "desc": "Angular Translation Service は、クラッシュ防止を考慮して設計されています。エラーは次のように処理されます：",
+    "th_scenario": "シナリオ",
+    "th_behavior": "振る舞い",
+    "ns_fail": "名前空間のロード失敗",
+    "ns_fail_behavior": "コンソールにエラーが記録されます。テンプレートには空の文字列が表示されます（再帰プロキシ経由）",
+    "missing_key": "翻訳キーの欠落",
+    "missing_key_behavior": "生のキー文字列を返します（例：<code>'common:nav.missing'</code>）",
+    "unsupported_lang": "サポートされていない言語での <code>setLang()</code>",
+    "unsupported_lang_behavior": "警告をログに記録し、早期に復帰します。状態の変更はありません",
+    "nested_loading": "ロード中にネストされたキーへのアクセス",
+    "nested_loading_behavior": "再帰プロキシは空の文字列を返し、テンプレートのクラッシュを防ぎます"
+  }
+}

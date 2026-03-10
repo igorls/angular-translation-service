@@ -1,0 +1,15 @@
+{
+  "title": "始めに",
+  "subtitle": "3分で @angular-translation-service/core を Angular v19+ プロジェクトに設定します。",
+  "step1_title": "1. インストール",
+  "step2_title": "2. 翻訳ファイルの作成",
+  "step2_desc": "プロジェクトの <code>public/</code> ディレクトリに JSON ファイルを作成します。Angular は <code>public/</code> 内のファイルをルート URL で提供するため、<code>public/i18n/en/common.json</code> は <code>/i18n/en/common.json</code> でアクセス可能になります。ローダーは <code>basePath/lang/namespace.json</code> というパターンを使用します：",
+  "step3_title": "3. プロバイダーの設定",
+  "step4_title": "4. コンポーネントでの使用",
+  "step4_desc": "<code>select()</code> を使用して名前空間のシグナルを取得します。<code>@if</code> ガードがロード状態を処理します。名前空間がロードされている間、再帰プロキシがテンプレートのクラッシュを防ぎます。",
+  "step5_title": "5. 代替案：パイプの使用",
+  "step5_desc": "より単純なケースでは、<code>select()</code> の代わりに <code>TranslatePipe</code> を使用します：",
+  "whats_next": "次のステップ",
+  "btn_api_reference": "API リファレンス →",
+  "btn_view_source": "GitHub でソースを表示 ↗"
+}
