@@ -6,7 +6,7 @@
   "step2_desc": "在项目的 <code>public/</code> 目录中创建 JSON 文件。Angular 会从根 URL 提供 <code>public/</code> 目录下的文件，因此 <code>public/i18n/en/common.json</code> 可以通过 <code>/i18n/en/common.json</code> 访问。加载器使用 <code>basePath/lang/namespace.json</code> 模式：",
   "step3_title": "3. 配置提供者",
   "step4_title": "4. 在组件中使用",
-  "step4_desc": "使用 <code>select()</code> 获取命名空间信号。<code>@if</code> 守护进程处理加载状态 — 在加载命名空间时，递归代理可防止模板崩溃。",
+  "step4_desc": "使用 <code>select()</code> 获取命名空间信号。<code>@if</code> 守卫语句处理加载状态 — 在加载命名空间时，递归代理可防止模板崩溃。",
   "step5_title": "5. 替代方案：使用管道",
   "step5_desc": "对于更简单的情况，请使用 <code>TranslatePipe</code> 而不是 <code>select()</code>：",
   "whats_next": "下一步是什么？",
