@@ -5,29 +5,49 @@
       <span class="logo-text">ATS</span>
     </a>
 
-    <nav>
+    <nav [class.open]="isMobileMenuOpen()">
       @let t = $any(common());
       @if (t) {
-        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">{{ t.nav.home }}</a>
-        <a routerLink="/getting-started" routerLinkActive="active">{{ t.nav.docs }}</a>
-        <a routerLink="/api" routerLinkActive="active">{{ t.nav.api }}</a>
-        <a routerLink="/cli" routerLinkActive="active">{{ t.nav.cli }}</a>
+        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMobileMenu()">{{ t.nav.home }}</a>
+        <a routerLink="/getting-started" routerLinkActive="active" (click)="closeMobileMenu()">{{ t.nav.docs }}</a>
+        <a routerLink="/api" routerLinkActive="active" (click)="closeMobileMenu()">{{ t.nav.api }}</a>
+        <a routerLink="/cli" routerLinkActive="active" (click)="closeMobileMenu()">{{ t.nav.cli }}</a>
         <a href="https://github.com/igorls/angular-translation-service"
-           target="_blank" rel="noopener" class="github-link">
+           target="_blank" rel="noopener" class="github-link" (click)="closeMobileMenu()">
           {{ t.nav.github }} ↗
         </a>
       }
     </nav>
 
-    <div class="lang-switcher">
-      @for (lang of i18n.supportedLangs; track lang) {
-        <button
-          [class.active]="i18n.lang() === lang"
-          (click)="i18n.setLang(lang)">
-          {{ lang.split('-')[0].toUpperCase() }}
-          <span class="lang-label">{{ lang }}</span>
+    <div class="header-actions">
+      <div class="lang-dropdown">
+        <button class="lang-dropdown-toggle" (click)="toggleLangDropdown($event)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-globe"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+          <span class="lang-label-current">{{ i18n.lang().split('-')[0].toUpperCase() }}</span>
         </button>
-      }
+
+        @if (isLangDropdownOpen()) {
+          <div class="lang-dropdown-menu">
+            @for (lang of i18n.supportedLangs; track lang) {
+              <button
+                class="lang-dropdown-item"
+                [class.active]="i18n.lang() === lang"
+                (click)="setLang(lang)">
+                {{ lang }}
+              </button>
+            }
+          </div>
+        }
+      </div>
+
+      <button class="mobile-menu-btn" (click)="toggleMobileMenu()" [attr.aria-expanded]="isMobileMenuOpen()">
+        <span class="sr-only">Toggle menu</span>
+        @if (isMobileMenuOpen()) {
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        } @else {
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        }
+      </button>
     </div>
   </div>
 </header>
