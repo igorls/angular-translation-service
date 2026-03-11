@@ -5,10 +5,11 @@
  * Compatible with Node.js and Bun runtimes.
  */
 
-import { resolve, relative } from 'path';
+import { resolve, relative, dirname } from 'path';
 import { readFileSync } from 'fs';
 import { createServer, type IncomingMessage, type ServerResponse } from 'http';
 import { exec } from 'child_process';
+import { fileURLToPath } from 'url';
 import { discoverI18nDir } from '../discover';
 import { readBody } from './helpers';
 import { handleAPI } from './routes';
@@ -56,9 +57,12 @@ export async function startEditor(options: EditorOptions): Promise<void> {
     const relI18n = relative(cwd, discovery.i18nDir);
     const relSrc = relative(cwd, srcDir);
 
+    const __dirname = dirname(fileURLToPath(import.meta.url));
+    const pkg = JSON.parse(readFileSync(resolve(__dirname, '../../package.json'), 'utf-8'));
+
     // ── Header ──────────────────────────────────────────────
     console.log('');
-    console.log(`  ${c.bold}${c.cyan}ats editor${c.reset}  ${c.dim}v0.3.0${c.reset}`);
+    console.log(`  ${c.bold}${c.cyan}ats editor${c.reset}  ${c.dim}v${pkg.version}${c.reset}`);
     console.log(`  ${c.dim}${'─'.repeat(42)}${c.reset}`);
 
     // ── Config ──────────────────────────────────────────────

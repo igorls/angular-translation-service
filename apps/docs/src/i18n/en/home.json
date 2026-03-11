@@ -31,7 +31,7 @@
     },
     "llm": {
       "title": "LLM Translation",
-      "description": "Built-in CLI command to batch-translate your JSON files using AI. Maintain consistent terminology across languages."
+      "description": "Built-in CLI command and MCP server to batch-translate your JSON files using AI. Maintain consistent terminology across languages with local or cloud LLMs."
     }
   },
   "demo": {

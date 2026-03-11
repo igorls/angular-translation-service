@@ -31,7 +31,7 @@
     },
     "llm": {
       "title": "Traducción con LLM",
-      "description": "Comando CLI integrado para traducir en masa tus archivos JSON usando IA. Mantiene un término consistente en todos los idiomas."
+      "description": "Comando CLI integrado y servidor MCP para traducir por lotes tus archivos JSON con IA. Mantén una terminología consistente entre idiomas con LLM locales o en la nube."
     }
   },
   "demo": {

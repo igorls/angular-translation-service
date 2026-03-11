@@ -67,5 +67,28 @@
   "ci": {
     "title": "CI 集成",
     "desc": "在 CI 流水线中添加翻译检查，尽早发现问题。"
+  },
+  "mcp": {
+    "desc": "启动一个基于 STDIO 的 <a href=\"https://modelcontextprotocol.io\" target=\"_blank\">模型上下文协议</a> (MCP) 服务器，将翻译编辑器的所有功能作为 AI 代理的工具提供。兼容 Claude Code、Cursor、Windsurf、Gemini CLI 以及任何 MCP 兼容客户端。",
+    "provider_desc": "翻译用的 LLM 提供商",
+    "model_desc": "LLM 模型名称",
+    "host_desc": "Ollama 服务器地址",
+    "base_url_desc": "OpenAI 兼容的基础 URL",
+    "api_key_desc": "云提供商的 API 密钥",
+    "input_desc": "i18n 源目录（从 angular.json 自动发现）",
+    "src_desc": "扫描用的源代码目录",
+    "tools_title": "可用工具 (16)",
+    "tools_introspection": "<strong>自省</strong> — <code>get_config</code>, <code>get_progress</code>, <code>validate</code>, <code>scan_hardcoded</code>",
+    "tools_crud": "<strong>翻译增删改查</strong> — <code>get_translations</code>, <code>set_translations</code>, <code>add_key</code>, <code>update_key</code>, <code>delete_key</code>, <code>list_missing</code>",
+    "tools_llm": "<strong>LLM 翻译</strong> — <code>translate_keys</code>, <code>translate_missing</code>, <code>translate_stale</code>, <code>llm_status</code>",
+    "tools_source": "<strong>源代码</strong> — <code>get_usage</code>, <code>get_scan_context</code>",
+    "config_title": "IDE 配置",
+    "config_desc": "将以下内容添加到您的 MCP 配置文件 (<code>mcp_config.json</code>, <code>.cursor/mcp.json</code>, <code>claude_desktop_config.json</code> 等)：",
+    "features": "功能特性",
+    "feature_stdio": "STDIO 传输 — 适用于任何 MCP 兼容的 AI 代理或 IDE",
+    "feature_autodiscovery": "自动发现 i18n 目录和项目配置",
+    "feature_multi_provider": "多提供商 LLM 支持 (Ollama, OpenAI, Gemini)",
+    "feature_batch": "批量翻译，带自动批处理和每键回退",
+    "feature_scan": "带评分候选项的硬编码字符串模板扫描"
   }
 }

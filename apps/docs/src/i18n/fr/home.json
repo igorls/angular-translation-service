@@ -31,7 +31,7 @@
     },
     "llm": {
       "title": "Traduction LLM",
-      "description": "Commande CLI intégrée pour traduire en masse vos fichiers JSON en utilisant l'IA. Maintenez une terminologie cohérente dans toutes les langues."
+      "description": "Commande CLI intégrée et serveur MCP pour traduire par lots vos fichiers JSON avec l'IA. Maintenez une terminologie cohérente entre les langues avec des LLM locaux ou cloud."
     }
   },
   "demo": {

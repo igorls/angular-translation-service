@@ -67,5 +67,28 @@
   "ci": {
     "title": "CI 統合",
     "desc": "CI パイプラインに翻訳チェックを追加して、問題を早期に発見します。"
+  },
+  "mcp": {
+    "desc": "STDIO ベースの <a href=\"https://modelcontextprotocol.io\" target=\"_blank\">Model Context Protocol</a> (MCP) サーバーを開始します。すべての翻訳エディタ機能を AI エージェント向けのツールとして公開します。Claude Code、Cursor、Windsurf、Gemini CLI、および任意の MCP 互換クライアントと互換性があります。",
+    "provider_desc": "翻訳用の LLM プロバイダー",
+    "model_desc": "LLM モデル名",
+    "host_desc": "Ollama サーバーアドレス",
+    "base_url_desc": "OpenAI 互換のベース URL",
+    "api_key_desc": "クラウドプロバイダー用の API キー",
+    "input_desc": "i18n ソースディレクトリ（angular.json から自動検出）",
+    "src_desc": "スキャン用のソースコードディレクトリ",
+    "tools_title": "利用可能なツール（14）",
+    "tools_introspection": "<strong>内省</strong> — <code>get_config</code>, <code>get_progress</code>, <code>validate</code>, <code>scan_hardcoded</code>",
+    "tools_crud": "<strong>翻訳 CRUD</strong> — <code>get_translations</code>, <code>set_translations</code>, <code>add_key</code>, <code>update_key</code>, <code>delete_key</code>, <code>list_missing</code>",
+    "tools_llm": "<strong>LLM 翻訳</strong> — <code>translate_keys</code>, <code>translate_missing</code>, <code>translate_stale</code>, <code>llm_status</code>",
+    "tools_source": "<strong>ソースコード</strong> — <code>get_usage</code>, <code>get_scan_context</code>",
+    "config_title": "IDE 設定",
+    "config_desc": "以下の内容を MCP 設定ファイル（<code>mcp_config.json</code>, <code>.cursor/mcp.json</code>, <code>claude_desktop_config.json</code> など）に追加してください：",
+    "features": "機能",
+    "feature_stdio": "STDIO 転送プロトコル — 任意の MCP 互換 AI エージェントまたは IDE と動作します",
+    "feature_autodiscovery": "i18n ディレクトリとプロジェクト設定を自動検出します",
+    "feature_multi_provider": "マルチプロバイダー LLM サポート（Ollama、OpenAI、Gemini）",
+    "feature_batch": "自動バッチ処理とキーごとのフォールバックを備えたバッチ翻訳",
+    "feature_scan": "ハードコーディングされた文字列のテンプレートスキャン（スコア付き候補を含む）"
   }
 }

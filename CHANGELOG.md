@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.4.0 (2026-03-11)
+
+### CLI — MCP Server
+
+- **New tool: `update_key`** — Set a single translation key for a single language without affecting other languages or keys.
+- **New tool: `translate_stale`** — Detects and re-translates keys where the source (default) language value has changed since the last translation. Uses djb2 content hashing with `.ats-hashes.json` sidecar files per target language.
+- **Fixed `add_key` overwrite behavior** — Now only writes to languages explicitly specified in the `values` map. Previously wrote empty strings to all unspecified languages, destroying existing translations.
+- **Source hash tracking** — `translate_keys` and `translate_missing` now automatically record source-value hashes after each batch, enabling end-to-end stale translation detection.
+- Tool count: 14 → 16 (added `update_key`, `translate_stale`).
+
+### Docs
+
+- Added `ats mcp` section to CLI documentation page with command usage, 7-option table, tool categories, IDE config JSON snippet, and feature list.
+- Updated "LLM Translation" feature card on homepage to mention MCP server.
+- Translated all new content to 8 languages (de, en, es, fr, ja, pt-BR, ru, zh).
+
 ## 0.3.0 (2026-03-10)
 
 ### CLI

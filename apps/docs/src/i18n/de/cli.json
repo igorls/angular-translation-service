@@ -67,5 +67,28 @@
   "ci": {
     "title": "CI-Integration",
     "desc": "Fügen Sie Ihrer CI-Pipeline Übersetzungsprüfungen hinzu, um Probleme frühzeitig zu erkennen."
+  },
+  "mcp": {
+    "desc": "Startet einen STDIO-basierten <a href=\"https://modelcontextprotocol.io\" target=\"_blank\">Model Context Protocol</a> (MCP) Server, der alle Funktionen des Übersetzungseditors als Werkzeuge für KI-Agenten bereitstellt. Kompatibel mit Claude Code, Cursor, Windsurf, Gemini CLI und jedem MCP-kompatiblen Client.",
+    "provider_desc": "LLM-Anbieter für Übersetzungen",
+    "model_desc": "Name des LLM-Modells",
+    "host_desc": "Adresse des Ollama-Servers",
+    "base_url_desc": "OpenAI-kompatible Basis-URL",
+    "api_key_desc": "API-Schlüssel für Cloud-Anbieter",
+    "input_desc": "i18n-Quellverzeichnis (automatisch aus angular.json entdeckt)",
+    "src_desc": "Quellcode-Verzeichnis zum Scannen",
+    "tools_title": "Verfügbare Werkzeuge (16)",
+    "tools_introspection": "<strong>Introspektion</strong> — <code>get_config</code>, <code>get_progress</code>, <code>validate</code>, <code>scan_hardcoded</code>",
+    "tools_crud": "<strong>Übersetzungs-CRUD</strong> — <code>get_translations</code>, <code>set_translations</code>, <code>add_key</code>, <code>update_key</code>, <code>delete_key</code>, <code>list_missing</code>",
+    "tools_llm": "<strong>LLM-Übersetzung</strong> — <code>translate_keys</code>, <code>translate_missing</code>, <code>translate_stale</code>, <code>llm_status</code>",
+    "tools_source": "<strong>Quellcode</strong> — <code>get_usage</code>, <code>get_scan_context</code>",
+    "config_title": "IDE-Konfiguration",
+    "config_desc": "Fügen Sie Folgendes in Ihre MCP-Konfigurationsdatei (<code>mcp_config.json</code>, <code>.cursor/mcp.json</code>, <code>claude_desktop_config.json</code>, etc.) hinzu:",
+    "features": "Funktionen",
+    "feature_stdio": "STDIO-Transport — funktioniert mit jedem MCP-kompatiblen KI-Agenten oder IDE",
+    "feature_autodiscovery": "Entdeckt automatisch das i18n-Verzeichnis und die Projekt-Konfiguration",
+    "feature_multi_provider": "Unterstützung für mehrere LLM-Anbieter (Ollama, OpenAI, Gemini)",
+    "feature_batch": "Batch-Übersetzung mit automatischer Gruppierung und Fallback pro Schlüssel",
+    "feature_scan": "Vorlagen-Scanning für hartcodierte Strings mit bewerteten Kandidaten"
   }
 }

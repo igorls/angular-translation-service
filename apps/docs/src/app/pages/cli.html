@@ -323,6 +323,108 @@
     </div>
   </section>
 
+  <!-- ats mcp -->
+  <section class="cli-section">
+    <h2><code>ats mcp</code></h2>
+    <p class="section-desc" [innerHTML]="t.mcp.desc"></p>
+    <div class="code-block">
+      <pre><span class="fn">npx</span> <span class="str">&#64;angular-translation-service/cli</span> mcp \
+  <span class="flag">--provider</span> <span class="str">ollama</span> \
+  <span class="flag">--model</span> <span class="str">gemma3:12b</span></pre>
+    </div>
+
+    <div class="options-table">
+      <table>
+        <thead>
+          <tr>
+            <th>{{ t.th_option }}</th>
+            <th>{{ t.th_default }}</th>
+            <th>{{ t.th_description }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>--provider &lt;name&gt;</code></td>
+            <td><code>ollama</code></td>
+            <td>{{ t.mcp.provider_desc }}</td>
+          </tr>
+          <tr>
+            <td><code>--model &lt;model&gt;</code></td>
+            <td><code>gemma3:12b</code></td>
+            <td>{{ t.mcp.model_desc }}</td>
+          </tr>
+          <tr>
+            <td><code>--host &lt;host&gt;</code></td>
+            <td><code>localhost:11434</code></td>
+            <td>{{ t.mcp.host_desc }}</td>
+          </tr>
+          <tr>
+            <td><code>--base-url &lt;url&gt;</code></td>
+            <td><code>https://api.openai.com</code></td>
+            <td>{{ t.mcp.base_url_desc }}</td>
+          </tr>
+          <tr>
+            <td><code>--api-key &lt;key&gt;</code></td>
+            <td>—</td>
+            <td>{{ t.mcp.api_key_desc }}</td>
+          </tr>
+          <tr>
+            <td><code>-i, --input &lt;dir&gt;</code></td>
+            <td>auto-detected</td>
+            <td>{{ t.mcp.input_desc }}</td>
+          </tr>
+          <tr>
+            <td><code>-s, --src &lt;dir&gt;</code></td>
+            <td><code>src</code></td>
+            <td>{{ t.mcp.src_desc }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="feature-highlight">
+      <h4>{{ t.mcp.tools_title }}</h4>
+      <ul>
+        <li [innerHTML]="t.mcp.tools_introspection"></li>
+        <li [innerHTML]="t.mcp.tools_crud"></li>
+        <li [innerHTML]="t.mcp.tools_llm"></li>
+        <li [innerHTML]="t.mcp.tools_source"></li>
+      </ul>
+    </div>
+
+    <div class="output-example">
+      <h4>{{ t.mcp.config_title }}</h4>
+      <p class="section-desc" [innerHTML]="t.mcp.config_desc"></p>
+      <div class="code-block">
+        <pre><span class="comment">// mcp_config.json / .cursor/mcp.json</span>
+{{ '{' }}
+  <span class="str">"mcpServers"</span>: {{ '{' }}
+    <span class="str">"ats"</span>: {{ '{' }}
+      <span class="str">"command"</span>: <span class="str">"npx"</span>,
+      <span class="str">"args"</span>: [
+        <span class="str">"@angular-translation-service/cli"</span>,
+        <span class="str">"mcp"</span>,
+        <span class="str">"--provider"</span>, <span class="str">"ollama"</span>,
+        <span class="str">"--model"</span>, <span class="str">"gemma3:12b"</span>
+      ]
+    {{ '}' }}
+  {{ '}' }}
+{{ '}' }}</pre>
+      </div>
+    </div>
+
+    <div class="feature-highlight">
+      <h4>{{ t.mcp.features }}</h4>
+      <ul>
+        <li>{{ t.mcp.feature_stdio }}</li>
+        <li>{{ t.mcp.feature_autodiscovery }}</li>
+        <li>{{ t.mcp.feature_multi_provider }}</li>
+        <li>{{ t.mcp.feature_batch }}</li>
+        <li>{{ t.mcp.feature_scan }}</li>
+      </ul>
+    </div>
+  </section>
+
   <!-- CI Integration -->
   <section class="cli-section">
     <h2>{{ t.ci.title }}</h2>

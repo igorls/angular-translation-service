@@ -67,5 +67,28 @@
   "ci": {
     "title": "Интеграция с CI",
     "desc": "Добавьте проверки перевода в ваш CI-конвейер, чтобы выявлять проблемы на ранних этапах."
+  },
+  "mcp": {
+    "desc": "Запускает STDIO-основанный сервер <a href=\"https://modelcontextprotocol.io\" target=\"_blank\">Model Context Protocol</a> (MCP), предоставляющий все возможности редактора перевода в виде инструментов для AI-агентов. Совместим с Claude Code, Cursor, Windsurf, Gemini CLI и любым MCP-совместимым клиентом.",
+    "provider_desc": "Провайдер LLM для перевода",
+    "model_desc": "Название модели LLM",
+    "host_desc": "Адрес сервера Ollama",
+    "base_url_desc": "Совместимый с OpenAI базовый URL",
+    "api_key_desc": "API ключ для облачных провайдеров",
+    "input_desc": "Директория исходных i18n файлов (автообнаруживается из angular.json)",
+    "src_desc": "Директория исходного кода для сканирования",
+    "tools_title": "Доступные инструменты (16)",
+    "tools_introspection": "<strong>Интроспекция</strong> — <code>get_config</code>, <code>get_progress</code>, <code>validate</code>, <code>scan_hardcoded</code>",
+    "tools_crud": "<strong>CRUD перевода</strong> — <code>get_translations</code>, <code>set_translations</code>, <code>add_key</code>, <code>update_key</code>, <code>delete_key</code>, <code>list_missing</code>",
+    "tools_llm": "<strong>Перевод LLM</strong> — <code>translate_keys</code>, <code>translate_missing</code>, <code>translate_stale</code>, <code>llm_status</code>",
+    "tools_source": "<strong>Исходный код</strong> — <code>get_usage</code>, <code>get_scan_context</code>",
+    "config_title": "Конфигурация IDE",
+    "config_desc": "Добавьте следующее в ваш файл конфигурации MCP (<code>mcp_config.json</code>, <code>.cursor/mcp.json</code>, <code>claude_desktop_config.json</code> и т.д.):",
+    "features": "Возможности",
+    "feature_stdio": "Транспорт STDIO — работает с любым MCP-совместимым агентом ИИ или IDE",
+    "feature_autodiscovery": "Автообнаруживает директорию i18n и конфигурацию проекта",
+    "feature_multi_provider": "Поддержка нескольких провайдеров LLM (Ollama, OpenAI, Gemini)",
+    "feature_batch": "Пакетный перевод с автоматической группировкой и запасным вариантом для каждого ключа",
+    "feature_scan": "Шаблонное сканирование для жестко закодированных строк с оцененными кандидатами"
   }
 }

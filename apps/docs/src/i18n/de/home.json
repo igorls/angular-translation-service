@@ -31,7 +31,7 @@
     },
     "llm": {
       "title": "LLM-Übersetzung",
-      "description": "Integriertes CLI-Command, um Ihre JSON-Dateien mit KI zu batch-übersetzen. Erhalten Sie konsistente Terminologie über alle Sprachen hinweg."
+      "description": "Integrierter CLI-Befehl und MCP-Server zur Batch-Übersetzung Ihrer JSON-Dateien mit KI. Wahren Sie eine konsistente Terminologie über verschiedene Sprachen hinweg mit lokalen oder Cloud-LLMs."
     }
   },
   "demo": {

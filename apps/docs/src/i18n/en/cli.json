@@ -1,17 +1,14 @@
 {
   "title": "CLI Tools",
   "subtitle": "Command-line utilities for managing, validating, and auto-translating your i18n files.",
-
   "installation": {
     "title": "Installation",
     "desc": "Add the CLI as a dev dependency to use the short <code>npx ats</code> command — just like <code>npx ng</code> with Angular CLI.",
     "run_desc": "Then run any command with <code>npx ats &lt;command&gt;</code>, <code>pnpx ats &lt;command&gt;</code>, or <code>bunx ats &lt;command&gt;</code>. Install globally with <code>npm install -g</code> to use the bare <code>ats</code> command everywhere."
   },
-
   "th_option": "Option",
   "th_default": "Default",
   "th_description": "Description",
-
   "generate": {
     "desc": "Generates TypeScript interfaces from your JSON translation files, providing compile-time type safety for translation keys.",
     "input_desc": "Source directory containing JSON namespace files",
@@ -19,7 +16,6 @@
     "check_desc": "CI mode: exits with code 1 if types are out of sync",
     "generated_output": "Generated Output"
   },
-
   "check": {
     "desc": "Scans your source code (<code>.ts</code> and <code>.html</code> files) for translation key usage and cross-references with JSON files to detect missing and unused keys.",
     "i18n_desc": "JSON namespace directory (default language)",
@@ -31,19 +27,16 @@
     "pattern_select": "<code>select('ns')</code> — marks entire namespace as used",
     "pattern_pipe": "<code>'ns:key' | translate</code> — Angular pipe usage in templates"
   },
-
   "validate": {
     "desc": "Compares translation files across all languages to find structural inconsistencies: missing keys, extra keys, and empty values.",
     "input_desc": "Root i18n directory containing language subdirectories",
     "example_output": "Example Output"
   },
-
   "clean": {
     "desc": "Removes orphaned keys from target language files — keys that exist in a translation but no longer exist in the default language.",
     "input_desc": "Root i18n directory",
     "dry_run_desc": "Show what would be removed without modifying files"
   },
-
   "translate": {
     "desc": "Uses a local LLM (via Ollama) to automatically translate missing keys from the default language to a target language. Supports batch translation with per-key fallback.",
     "locale_desc": "Target language code",
@@ -57,7 +50,6 @@
     "feature_placeholders": "Preserves interpolation placeholders (<code>{{name}}</code>, <code>{count}</code>)",
     "feature_codefence": "Handles code-fenced JSON responses from the LLM"
   },
-
   "editor": {
     "desc": "Launches a full-featured translation editor web UI in your browser. Includes a side-by-side key editor, LLM-powered auto-translation via Ollama, per-key source code usage tracking, progress bars, and add/delete key support.",
     "input_desc": "i18n source directory (auto-discovers from angular.json or convention)",
@@ -72,9 +64,31 @@
     "feature_validation": "Structural validation directly in the UI",
     "feature_autodiscovery": "Auto-discovery of i18n directory from angular.json or common conventions"
   },
-
   "ci": {
     "title": "CI Integration",
     "desc": "Add translation checks to your CI pipeline to catch issues early."
+  },
+  "mcp": {
+    "desc": "Starts a STDIO-based <a href=\"https://modelcontextprotocol.io\" target=\"_blank\">Model Context Protocol</a> (MCP) server that exposes all translation editor capabilities as tools for AI agents. Compatible with Claude Code, Cursor, Windsurf, Gemini CLI, and any MCP-compatible client.",
+    "provider_desc": "LLM provider for translation",
+    "model_desc": "LLM model name",
+    "host_desc": "Ollama server address",
+    "base_url_desc": "OpenAI-compatible base URL",
+    "api_key_desc": "API key for cloud providers",
+    "input_desc": "i18n source directory (auto-discovered from angular.json)",
+    "src_desc": "Source code directory for scanning",
+    "tools_title": "Available Tools (16)",
+    "tools_introspection": "<strong>Introspection</strong> — <code>get_config</code>, <code>get_progress</code>, <code>validate</code>, <code>scan_hardcoded</code>",
+    "tools_crud": "<strong>Translation CRUD</strong> — <code>get_translations</code>, <code>set_translations</code>, <code>add_key</code>, <code>update_key</code>, <code>delete_key</code>, <code>list_missing</code>",
+    "tools_llm": "<strong>LLM Translation</strong> — <code>translate_keys</code>, <code>translate_missing</code>, <code>translate_stale</code>, <code>llm_status</code>",
+    "tools_source": "<strong>Source Code</strong> — <code>get_usage</code>, <code>get_scan_context</code>",
+    "config_title": "IDE Configuration",
+    "config_desc": "Add the following to your MCP config file (<code>mcp_config.json</code>, <code>.cursor/mcp.json</code>, <code>claude_desktop_config.json</code>, etc.):",
+    "features": "Features",
+    "feature_stdio": "STDIO transport — works with any MCP-compatible AI agent or IDE",
+    "feature_autodiscovery": "Auto-discovers i18n directory and project configuration",
+    "feature_multi_provider": "Multi-provider LLM support (Ollama, OpenAI, Gemini)",
+    "feature_batch": "Batch translation with automatic batching and per-key fallback",
+    "feature_scan": "Template scanning for hardcoded strings with scored candidates"
   }
 }

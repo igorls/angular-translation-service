@@ -31,7 +31,7 @@
     },
     "llm": {
       "title": "LLM 翻译",
-      "description": "内置 CLI 命令可使用 AI 批量翻译您的 JSON 文件。在不同语言间保持一致的术语。"
+      "description": "内置 CLI 命令和 MCP 服务器，使用 AI 批量翻译您的 JSON 文件。通过本地或云端 LLM，保持跨语言术语的一致性。"
     }
   },
   "demo": {

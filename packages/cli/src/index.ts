@@ -11,11 +11,17 @@
  */
 
 import { program } from 'commander';
+import { readFileSync } from 'fs';
+import { resolve, dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const pkg = JSON.parse(readFileSync(resolve(__dirname, '../package.json'), 'utf-8'));
 
 program
     .name('ats')
     .description('CLI tooling for angular-translation-service')
-    .version('0.2.0');
+    .version(pkg.version);
 
 program
     .command('generate')
@@ -95,6 +101,21 @@ program
     .action(async (options) => {
         const { startEditor } = await import('./commands/editor');
         await startEditor(options);
+    });
+
+program
+    .command('mcp')
+    .description('Start MCP server for agent-controlled translation automation')
+    .option('-i, --input <dir>', 'i18n source directory (auto-detected if omitted)')
+    .option('-s, --src <dir>', 'Source code directory for scanning', 'src')
+    .option('--provider <provider>', 'LLM provider: ollama | openai | gemini', 'ollama')
+    .option('--model <model>', 'LLM model name', 'qwen3.5:9b')
+    .option('--host <host>', 'Ollama host', 'localhost:11434')
+    .option('--base-url <url>', 'OpenAI-compatible base URL', 'https://api.openai.com')
+    .option('--api-key <key>', 'API key for OpenAI/Gemini')
+    .action(async (options) => {
+        const { startMCPServer } = await import('./commands/mcp');
+        await startMCPServer(options);
     });
 
 program.parse();

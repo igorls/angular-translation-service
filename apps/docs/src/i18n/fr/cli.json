@@ -67,5 +67,28 @@
   "ci": {
     "title": "Intégration CI",
     "desc": "Ajoutez des vérifications de traduction à votre pipeline CI pour détecter les problèmes rapidement."
+  },
+  "mcp": {
+    "desc": "Lance un serveur <a href=\"https://modelcontextprotocol.io\" target=\"_blank\">Model Context Protocol</a> (MCP) basé sur STDIO qui expose toutes les capacités de l'éditeur de traduction en tant qu'outils pour les agents IA. Compatible avec Claude Code, Cursor, Windsurf, Gemini CLI et tout client compatible MCP.",
+    "provider_desc": "Fournisseur LLM pour la traduction",
+    "model_desc": "Nom du modèle LLM",
+    "host_desc": "Adresse du serveur Ollama",
+    "base_url_desc": "URL de base compatible OpenAI",
+    "api_key_desc": "Clé API pour les fournisseurs cloud",
+    "input_desc": "Répertoire source i18n (découvert automatiquement à partir de angular.json)",
+    "src_desc": "Répertoire du code source pour l'analyse",
+    "tools_title": "Outils disponibles (16)",
+    "tools_introspection": "<strong>Introspection</strong> — <code>get_config</code>, <code>get_progress</code>, <code>validate</code>, <code>scan_hardcoded</code>",
+    "tools_crud": "<strong>Gestion CRUD de la traduction</strong> — <code>get_translations</code>, <code>set_translations</code>, <code>add_key</code>, <code>update_key</code>, <code>delete_key</code>, <code>list_missing</code>",
+    "tools_llm": "<strong>Traduction LLM</strong> — <code>translate_keys</code>, <code>translate_missing</code>, <code>translate_stale</code>, <code>llm_status</code>",
+    "tools_source": "<strong>Code Source</strong> — <code>get_usage</code>, <code>get_scan_context</code>",
+    "config_title": "Configuration de l'IDE",
+    "config_desc": "Ajoutez le suivant à votre fichier de configuration MCP (<code>mcp_config.json</code>, <code>.cursor/mcp.json</code>, <code>claude_desktop_config.json</code>, etc.):",
+    "features": "Fonctionnalités",
+    "feature_stdio": "Transport STDIO — fonctionne avec tout agent IA ou IDE compatible MCP",
+    "feature_autodiscovery": "Découvre automatiquement le répertoire i18n et la configuration du projet",
+    "feature_multi_provider": "Support multi-fournisseur LLM (Ollama, OpenAI, Gemini)",
+    "feature_batch": "Traduction par lots avec regroupement automatique et basculement par clé",
+    "feature_scan": "Analyse de modèles pour les chaînes codées en dur avec des candidats notés"
   }
 }
