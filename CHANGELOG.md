@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.4.1 (2026-03-11)
+
+### CLI
+
+- **Fixed editor UI not loading in published package** — The 8 JS module files powering the editor were loaded via runtime `readFileSync` but never included in the npm tarball. The editor HTML/CSS rendered but the UI was completely non-interactive.
+  - Added `scripts/bundle-js-modules.ts` pre-build step that inlines all JS modules as string constants in a generated TypeScript file.
+  - Modified `ui/index.ts` to import embedded modules instead of reading from disk.
+  - Updated `build:cli` script to run the pre-build step automatically.
+
 ## 0.4.0 (2026-03-11)
 
 ### CLI — MCP Server

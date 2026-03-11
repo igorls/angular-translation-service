@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "build:core": "npx ng-packagr -p packages/core/ng-package.json",
-    "build:cli": "bun build packages/cli/src/index.ts --outdir packages/cli/dist --target node",
+    "build:cli": "bun packages/cli/scripts/bundle-js-modules.ts && bun build packages/cli/src/index.ts --outdir packages/cli/dist --target node",
     "build": "bun run build:core && bun run build:cli",
     "test": "bun test",
     "generate": "bun packages/cli/src/index.ts generate",

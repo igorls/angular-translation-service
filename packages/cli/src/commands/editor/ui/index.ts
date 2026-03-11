@@ -1,41 +1,20 @@
 /**
  * Editor UI — assembles the complete HTML page and exports JS module contents
  * for serving via HTTP routes.
+ *
+ * JS modules are inlined at build time via js-modules.generated.ts to ensure
+ * they're bundled into the CLI dist (not loaded from disk at runtime).
  */
 
-import { readFileSync } from 'fs';
-import { join, dirname } from 'path';
 import { CSS } from './css';
 import { HTML_BODY } from './html';
+import { JS_MODULE_MAP } from './js-modules.generated';
 
 // ─── JS Module Registry ────────────────────────────────────
-// Read all .js files from the js/ directory and expose them
-// as a map for the HTTP server to serve at /editor/js/:name
+// All modules are embedded as string constants at build time.
+// Served by the HTTP server at /editor/js/:name
 
-const jsDir = join(dirname(new URL(import.meta.url).pathname), 'js');
-
-const JS_MODULE_NAMES = [
-    'helpers.js',
-    'state.js',
-    'api.js',
-    'dropdown.js',
-    'render.js',
-    'panels.js',
-    'events.js',
-    'llm.js',
-];
-
-export const JS_MODULES: Record<string, string> = {};
-
-for (const name of JS_MODULE_NAMES) {
-    try {
-        JS_MODULES[name] = readFileSync(join(jsDir, name), 'utf-8');
-    } catch {
-        // In Bun, import.meta.url resolves to the .ts source location
-        // so the .js files should be co-located in the source tree
-        console.warn(`   ⚠️  Could not load JS module: ${name}`);
-    }
-}
+export const JS_MODULES: Record<string, string> = JS_MODULE_MAP;
 
 // ─── HTML Assembler ─────────────────────────────────────────
 
