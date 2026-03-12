@@ -58,7 +58,7 @@ export async function startEditor(options: EditorOptions): Promise<void> {
     const relSrc = relative(cwd, srcDir);
 
     const __dirname = dirname(fileURLToPath(import.meta.url));
-    const pkg = JSON.parse(readFileSync(resolve(__dirname, '../../package.json'), 'utf-8'));
+    const pkg = JSON.parse(readFileSync(resolve(__dirname, '../package.json'), 'utf-8'));
 
     // ── Header ──────────────────────────────────────────────
     console.log('');
