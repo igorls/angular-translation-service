@@ -261,6 +261,8 @@
 
 .agent-skill-alt a {
   color: var(--text-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .demo-callout {
