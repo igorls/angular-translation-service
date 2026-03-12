@@ -135,7 +135,7 @@ export class MCPTransport {
         this.sendResult(req.id!, {
             protocolVersion: '2024-11-05',
             capabilities: {
-                tools: {},
+                tools: { listChanged: true },
             },
             serverInfo: {
                 name: this.serverName,

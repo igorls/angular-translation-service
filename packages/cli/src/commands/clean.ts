@@ -8,10 +8,12 @@
 import { existsSync, readdirSync, readFileSync } from 'fs';
 import { join, resolve } from 'path';
 import { collectFlatKeys, writeJsonFile, getNestedValue, removeNestedValue } from './utils';
+import { resolveDefaultLang } from './resolve-default-lang';
 
 interface CleanOptions {
     input: string;
     dryRun?: boolean;
+    defaultLang?: string;
 }
 
 export interface CleanResult {
@@ -43,8 +45,8 @@ export async function cleanOrphans(options: CleanOptions): Promise<CleanResult[]
         process.exit(1);
     }
 
-    const defaultLang = langDirs[0];
-    const targetLangs = langDirs.slice(1);
+    const defaultLang = resolveDefaultLang(langDirs, options.defaultLang);
+    const targetLangs = langDirs.filter((l) => l !== defaultLang);
 
     console.log(`🧹 Cleaning orphaned keys...`);
     console.log(`   Reference: ${defaultLang}`);

@@ -11,9 +11,11 @@
 import { readdirSync, existsSync } from 'fs';
 import { join, resolve } from 'path';
 import { loadNamespaces, collectFlatKeys } from './utils';
+import { resolveDefaultLang } from './resolve-default-lang';
 
 interface ValidateOptions {
     input: string;
+    defaultLang?: string;
 }
 
 export interface ValidationResult {
@@ -47,9 +49,8 @@ export async function validateTranslations(options: ValidateOptions): Promise<Va
         process.exit(1);
     }
 
-    // Use first directory as the reference (default language)
-    const defaultLang = langDirs[0];
-    const targetLangs = langDirs.slice(1);
+    const defaultLang = resolveDefaultLang(langDirs, options.defaultLang);
+    const targetLangs = langDirs.filter((l) => l !== defaultLang);
 
     console.log(`🔍 Validating translations...`);
     console.log(`   Reference: ${defaultLang}`);

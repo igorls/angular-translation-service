@@ -8,6 +8,7 @@
 import { existsSync, readdirSync, readFileSync } from 'fs';
 import { join, resolve } from 'path';
 import { collectFlatKeys, writeJsonFile, getNestedValue, setNestedValue } from './utils';
+import { resolveDefaultLang } from './resolve-default-lang';
 
 interface TranslateOptions {
     locale: string;
@@ -15,6 +16,7 @@ interface TranslateOptions {
     model: string;
     host: string;
     autoAccept?: boolean;
+    defaultLang?: string;
 }
 
 interface OllamaResponse {
@@ -34,7 +36,7 @@ export async function translateKeys(options: TranslateOptions): Promise<void> {
         process.exit(1);
     }
 
-    // Discover default language (first directory)
+    // Discover language directories
     const langDirs = readdirSync(i18nDir).filter((entry) => {
         const fullPath = join(i18nDir, entry);
         try {
@@ -42,14 +44,14 @@ export async function translateKeys(options: TranslateOptions): Promise<void> {
         } catch {
             return false;
         }
-    });
+    }).sort();
 
     if (langDirs.length === 0) {
         console.error('❌ No language directories found.');
         process.exit(1);
     }
 
-    const defaultLang = langDirs[0];
+    const defaultLang = resolveDefaultLang(langDirs, options.defaultLang);
     const targetLang = options.locale;
     const defaultDir = join(i18nDir, defaultLang);
     const targetDir = join(i18nDir, targetLang);

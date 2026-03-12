@@ -49,6 +49,7 @@ program
     .command('validate')
     .description('Detect duplicate keys, values, and structural issues')
     .option('-i, --input <dir>', 'i18n source directory', 'src/assets/i18n')
+    .option('--default-lang <lang>', 'Reference language (overrides alphabetical detection)')
     .action(async (options) => {
         const { validateTranslations } = await import('./commands/validate');
         await validateTranslations(options);
@@ -62,6 +63,7 @@ program
     .option('--model <model>', 'Ollama model to use', 'gemma3:12b')
     .option('--host <host>', 'Ollama host', '127.0.0.1:11434')
     .option('--auto-accept', 'Auto-accept all translations without prompting')
+    .option('--default-lang <lang>', 'Source language (overrides alphabetical detection)')
     .action(async (options) => {
         const { translateKeys } = await import('./commands/translate');
         await translateKeys(options);
@@ -72,6 +74,7 @@ program
     .description('Remove orphaned keys from translation files')
     .option('-i, --input <dir>', 'i18n source directory', 'src/assets/i18n')
     .option('--dry-run', 'Show what would be removed without removing')
+    .option('--default-lang <lang>', 'Reference language (overrides alphabetical detection)')
     .action(async (options) => {
         const { cleanOrphans } = await import('./commands/clean');
         await cleanOrphans(options);

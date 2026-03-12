@@ -90,4 +90,18 @@ describe('cleanOrphans', () => {
         const results = await cleanOrphans({ input: TEST_DIR });
         expect(results).toHaveLength(0);
     });
+
+    it('should use --default-lang as reference instead of alphabetically first', async () => {
+        // fr is the reference — 'extra_key' in de is NOT in fr, so it's orphaned
+        setupLanguages({
+            fr: { common: { title: 'Bonjour' } },
+            de: { common: { title: 'Hallo', extra_key: 'Orphan' } },
+            en: { common: { title: 'Hello' } },
+        });
+
+        const results = await cleanOrphans({ input: TEST_DIR, dryRun: true, defaultLang: 'fr' });
+        const deResult = results.find((r) => r.lang === 'de');
+        expect(deResult).toBeDefined();
+        expect(deResult!.removed).toContain('extra_key');
+    });
 });

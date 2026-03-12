@@ -102,4 +102,32 @@ describe('validateTranslations', () => {
         const esResult = results.find((r) => r.lang === 'es');
         expect(esResult).toBeUndefined(); // No issues for es
     });
+
+    it('should use --default-lang as reference instead of alphabetically first', async () => {
+        // fr is the reference, de and en are targets
+        setupLanguages({
+            fr: { common: { title: 'Bonjour', subtitle: 'Monde', footer: 'Pied de page' } },
+            de: { common: { title: 'Hallo', subtitle: 'Welt' } },
+            en: { common: { title: 'Hello', subtitle: 'World' } },
+        });
+
+        // Without defaultLang, 'de' would be reference (alphabetical),
+        // and it would NOT detect missing 'footer' key in en/de.
+        const resultsAlphabetical = await validateTranslations({ input: TEST_DIR });
+        // de is reference, 'footer' is NOT in de, so it's not considered missing from en/fr
+        const frAlpha = resultsAlphabetical.find((r) => r.lang === 'fr');
+        // fr has 'footer' which is extra relative to de
+        expect(frAlpha).toBeDefined();
+        expect(frAlpha!.extra).toContain('footer');
+
+        // With defaultLang: 'fr', it should detect 'footer' is missing from de and en
+        const resultsExplicit = await validateTranslations({ input: TEST_DIR, defaultLang: 'fr' });
+        const deResult = resultsExplicit.find((r) => r.lang === 'de');
+        expect(deResult).toBeDefined();
+        expect(deResult!.missing).toContain('footer');
+
+        const enResult = resultsExplicit.find((r) => r.lang === 'en');
+        expect(enResult).toBeDefined();
+        expect(enResult!.missing).toContain('footer');
+    });
 });
