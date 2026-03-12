@@ -2,7 +2,7 @@ import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/
 import { provideRouter, withViewTransitions } from '@angular/router';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
-import { provideTranslation, httpLoader } from '@angular-translation-service/core';
+import { provideTranslation, importLoader } from '@angular-translation-service/core';
 import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
@@ -15,7 +15,7 @@ export const appConfig: ApplicationConfig = {
       defaultLang: 'en',
       supportedLangs: ['en', 'pt-BR', 'de', 'fr', 'ja', 'zh', 'es', 'ru'],
       coreNamespaces: ['common'],
-      loader: httpLoader('/angular-translation-service/i18n'),
+      loader: importLoader((lang, ns) => import(`../i18n/${lang}/${ns}.json`)),
       detectLanguage: true,
       storageKey: 'ats-docs-lang',
     }),

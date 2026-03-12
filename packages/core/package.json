@@ -1,6 +1,6 @@
 {
   "name": "@angular-translation-service/core",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Signal-based Angular i18n library with runtime language switching and SSR hydration",
   "author": "Igor LS",
   "license": "MIT",

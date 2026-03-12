@@ -35,15 +35,16 @@ export const appConfig = {
 
 ### 2. Use in Templates
 
+The `select()` API returns a signal that resolves to a recursive proxy. The proxy safely returns empty strings for missing keys, so you can reference nested translation paths **without conditional guards**:
+
 ```typescript
 import { TranslationService } from '@angular-translation-service/core';
 
 @Component({
   template: `
     @let t = common();
-    @if (t) {
-      <h1>{{ t.nav.home }}</h1>
-    }
+    <h1>{{ t?.nav?.home }}</h1>
+    <p>{{ t?.greeting }}</p>
   `,
 })
 export class MyComponent {
@@ -51,6 +52,8 @@ export class MyComponent {
   protected readonly common = this.i18n.select('common');
 }
 ```
+
+> **Avoid wrapping translated content in `@if (t)` blocks.** This causes layout shift (CLS) because the entire DOM structure is hidden until translations load, then everything appears at once. Use optional chaining (`t?.key`) instead — the proxy handles missing keys gracefully.
 
 ### 3. SSR Support
 
@@ -67,7 +70,65 @@ const serverConfig = {
 };
 ```
 
-### 4. CLI Tools
+### 4. Choosing a Loader (SSG vs SSR)
+
+The library ships two loaders. The right choice depends on your rendering strategy:
+
+| Loader | Best For | How It Works |
+|--------|----------|-------------|
+| `httpLoader(basePath)` | **SSR** (live server) | Fetches JSON via `fetch()` at runtime. Requires an HTTP server to resolve URLs. |
+| `importLoader(factory)` | **SSG** (static prerender) | Uses dynamic `import()` to load JSON from the filesystem. Works during Node prerender without a server. |
+
+#### SSG with `importLoader`
+
+If your app uses `outputMode: 'static'` / `RenderMode.Prerender`, use `importLoader` to ensure translations are available during the build-time prerender:
+
+```typescript
+import { provideTranslation, importLoader } from '@angular-translation-service/core';
+
+provideTranslation({
+  defaultLang: 'en',
+  supportedLangs: ['en', 'pt-BR'],
+  coreNamespaces: ['common'],
+  loader: importLoader((lang, ns) => import(`./i18n/${lang}/${ns}.json`)),
+});
+```
+
+> **Why?** During SSG, there is no HTTP server running — `httpLoader` fetches fail silently and translations are not embedded in the prerendered HTML. This causes severe layout shift (CLS > 0.5) when the client loads and translations pop in.
+>
+> **Trade-off:** `importLoader` bundles all referenced locale files into the JS output. This is ideal for small-to-medium sites. For apps with many large locale files, use `httpLoader` with SSR instead.
+
+### 5. Loading States with `ready`
+
+The `TranslationService` exposes a `ready` signal that becomes `true` once all `coreNamespaces` have loaded for the current language. Use it to prevent flash of untranslated content (FOUC) on heavier sites:
+
+```typescript
+@Component({
+  template: `
+    @if (!i18n.ready()) {
+      <div class="loading-screen">
+        <div class="spinner"></div>
+      </div>
+    } @else {
+      @let t = common();
+      <h1>{{ t?.nav?.home }}</h1>
+    }
+  `,
+})
+export class AppShell {
+  protected readonly i18n = inject(TranslationService);
+  protected readonly common = this.i18n.select('common');
+}
+```
+
+This pattern is useful when:
+- Your app has many core namespaces that load asynchronously
+- You want a branded loading screen instead of empty content
+- You're using `httpLoader` where fetch latency is noticeable
+
+> **Note:** With `importLoader`, translations resolve synchronously during SSG, so `ready()` is `true` from the first render and the loading screen never appears in prerendered HTML.
+
+### 6. CLI Tools
 
 ```bash
 npx ats generate    # Generate TypeScript types from JSON
@@ -84,3 +145,4 @@ Full documentation: [angular-translation-service.pages.dev](https://igorls.githu
 ## License
 
 MIT © [Igor LS](https://github.com/igorls)
+

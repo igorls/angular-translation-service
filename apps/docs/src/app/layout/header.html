@@ -7,16 +7,14 @@
 
     <nav [class.open]="isMobileMenuOpen()">
       @let t = $any(common());
-      @if (t) {
-        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMobileMenu()">{{ t.nav.home }}</a>
-        <a routerLink="/getting-started" routerLinkActive="active" (click)="closeMobileMenu()">{{ t.nav.docs }}</a>
-        <a routerLink="/api" routerLinkActive="active" (click)="closeMobileMenu()">{{ t.nav.api }}</a>
-        <a routerLink="/cli" routerLinkActive="active" (click)="closeMobileMenu()">{{ t.nav.cli }}</a>
-        <a href="https://github.com/igorls/angular-translation-service"
-           target="_blank" rel="noopener" class="github-link" (click)="closeMobileMenu()">
-          {{ t.nav.github }} ↗
-        </a>
-      }
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMobileMenu()">{{ t?.nav?.home }}</a>
+      <a routerLink="/getting-started" routerLinkActive="active" (click)="closeMobileMenu()">{{ t?.nav?.docs }}</a>
+      <a routerLink="/api" routerLinkActive="active" (click)="closeMobileMenu()">{{ t?.nav?.api }}</a>
+      <a routerLink="/cli" routerLinkActive="active" (click)="closeMobileMenu()">{{ t?.nav?.cli }}</a>
+      <a href="https://github.com/igorls/angular-translation-service"
+         target="_blank" rel="noopener" class="github-link" (click)="closeMobileMenu()">
+        {{ t?.nav?.github }} ↗
+      </a>
     </nav>
 
     <div class="header-actions">
