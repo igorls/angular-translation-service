@@ -7,11 +7,11 @@ import { TranslationService } from './translation.service';
  * Usage: {{ 'common:greeting' | translate }}
  *        {{ 'common:greeting' | translate:{ name: 'Igor' } }}
  *
- * Design: Deep Think v3 + Angular v21 Audit fix.
+ * Design: Deep Think v3 + modern Angular audit fix.
  * - Caches the Signal instance to avoid recreating on every CD cycle
  * - Reads the signal value via `()` so Angular's signal-based CD tracks it
  * - Triggers ensureNamespaces via translate() for lazy loading support
- * - Works in zoneless Angular v21 (no Zone.js dependency)
+ * - Works in zoneless Angular (no Zone.js dependency)
  */
 @Pipe({ name: 'translate', pure: false })
 export class TranslatePipe implements PipeTransform {

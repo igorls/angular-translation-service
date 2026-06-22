@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.4.4 / core 0.3.2 (2026-06-22)
+
+### Core
+
+- Added Angular 22 to the supported peer dependency range.
+- Updated the Angular packaging toolchain to Angular 22, ng-packagr 22, and TypeScript 6.
+- Explicitly builds the library with the package tsconfig while preserving partial compilation output for npm consumers.
+
+### Docs
+
+- Updated the docs app to Angular 22.
+
+### CLI
+
+- Patch release to keep the `publish:all` workflow publishable alongside the core compatibility release.
+
 ## 0.4.1 (2026-03-11)
 
 ### CLI

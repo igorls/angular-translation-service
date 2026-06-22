@@ -1,6 +1,6 @@
 {
   "name": "@angular-translation-service/cli",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "description": "CLI tooling for angular-translation-service: type generation, validation, LLM translation",
   "author": "Igor LS",
   "license": "MIT",
@@ -24,7 +24,7 @@
     "llm"
   ],
   "bin": {
-    "ats": "./dist/index.js"
+    "ats": "dist/index.js"
   },
   "files": [
     "dist/",

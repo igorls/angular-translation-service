@@ -1,6 +1,6 @@
 {
   "name": "@angular-translation-service/core",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Signal-based Angular i18n library with runtime language switching and SSR hydration",
   "author": "Igor LS",
   "license": "MIT",
@@ -26,8 +26,8 @@
     "runtime"
   ],
   "peerDependencies": {
-    "@angular/core": "^19.0.0 || ^20.0.0 || ^21.0.0",
-    "@angular/common": "^19.0.0 || ^20.0.0 || ^21.0.0"
+    "@angular/core": "^19.0.0 || ^20.0.0 || ^21.0.0 || ^22.0.0",
+    "@angular/common": "^19.0.0 || ^20.0.0 || ^21.0.0 || ^22.0.0"
   },
   "sideEffects": false
 }

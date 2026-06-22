@@ -10,7 +10,7 @@
     "apps/*"
   ],
   "scripts": {
-    "build:core": "npx ng-packagr -p packages/core/ng-package.json",
+    "build:core": "ng-packagr -p packages/core/ng-package.json -c packages/core/tsconfig.lib.json",
     "build:cli": "bun packages/cli/scripts/bundle-js-modules.ts && bun build packages/cli/src/index.ts --outdir packages/cli/dist --target node",
     "build": "bun run build:core && bun run build:cli",
     "test": "bun test",
@@ -24,15 +24,18 @@
     "release": "bun run build && bun test && bun run publish:all"
   },
   "devDependencies": {
-    "@angular/build": "^21.0.0",
-    "@angular/cli": "^21.0.0",
-    "@angular/compiler-cli": "^21.0.0",
-    "ng-packagr": "^21.0.0",
+    "@angular/build": "^22.0.0",
+    "@angular/cli": "^22.0.0",
+    "@angular/common": "^22.0.0",
+    "@angular/compiler": "^22.0.0",
+    "@angular/compiler-cli": "^22.0.0",
+    "@angular/core": "^22.0.0",
+    "ng-packagr": "^22.0.0",
     "tslib": "^2.8.1",
-    "typescript": "~5.9.0"
+    "typescript": "~6.0.0"
   },
   "peerDependencies": {
-    "@angular/core": "^19.0.0 || ^20.0.0 || ^21.0.0",
-    "@angular/common": "^19.0.0 || ^20.0.0 || ^21.0.0"
+    "@angular/core": "^19.0.0 || ^20.0.0 || ^21.0.0 || ^22.0.0",
+    "@angular/common": "^19.0.0 || ^20.0.0 || ^21.0.0 || ^22.0.0"
   }
 }
