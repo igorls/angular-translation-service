@@ -17,15 +17,19 @@
     "generated_output": "生成された出力"
   },
   "check": {
-    "desc": "ソースコード（<code>.ts</code> および <code>.html</code> ファイル）をスキャンして翻訳キーの使用状況を確認し、JSON ファイルと照合して不足しているキーや未使用のキーを検出します。",
-    "i18n_desc": "JSON 名前空間ディレクトリ（デフォルト言語）",
+    "desc": "Scans source code (<code>.ts</code> and <code>.html</code>) for translation references, validates them across every locale pack, checks dynamic key prefixes, reports cross-locale parity drift, and flags empty values.",
+    "i18n_desc": "Single locale directory or root i18n directory containing language subdirectories",
     "src_desc": "キーの使用状況をスキャンするソースディレクトリ",
     "ns_desc": "特定の名前空間にチェックを制限する",
     "detected_patterns": "検出されたパターン",
     "pattern_translate": "<code>translate('ns:key')</code> — シグナルベースの翻訳呼び出し",
     "pattern_instant": "<code>instant('ns:key')</code> — 同期的な翻訳呼び出し",
     "pattern_select": "<code>select('ns')</code> — 名前空間全体を使用済みとしてマークする",
-    "pattern_pipe": "<code>'ns:key' | translate</code> — テンプレートでの Angular パイプの使用"
+    "pattern_pipe": "<code>'ns:key' | translate</code> — テンプレートでの Angular パイプの使用",
+    "pattern_quoted": "<code>'ns:key'</code> anywhere in source — validates helper arrays, configs, and option objects",
+    "pattern_prefix": "<code>'ns:dynamic.prefix.'</code> — dynamic key family prefix that must match at least one key in every locale",
+    "pattern_parity": "Cross-locale parity — reports missing and extra keys per namespace",
+    "pattern_empty": "Empty values — reports keys present with <code>\"\"</code> before they render invisible text"
   },
   "validate": {
     "desc": "すべての言語の翻訳ファイルを比較し、不足しているキー、余分なキー、空の値などの構造的な不一致を見つけます。",

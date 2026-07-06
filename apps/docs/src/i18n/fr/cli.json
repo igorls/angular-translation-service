@@ -17,15 +17,19 @@
     "generated_output": "Sortie générée"
   },
   "check": {
-    "desc": "Analyse votre code source (fichiers <code>.ts</code> et <code>.html</code>) pour l'utilisation des clés de traduction et effectue des références croisées avec les fichiers JSON pour détecter les clés manquantes et inutilisées.",
-    "i18n_desc": "Répertoire d'espace de noms JSON (langue par défaut)",
+    "desc": "Scans source code (<code>.ts</code> and <code>.html</code>) for translation references, validates them across every locale pack, checks dynamic key prefixes, reports cross-locale parity drift, and flags empty values.",
+    "i18n_desc": "Single locale directory or root i18n directory containing language subdirectories",
     "src_desc": "Répertoire source à analyser pour l'utilisation des clés",
     "ns_desc": "Limiter la vérification à un espace de noms spécifique",
     "detected_patterns": "Modèles détectés",
     "pattern_translate": "<code>translate('ns:key')</code> — appels de traduction basés sur les signaux",
     "pattern_instant": "<code>instant('ns:key')</code> — appels de traduction synchrones",
     "pattern_select": "<code>select('ns')</code> — marque l'espace de noms complet comme utilisé",
-    "pattern_pipe": "<code>'ns:key' | translate</code> — utilisation du pipe Angular dans les templates"
+    "pattern_pipe": "<code>'ns:key' | translate</code> — utilisation du pipe Angular dans les templates",
+    "pattern_quoted": "<code>'ns:key'</code> anywhere in source — validates helper arrays, configs, and option objects",
+    "pattern_prefix": "<code>'ns:dynamic.prefix.'</code> — dynamic key family prefix that must match at least one key in every locale",
+    "pattern_parity": "Cross-locale parity — reports missing and extra keys per namespace",
+    "pattern_empty": "Empty values — reports keys present with <code>\"\"</code> before they render invisible text"
   },
   "validate": {
     "desc": "Compare les fichiers de traduction dans toutes les langues pour trouver des incohérences structurelles : clés manquantes, clés superflues et valeurs vides.",

@@ -92,7 +92,7 @@
     <p class="section-desc" [innerHTML]="t.check.desc"></p>
     <div class="code-block">
       <pre><span class="fn">npx</span> <span class="str">&#64;angular-translation-service/cli</span> check \
-  <span class="flag">--i18n</span> <span class="str">src/i18n/en</span> \
+  <span class="flag">--i18n</span> <span class="str">src/i18n</span> \
   <span class="flag">--src</span> <span class="str">src</span></pre>
     </div>
 
@@ -132,6 +132,10 @@
         <li [innerHTML]="t.check.pattern_instant"></li>
         <li [innerHTML]="t.check.pattern_select"></li>
         <li [innerHTML]="t.check.pattern_pipe"></li>
+        <li [innerHTML]="t.check.pattern_quoted"></li>
+        <li [innerHTML]="t.check.pattern_prefix"></li>
+        <li [innerHTML]="t.check.pattern_parity"></li>
+        <li [innerHTML]="t.check.pattern_empty"></li>
       </ul>
     </div>
   </section>
@@ -449,7 +453,7 @@
       - run: npm ci
       - run: npx &#64;angular-translation-service/cli generate --check
       - run: npx &#64;angular-translation-service/cli validate -i src/i18n
-      - run: npx &#64;angular-translation-service/cli check --i18n src/i18n/en --src src</pre>
+      - run: npx &#64;angular-translation-service/cli check --i18n src/i18n --src src</pre>
     </div>
   </section>
 </div>

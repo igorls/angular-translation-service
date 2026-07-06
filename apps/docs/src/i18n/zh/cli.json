@@ -17,15 +17,19 @@
     "generated_output": "生成的输出"
   },
   "check": {
-    "desc": "扫描源码（<code>.ts</code> 和 <code>.html</code> 文件）中的翻译键使用情况，并与 JSON 文件进行交叉引用，以检测缺失和未使用的键。",
-    "i18n_desc": "JSON 命名空间目录（默认语言）",
+    "desc": "Scans source code (<code>.ts</code> and <code>.html</code>) for translation references, validates them across every locale pack, checks dynamic key prefixes, reports cross-locale parity drift, and flags empty values.",
+    "i18n_desc": "Single locale directory or root i18n directory containing language subdirectories",
     "src_desc": "要扫描键使用情况的源目录",
     "ns_desc": "将检查限制在特定命名空间",
     "detected_patterns": "检测到的模式",
     "pattern_translate": "<code>translate('ns:key')</code> — 基于信号的翻译调用",
     "pattern_instant": "<code>instant('ns:key')</code> — 同步翻译调用",
     "pattern_select": "<code>select('ns')</code> — 将整个命名空间标记为已使用",
-    "pattern_pipe": "<code>'ns:key' | translate</code> — 模板中的 Angular 管道使用"
+    "pattern_pipe": "<code>'ns:key' | translate</code> — 模板中的 Angular 管道使用",
+    "pattern_quoted": "<code>'ns:key'</code> anywhere in source — validates helper arrays, configs, and option objects",
+    "pattern_prefix": "<code>'ns:dynamic.prefix.'</code> — dynamic key family prefix that must match at least one key in every locale",
+    "pattern_parity": "Cross-locale parity — reports missing and extra keys per namespace",
+    "pattern_empty": "Empty values — reports keys present with <code>\"\"</code> before they render invisible text"
   },
   "validate": {
     "desc": "比较所有语言的翻译文件，找出结构性不一致：缺失的键、多余的键和空值。",

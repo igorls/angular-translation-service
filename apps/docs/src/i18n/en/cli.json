@@ -17,15 +17,19 @@
     "generated_output": "Generated Output"
   },
   "check": {
-    "desc": "Scans your source code (<code>.ts</code> and <code>.html</code> files) for translation key usage and cross-references with JSON files to detect missing and unused keys.",
-    "i18n_desc": "JSON namespace directory (default language)",
+    "desc": "Scans source code (<code>.ts</code> and <code>.html</code>) for translation references, validates them across every locale pack, checks dynamic key prefixes, reports cross-locale parity drift, and flags empty values.",
+    "i18n_desc": "Single locale directory or root i18n directory containing language subdirectories",
     "src_desc": "Source directory to scan for key usage",
     "ns_desc": "Limit checking to a specific namespace",
     "detected_patterns": "Detected Patterns",
     "pattern_translate": "<code>translate('ns:key')</code> — signal-based translation calls",
     "pattern_instant": "<code>instant('ns:key')</code> — synchronous translation calls",
     "pattern_select": "<code>select('ns')</code> — marks entire namespace as used",
-    "pattern_pipe": "<code>'ns:key' | translate</code> — Angular pipe usage in templates"
+    "pattern_pipe": "<code>'ns:key' | translate</code> — Angular pipe usage in templates",
+    "pattern_quoted": "<code>'ns:key'</code> anywhere in source — validates helper arrays, configs, and option objects",
+    "pattern_prefix": "<code>'ns:dynamic.prefix.'</code> — dynamic key family prefix that must match at least one key in every locale",
+    "pattern_parity": "Cross-locale parity — reports missing and extra keys per namespace",
+    "pattern_empty": "Empty values — reports keys present with <code>\"\"</code> before they render invisible text"
   },
   "validate": {
     "desc": "Compares translation files across all languages to find structural inconsistencies: missing keys, extra keys, and empty values.",

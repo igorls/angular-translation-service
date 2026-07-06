@@ -21,7 +21,7 @@ ats --help
 | Command | Description |
 |---------|-------------|
 | `ats generate` | Generate TypeScript types from JSON translation files |
-| `ats check` | Find missing and unused translation keys by scanning source code |
+| `ats check` | Scan source references, dynamic prefixes, parity drift, empty values, and unused keys |
 | `ats validate` | Detect structural issues across languages (missing keys, empty values) |
 | `ats translate` | Auto-translate missing keys using LLM via Ollama |
 | `ats clean` | Remove orphaned keys from target language files |
@@ -34,8 +34,8 @@ ats --help
 # Generate TypeScript types
 npx ats generate -i src/i18n -o src/i18n.generated.ts
 
-# Check for missing/unused keys
-npx ats check --i18n src/i18n/en --src src
+# Check source references across every locale
+npx ats check --i18n src/i18n --src src
 
 # Validate all languages
 npx ats validate -i src/i18n
@@ -62,6 +62,12 @@ declare module '@angular-translation-service/core' {
 
 Once the generated file is included in your app, `translate()`, `instant()`, and `select()` are checked against your JSON packs. Without generated types, the core API remains permissive.
 
+## Source Checks
+
+`ats check` accepts either a single locale directory such as `src/i18n/en` or a root i18n directory such as `src/i18n`. When multiple locale packs are available, it validates every quoted `ns:key.path` source reference against every locale, checks dynamic prefix references like `admin:orders.status.`, reports cross-locale parity drift in both directions, and fails empty string values.
+
+The first source file reference is included in missing-key output so CI failures point straight to the typo or missing translation.
+
 ## CI Integration
 
 ```yaml
@@ -71,7 +77,7 @@ Once the generated file is included in your app, `translate()`, `instant()`, and
 - run: npm ci
 - run: npx ats generate --check
 - run: npx ats validate -i src/i18n
-- run: npx ats check --i18n src/i18n/en --src src
+- run: npx ats check --i18n src/i18n --src src
 ```
 
 ## Versioning

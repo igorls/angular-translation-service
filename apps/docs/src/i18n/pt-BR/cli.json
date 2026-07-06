@@ -17,15 +17,19 @@
     "generated_output": "Saída Gerada"
   },
   "check": {
-    "desc": "Analisa seu código-fonte (arquivos <code>.ts</code> e <code>.html</code>) em busca do uso de chaves de tradução e faz referências cruzadas com os arquivos JSON para detectar chaves ausentes e não utilizadas.",
-    "i18n_desc": "Diretório de namespace JSON (idioma padrão)",
+    "desc": "Scans source code (<code>.ts</code> and <code>.html</code>) for translation references, validates them across every locale pack, checks dynamic key prefixes, reports cross-locale parity drift, and flags empty values.",
+    "i18n_desc": "Single locale directory or root i18n directory containing language subdirectories",
     "src_desc": "Diretório de origem para analisar o uso de chaves",
     "ns_desc": "Limitar a verificação a um namespace específico",
     "detected_patterns": "Padrões Detectados",
     "pattern_translate": "<code>translate('ns:key')</code> — chamadas de tradução baseadas em signals",
     "pattern_instant": "<code>instant('ns:key')</code> — chamadas de tradução síncronas",
     "pattern_select": "<code>select('ns')</code> — marca o namespace inteiro como usado",
-    "pattern_pipe": "<code>'ns:key' | translate</code> — uso de pipe do Angular em templates"
+    "pattern_pipe": "<code>'ns:key' | translate</code> — uso de pipe do Angular em templates",
+    "pattern_quoted": "<code>'ns:key'</code> anywhere in source — validates helper arrays, configs, and option objects",
+    "pattern_prefix": "<code>'ns:dynamic.prefix.'</code> — dynamic key family prefix that must match at least one key in every locale",
+    "pattern_parity": "Cross-locale parity — reports missing and extra keys per namespace",
+    "pattern_empty": "Empty values — reports keys present with <code>\"\"</code> before they render invisible text"
   },
   "validate": {
     "desc": "Compara arquivos de tradução em todos os idiomas para encontrar inconsistências estruturais: chaves ausentes, chaves extras e valores vazios.",

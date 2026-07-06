@@ -170,7 +170,7 @@ This pattern is useful when:
 
 ```bash
 npx ats generate    # Generate TypeScript types from JSON
-npx ats check       # Find missing/unused keys
+npx ats check       # Check source references, locale parity, and empty values
 npx ats validate    # Detect structural issues
 npx ats translate   # Auto-translate with LLM
 npx ats editor      # Launch visual editor

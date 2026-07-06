@@ -17,15 +17,19 @@
     "generated_output": "Generierte Ausgabe"
   },
   "check": {
-    "desc": "Durchsucht Ihren Quellcode (<code>.ts</code>- und <code>.html</code>-Dateien) nach der Verwendung von Übersetzungsschlüsseln und gleicht diese mit JSON-Dateien ab, um fehlende oder ungenutzte Schlüssel zu erkennen.",
-    "i18n_desc": "JSON-Namensraumverzeichnis (Standardsprache)",
+    "desc": "Scans source code (<code>.ts</code> and <code>.html</code>) for translation references, validates them across every locale pack, checks dynamic key prefixes, reports cross-locale parity drift, and flags empty values.",
+    "i18n_desc": "Single locale directory or root i18n directory containing language subdirectories",
     "src_desc": "Quellverzeichnis, das nach Schlüsselverwendung durchsucht werden soll",
     "ns_desc": "Überprüfung auf einen bestimmten Namensraum beschränken",
     "detected_patterns": "Erkannte Muster",
     "pattern_translate": "<code>translate('ns:key')</code> — signalbasierte Übersetzungsaufrufe",
     "pattern_instant": "<code>instant('ns:key')</code> — synchrone Übersetzungsaufrufe",
     "pattern_select": "<code>select('ns')</code> — markiert den gesamten Namespace als verwendet",
-    "pattern_pipe": "<code>'ns:key' | translate</code> — Verwendung des Angular-Pipes in Templates"
+    "pattern_pipe": "<code>'ns:key' | translate</code> — Verwendung des Angular-Pipes in Templates",
+    "pattern_quoted": "<code>'ns:key'</code> anywhere in source — validates helper arrays, configs, and option objects",
+    "pattern_prefix": "<code>'ns:dynamic.prefix.'</code> — dynamic key family prefix that must match at least one key in every locale",
+    "pattern_parity": "Cross-locale parity — reports missing and extra keys per namespace",
+    "pattern_empty": "Empty values — reports keys present with <code>\"\"</code> before they render invisible text"
   },
   "validate": {
     "desc": "Vergleicht Übersetzungsdateien über alle Sprachen hinweg, um strukturelle Inkonsistenzen zu finden: fehlende Schlüssel, zusätzliche Schlüssel und leere Werte.",
