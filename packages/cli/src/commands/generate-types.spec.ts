@@ -58,6 +58,23 @@ describe('generateTypes', () => {
         expect(output).toContain("'common:greeting'");
     });
 
+    it('should register generated keys with the core type registry', () => {
+        writeFileSync(
+            join(INPUT_DIR, 'common.json'),
+            JSON.stringify({ greeting: 'Hello', errors: { not_found: '404' } }),
+        );
+
+        generateTypes({ input: INPUT_DIR, output: OUTPUT_FILE });
+
+        const output = readFileSync(OUTPUT_FILE, 'utf-8');
+        expect(output).toContain('export type I18nTranslationKey = I18nKeys[keyof I18nKeys];');
+        expect(output).toContain("declare module '@angular-translation-service/core'");
+        expect(output).toContain('interface TranslationKeyRegistry');
+        expect(output).toContain('keys: I18nTranslationKey;');
+        expect(output).toContain('namespaces: I18nTypes;');
+        expect(output).toContain('export type TranslationKey = I18nTranslationKey;');
+    });
+
     it('should detect out-of-sync types in --check mode', () => {
         writeFileSync(join(INPUT_DIR, 'common.json'), JSON.stringify({ title: 'Hello' }));
 

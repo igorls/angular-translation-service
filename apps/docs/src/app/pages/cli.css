@@ -178,7 +178,7 @@ tr:hover td {
 
 .patterns-detected li::before {
   content: '→ ';
-  color: var(--accent);
+  color: var(--text-accent);
 }
 
 .feature-highlight li::before {

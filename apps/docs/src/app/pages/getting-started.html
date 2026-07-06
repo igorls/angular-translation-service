@@ -25,7 +25,7 @@
     "home": "Home",
     "about": "About"
   {{ '}' }},
-  "greeting": "Hello, {{ '{{' }} name {{ '}}' }}!"
+  "greeting": "Hello, {{ '{' }}name{{ '}' }}!"
 {{ '}' }}</pre>
     </div>
   </section>
@@ -63,9 +63,8 @@
 &#64;Component({{ '{' }}
   template: <span class="str">`
     &#64;let t = common();
-    &#64;if (t) {{ '{' }}
-      &lt;h1&gt;{{ '{{' }} t.nav.home {{ '}}' }}&lt;/h1&gt;
-    {{ '}' }}
+    &lt;h1&gt;{{ '{{' }} t?.nav?.home {{ '}}' }}&lt;/h1&gt;
+    &lt;p&gt;{{ '{{' }} t?.greeting {{ '}}' }}&lt;/p&gt;
   `</span>,
 {{ '}' }})
 <span class="kw">export class</span> <span class="type">MyComponent</span> {{ '{' }}
@@ -91,6 +90,26 @@
     &lt;p&gt;{{ '{{' }} 'common:greeting' | translate:{{ '{' }} name: 'Igor' {{ '}' }} {{ '}}' }}&lt;/p&gt;
   `</span>,
 {{ '}' }})</pre>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 [innerHTML]="t.step6_title"></h2>
+    <p [innerHTML]="t.step6_desc"></p>
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-lang">terminal</span>
+      </div>
+      <pre><span class="fn">npx</span> <span class="str">&#64;angular-translation-service/cli</span> generate \
+  <span class="flag">-i</span> <span class="str">src/i18n/en</span> \
+  <span class="flag">-o</span> <span class="str">src/app/i18n.generated.ts</span></pre>
+    </div>
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-lang">my-component.ts</span>
+      </div>
+      <pre><span class="kw">this</span>.i18n.<span class="fn">translate</span>(<span class="str">'common:nav.home'</span>); <span class="cmt">// typed</span>
+<span class="kw">this</span>.i18n.<span class="fn">translate</span>(<span class="str">'common:nav.hmoe'</span>); <span class="cmt">// TypeScript catches the typo</span></pre>
     </div>
   </section>
 

@@ -297,14 +297,14 @@ When internationalizing an app based on a scan report, follow this process:
 
 ## Important Rules
 
-- **`translate()` vs `instant()`**: Always use `translate()` (returns Signal) or `select()` for reactive access. `instant()` is non-reactive and does NOT trigger lazy loading.
+- **`translate()` vs `instant()`**: Always use `translate()` (returns Signal) or `select()` for reactive access. `instant()` is non-reactive; if it is called before a lazy namespace has ever been requested it may start loading that namespace, but the current synchronous call still returns `''`.
 - **Namespace loading**: Namespaces in `coreNamespaces` are loaded at boot. All other namespaces are lazy-loaded on first `select()` call.
 - **SSR**: Always add `provideTranslationSSR()` in the server config to avoid hydration mismatch errors (NG0501).
 - **Key format**: Both flat (`"nav.home": "Home"`) and nested (`{ "nav": { "home": "Home" } }`) formats are supported. Don't mix in the same namespace.
 
 ## Edge Cases
 
-- **Interpolation in translations**: Use `{{variable}}` syntax in JSON values. The pipe and service handle substitution.
+- **Interpolation in translations**: Use `{variable}` syntax in JSON values. Existing `{{variable}}` placeholders are tolerated for compatibility, but `{variable}` is the canonical form.
 - **Pluralization**: Not built-in. Use separate keys (`items.one`, `items.many`) and conditional rendering.
 - **RTL languages**: The library handles text direction via `CURRENT_LANGUAGE`. Set `dir` attribute on `<html>` reactively.
 - **Missing keys**: By default, the raw key string is shown. Configure `missingKeyHandler` in the provider for custom behavior.

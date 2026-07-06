@@ -4,9 +4,9 @@
   "translation_service": {
     "title": "TranslationService",
     "desc": "为 Angular 应用程序提供响应式 i18n 的核心服务。通过 Angular DI 注入。",
-    "select_desc": "返回用于模板访问的范围信号。自动触发命名空间的延迟加载。在命名空间加载之前，数据为 <code>undefined</code>，之后返回一个经过代理封装的字典，用于安全的深层属性访问。",
-    "translate_desc": "返回单个翻译键的缓存信号。自动触发命名空间加载。键格式：<code>namespace:dotted.path</code>。",
-    "instant_desc": "同步返回翻译。非响应式且<strong>不会</strong>触发延迟加载 — 仅在命名空间已加载时用于命令式代码（提示、日志）。",
+    "select_desc": "Returns a scope signal for template access. Automatically triggers lazy loading for the namespace. Data is <code>undefined</code> until the namespace loads, then returns a proxy-wrapped dictionary for safe deep property access. When generated types are registered, the namespace name and returned schema are typed.",
+    "translate_desc": "Returns a cached signal for a single translation key. Automatically triggers namespace loading and re-runs when the active language changes. Key format: <code>namespace:dotted.path</code>. When generated types are registered, invalid keys become TypeScript errors.",
+    "instant_desc": "Returns the translation synchronously. It is non-reactive: values read with <code>instant()</code> do not update after <code>setLang()</code>. If called before a lazy namespace has ever been requested, dev mode warns once and starts loading that namespace; the current synchronous call still returns <code>''</code>. Use <code>ensureNamespaces()</code> first or prefer <code>translate()</code> for reactive UI state.",
     "setlang_desc": "切换活动语言。为新语言重新加载所有先前请求的命名空间，并将偏好持久化到 <code>localStorage</code>（如果配置了 <code>storageKey</code>）。如果语言不在 <code>supportedLangs</code> 中，则记录警告并提前返回。",
     "ensure_desc": "预加载额外的命名空间。自动去重并发加载。适用于路由守卫或解析器。",
     "lang_desc": "当前语言信号。在模板中读取以显示活动语言。",
@@ -103,5 +103,31 @@
     "unsupported_lang_behavior": "记录警告并提前返回 — 无状态更改",
     "nested_loading": "在加载时访问嵌套键",
     "nested_loading_behavior": "递归代理返回空字符串，防止模板崩溃"
+  },
+  "reactivity": {
+    "title": "Reactivity: translate() vs instant()",
+    "desc": "<code>translate()</code> and <code>select()</code> are reactive signal APIs. Use them for labels, menus, option arrays, and anything that should update after <code>setLang()</code>. <code>instant()</code> is a synchronous snapshot for imperative code such as logs, confirm prompts, or already-loaded toast messages.",
+    "avoid_title": "Avoid frozen option arrays",
+    "avoid_desc": "Calling <code>instant()</code> while defining component fields freezes those labels in the boot language and may read before a lazy namespace is ready.",
+    "prefer_title": "Prefer computed() + translate()",
+    "prefer_desc": "Build derived UI state inside <code>computed()</code> and read the translation signals there. The array rebuilds when the namespace loads and whenever the language changes.",
+    "escape_title": "Escape hatch for imperative key maps",
+    "escape_desc": "When you truly need <code>instant()</code>, read <code>lang()</code> inside the computed and make sure the namespace was preloaded with <code>ensureNamespaces()</code>.",
+    "perf_note": "<strong>Performance note:</strong> parameterized <code>translate(key, params)</code> calls return uncached computed signals, so avoid recreating them inside very large loops. Hoist stable params or use <code>select()</code> where possible."
+  },
+  "typed_keys": {
+    "title": "Typed Translation Keys",
+    "desc": "<code>ats generate</code> now emits a module augmentation for <code>@angular-translation-service/core</code>. Include the generated file in your TypeScript program and the service API narrows from permissive <code>string</code> keys to your generated key union and namespace schemas. Apps that do not generate types keep the old flexible string API.",
+    "generated_title": "Generated registry",
+    "usage_title": "What TypeScript catches",
+    "usage_desc": "Static TypeScript call sites get checked end-to-end. The pipe still accepts template strings because Angular template expressions cannot expose the same module augmentation contract."
+  },
+  "interpolation": {
+    "title": "Interpolation Placeholders",
+    "desc": "Use single braces as the canonical placeholder style in JSON values: <code>{name}</code>. Existing double-brace placeholders such as <code>{{name}}</code> are still tolerated for compatibility.",
+    "canonical_title": "Canonical form",
+    "canonical_desc": "Single braces match the <code>translate(key, { name })</code> mental model and avoid visual collision with Angular template interpolation.",
+    "angular_title": "Angular pipe params gotcha",
+    "angular_desc": "When passing an object literal to the pipe inside Angular interpolation, leave a space between the object closing brace and Angular's closing braces. Without the space, Angular may parse the braces together."
   }
 }

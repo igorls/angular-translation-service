@@ -6,10 +6,12 @@
   "step2_desc": "プロジェクトの <code>public/</code> ディレクトリに JSON ファイルを作成します。Angular は <code>public/</code> 内のファイルをルート URL で提供するため、<code>public/i18n/en/common.json</code> は <code>/i18n/en/common.json</code> でアクセス可能になります。ローダーは <code>basePath/lang/namespace.json</code> というパターンを使用します：",
   "step3_title": "3. プロバイダーの設定",
   "step4_title": "4. コンポーネントでの使用",
-  "step4_desc": "<code>select()</code> を使用して名前空間のシグナルを取得します。<code>@if</code> ガードがロード状態を処理します。名前空間がロードされている間、再帰プロキシがテンプレートのクラッシュを防ぎます。",
+  "step4_desc": "Use <code>select()</code> to get a namespace signal. Optional chaining keeps the DOM stable while the namespace loads; the recursive proxy prevents template crashes.",
   "step5_title": "5. 代替案：パイプの使用",
   "step5_desc": "より単純なケースでは、<code>select()</code> の代わりに <code>TranslatePipe</code> を使用します：",
   "whats_next": "次のステップ",
   "btn_api_reference": "API リファレンス →",
-  "btn_view_source": "GitHub でソースを表示 ↗"
+  "btn_view_source": "GitHub でソースを表示 ↗",
+  "step6_title": "6. Optional: Generate Typed Keys",
+  "step6_desc": "Install the CLI and run <code>ats generate</code> when you want compile-time checking for service calls. The generated file registers its keys with <code>@angular-translation-service/core</code>, so typo'd keys and namespace paths fail TypeScript before they ship."
 }

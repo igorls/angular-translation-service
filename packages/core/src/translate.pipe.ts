@@ -1,5 +1,6 @@
 import { Pipe, PipeTransform, inject, type Signal } from '@angular/core';
 import { TranslationService } from './translation.service';
+import type { TranslationKey, TranslationParams } from './types';
 
 /**
  * TranslatePipe — template sugar for `TranslationService.translate()`.
@@ -30,7 +31,10 @@ export class TranslatePipe implements PipeTransform {
             this.lastKey = key;
             this.lastParamsStr = pStr;
             // translate() safely triggers ensureNamespaces under the hood
-            this.sig = this.i18n.translate(key, params);
+            this.sig = this.i18n.translate(
+                key as TranslationKey,
+                params as TranslationParams<TranslationKey> | undefined,
+            );
         }
 
         // O(1) signal read — Angular's signal CD automatically tracks this

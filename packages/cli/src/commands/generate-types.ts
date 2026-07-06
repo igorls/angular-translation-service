@@ -72,7 +72,16 @@ export interface I18nKeys {
 ${flatKeyDefinitions.join('\n')}
 }
 
-export type TranslationKey = I18nKeys[keyof I18nKeys];
+export type I18nTranslationKey = I18nKeys[keyof I18nKeys];
+
+export type TranslationKey = I18nTranslationKey;
+
+declare module '@angular-translation-service/core' {
+  interface TranslationKeyRegistry {
+    keys: I18nTranslationKey;
+    namespaces: I18nTypes;
+  }
+}
 `;
 
     if (options.check) {

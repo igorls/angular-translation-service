@@ -6,10 +6,12 @@
   "step2_desc": "Создайте JSON-файлы в директории <code>public/</code> вашего проекта. Angular обслуживает файлы из <code>public/</code> по корневому URL, поэтому <code>public/i18n/en/common.json</code> доступен по адресу <code>/i18n/en/common.json</code>. Загрузчик использует шаблон <code>basePath/lang/namespace.json</code>:",
   "step3_title": "3. Настройка провайдера",
   "step4_title": "4. Использование в компонентах",
-  "step4_desc": "Используйте <code>select()</code> для получения сигнала пространства имен. Защита <code>@if</code> обрабатывает состояние загрузки — пока пространство имен загружается, рекурсивный прокси предотвращает сбои шаблона.",
+  "step4_desc": "Use <code>select()</code> to get a namespace signal. Optional chaining keeps the DOM stable while the namespace loads; the recursive proxy prevents template crashes.",
   "step5_title": "5. Альтернатива: Использование Pipe",
   "step5_desc": "Для более простых случаев используйте <code>TranslatePipe</code> вместо <code>select()</code>:",
   "whats_next": "Что дальше?",
   "btn_api_reference": "Справочник API →",
-  "btn_view_source": "Просмотреть исходный код на GitHub ↗"
+  "btn_view_source": "Просмотреть исходный код на GitHub ↗",
+  "step6_title": "6. Optional: Generate Typed Keys",
+  "step6_desc": "Install the CLI and run <code>ats generate</code> when you want compile-time checking for service calls. The generated file registers its keys with <code>@angular-translation-service/core</code>, so typo'd keys and namespace paths fail TypeScript before they ship."
 }

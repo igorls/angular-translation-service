@@ -1,20 +1,18 @@
 {
   "title": "API Reference",
   "subtitle": "Complete API documentation for @angular-translation-service/core.",
-
   "translation_service": {
     "title": "TranslationService",
     "desc": "The core service providing reactive i18n for Angular applications. Inject via Angular DI.",
-    "select_desc": "Returns a scope signal for template access. Automatically triggers lazy loading for the namespace. Data is <code>undefined</code> until the namespace loads, then returns a proxy-wrapped dictionary for safe deep property access.",
-    "translate_desc": "Returns a cached signal for a single translation key. Automatically triggers namespace loading. Key format: <code>namespace:dotted.path</code>.",
-    "instant_desc": "Returns the translation synchronously. Non-reactive and does <strong>not</strong> trigger lazy loading — use only for imperative code (toasts, logs) when the namespace is already loaded.",
+    "select_desc": "Returns a scope signal for template access. Automatically triggers lazy loading for the namespace. Data is <code>undefined</code> until the namespace loads, then returns a proxy-wrapped dictionary for safe deep property access. When generated types are registered, the namespace name and returned schema are typed.",
+    "translate_desc": "Returns a cached signal for a single translation key. Automatically triggers namespace loading and re-runs when the active language changes. Key format: <code>namespace:dotted.path</code>. When generated types are registered, invalid keys become TypeScript errors.",
+    "instant_desc": "Returns the translation synchronously. It is non-reactive: values read with <code>instant()</code> do not update after <code>setLang()</code>. If called before a lazy namespace has ever been requested, dev mode warns once and starts loading that namespace; the current synchronous call still returns <code>''</code>. Use <code>ensureNamespaces()</code> first or prefer <code>translate()</code> for reactive UI state.",
     "setlang_desc": "Switches the active language. Reloads all previously requested namespaces for the new language and persists the preference to <code>localStorage</code> (if <code>storageKey</code> is configured). Logs a warning and returns early if the language is not in <code>supportedLangs</code>.",
     "ensure_desc": "Pre-loads additional namespaces. Deduplicates concurrent loads automatically. Useful for route guards or resolvers.",
     "lang_desc": "The current language signal. Read in templates to show the active language.",
     "supported_desc": "Read-only array of all supported language codes from the configuration. Useful for building language switchers.",
     "ready_desc": "True when all <code>coreNamespaces</code> have been loaded for the current language."
   },
-
   "translate_pipe": {
     "title": "TranslatePipe",
     "desc": "Template sugar for <code>TranslationService.translate()</code>. The pipe caches its signal internally to avoid recreation on every change detection cycle.",
@@ -22,7 +20,6 @@
     "setup_desc": "Import <code>TranslatePipe</code> in your component's <code>imports</code> array:",
     "usage": "Usage"
   },
-
   "provide_translation": {
     "title": "provideTranslation()",
     "desc": "Configures the translation service at the application level. Uses <code>APP_INITIALIZER</code> to preload core namespaces before the app renders.",
@@ -38,19 +35,16 @@
     "ns_separator": "Separator between namespace and key path (default: <code>':'</code>)",
     "fallback_chain": "Fallback language chains for regional locales"
   },
-
   "loaders": {
     "title": "Loaders",
     "http_desc": "Creates a <code>fetch</code>-based loader. Loads JSON from: <code>basePath/lang/namespace.json</code>. Place your JSON files in the Angular project's <code>public/</code> directory (files in <code>public/</code> are served at the root URL).",
     "import_desc": "Creates a loader using dynamic imports. The factory callback must return a module with a <code>default</code> export containing the translation dictionary. The bundler can statically analyze import paths for tree-shaking and code splitting."
   },
-
   "injection_tokens": {
     "title": "Injection Tokens",
     "config_desc": "Injection token for the translation configuration. Automatically provided by <code>provideTranslation()</code>. Useful for custom providers that need access to the configuration.",
     "current_lang_desc": "Injection token for server-side language detection. Provided by <code>provideTranslationSSR()</code> on the server to inject the language from the HTTP request. On the client, language is resolved from <code>TransferState</code> or local detection."
   },
-
   "recursive_proxy": {
     "title": "createRecursiveProxy()",
     "desc": "Creates a crash-proof proxy object that safely intercepts all property access. Used internally by <code>select()</code> to prevent template errors when namespaces are still loading. The proxy returns nested proxies for any property access, ensuring expressions like <code>t().nav.title</code> never throw — they render as empty strings instead.",
@@ -68,12 +62,10 @@
     "iteration": "Iteration (<code>@for</code> loops)",
     "iteration_result": "Yields nothing (empty iterator)"
   },
-
   "fallback_chains": {
     "title": "Fallback Chains",
     "desc": "Define fallback languages for regional locales. When loading translations, all languages in the chain are fetched in parallel and deep-merged — the most specific locale's keys overwrite fallback keys."
   },
-
   "language_detection": {
     "title": "Language Detection",
     "desc": "The initial language is resolved using the following priority chain (first match wins). Steps 1–2 always run; step 3 requires <code>detectLanguage: true</code>.",
@@ -82,7 +74,6 @@
     "browser": "<strong>Browser</strong> — <code>navigator.language</code> with base-language matching (e.g., browser <code>'pt'</code> matches config <code>'pt-BR'</code>) <em>(only when <code>detectLanguage: true</code>)</em>",
     "default_lang": "<strong>Default</strong> — Falls back to <code>defaultLang</code>"
   },
-
   "ssr": {
     "title": "SSR & Hydration",
     "desc": "The <code>@angular-translation-service/core/ssr</code> secondary entry point provides seamless server-side rendering with zero flash-of-untranslated-content (FOUC) and no hydration mismatch.",
@@ -99,7 +90,6 @@
     "config_title": "TranslationSSRConfig",
     "config_lang_from_request": "Extract the language from the incoming HTTP request"
   },
-
   "error_behavior": {
     "title": "Error Behavior",
     "desc": "Angular Translation Service is designed to be crash-proof. Here's how errors are handled:",
@@ -113,5 +103,31 @@
     "unsupported_lang_behavior": "Logs a warning and returns early — no state change",
     "nested_loading": "Accessing nested keys while loading",
     "nested_loading_behavior": "Recursive proxy returns empty strings, preventing template crashes"
+  },
+  "reactivity": {
+    "title": "Reactivity: translate() vs instant()",
+    "desc": "<code>translate()</code> and <code>select()</code> are reactive signal APIs. Use them for labels, menus, option arrays, and anything that should update after <code>setLang()</code>. <code>instant()</code> is a synchronous snapshot for imperative code such as logs, confirm prompts, or already-loaded toast messages.",
+    "avoid_title": "Avoid frozen option arrays",
+    "avoid_desc": "Calling <code>instant()</code> while defining component fields freezes those labels in the boot language and may read before a lazy namespace is ready.",
+    "prefer_title": "Prefer computed() + translate()",
+    "prefer_desc": "Build derived UI state inside <code>computed()</code> and read the translation signals there. The array rebuilds when the namespace loads and whenever the language changes.",
+    "escape_title": "Escape hatch for imperative key maps",
+    "escape_desc": "When you truly need <code>instant()</code>, read <code>lang()</code> inside the computed and make sure the namespace was preloaded with <code>ensureNamespaces()</code>.",
+    "perf_note": "<strong>Performance note:</strong> parameterized <code>translate(key, params)</code> calls return uncached computed signals, so avoid recreating them inside very large loops. Hoist stable params or use <code>select()</code> where possible."
+  },
+  "typed_keys": {
+    "title": "Typed Translation Keys",
+    "desc": "<code>ats generate</code> now emits a module augmentation for <code>@angular-translation-service/core</code>. Include the generated file in your TypeScript program and the service API narrows from permissive <code>string</code> keys to your generated key union and namespace schemas. Apps that do not generate types keep the old flexible string API.",
+    "generated_title": "Generated registry",
+    "usage_title": "What TypeScript catches",
+    "usage_desc": "Static TypeScript call sites get checked end-to-end. The pipe still accepts template strings because Angular template expressions cannot expose the same module augmentation contract."
+  },
+  "interpolation": {
+    "title": "Interpolation Placeholders",
+    "desc": "Use single braces as the canonical placeholder style in JSON values: <code>{name}</code>. Existing double-brace placeholders such as <code>{{name}}</code> are still tolerated for compatibility.",
+    "canonical_title": "Canonical form",
+    "canonical_desc": "Single braces match the <code>translate(key, { name })</code> mental model and avoid visual collision with Angular template interpolation.",
+    "angular_title": "Angular pipe params gotcha",
+    "angular_desc": "When passing an object literal to the pipe inside Angular interpolation, leave a space between the object closing brace and Angular's closing braces. Without the space, Angular may parse the braces together."
   }
 }

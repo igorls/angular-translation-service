@@ -11,16 +11,16 @@
     <p class="api-description" [innerHTML]="t.translation_service.desc"></p>
 
     <div class="api-method" id="select">
-      <h3><code>select&lt;K extends string&gt;(scope: K): Signal&lt;Record&lt;string, unknown&gt; | undefined&gt;</code></h3>
+      <h3><code>select&lt;N extends TranslationNamespace&gt;(scope: N): Signal&lt;TranslationNamespaces[N] | undefined&gt;</code></h3>
       <p [innerHTML]="t.translation_service.select_desc"></p>
       <div class="code-block">
         <pre><span class="kw">protected readonly</span> common = <span class="kw">this</span>.i18n.<span class="fn">select</span>(<span class="str">'common'</span>);
-<span class="cmt">// template: &#64;let t = common(); &#64;if (t) {{ '{' }} {{ '{{' }} t.nav.title {{ '}}' }} {{ '}' }}</span></pre>
+<span class="cmt">// template: &#64;let t = common(); {{ '{{' }} t?.nav?.title {{ '}}' }}</span></pre>
       </div>
     </div>
 
     <div class="api-method" id="translate">
-      <h3><code>translate(key: string, params?: Record&lt;string, string | number&gt;): Signal&lt;string&gt;</code></h3>
+      <h3><code>translate&lt;K extends TranslationKey&gt;(key: K, params?: TranslationParams&lt;K&gt;): Signal&lt;string&gt;</code></h3>
       <p [innerHTML]="t.translation_service.translate_desc"></p>
       <div class="code-block">
         <pre><span class="kw">protected readonly</span> title = <span class="kw">this</span>.i18n.<span class="fn">translate</span>(<span class="str">'common:nav.title'</span>);
@@ -29,7 +29,7 @@
     </div>
 
     <div class="api-method" id="instant">
-      <h3><code>instant(key: string, params?: Record&lt;string, string | number&gt;): string</code></h3>
+      <h3><code>instant&lt;K extends TranslationKey&gt;(key: K, params?: TranslationParams&lt;K&gt;): string</code></h3>
       <p [innerHTML]="t.translation_service.instant_desc"></p>
     </div>
 
@@ -61,6 +61,115 @@
     <div class="api-method" id="ready">
       <h3><code>ready: Signal&lt;boolean&gt;</code></h3>
       <p [innerHTML]="t.translation_service.ready_desc"></p>
+    </div>
+  </section>
+
+  <!-- Reactivity Guide -->
+  <section class="api-section guidance-section" id="reactivity">
+    <h2>{{ t.reactivity.title }}</h2>
+    <p class="api-description" [innerHTML]="t.reactivity.desc"></p>
+
+    <div class="api-method">
+      <h3>{{ t.reactivity.avoid_title }}</h3>
+      <p [innerHTML]="t.reactivity.avoid_desc"></p>
+      <div class="code-block">
+        <pre><span class="kw">protected readonly</span> densityOptions = [
+  {{ '{' }} value: <span class="str">'compact'</span>, label: <span class="kw">this</span>.i18n.<span class="fn">instant</span>(<span class="str">'settings:density.compact'</span>) {{ '}' }},
+  {{ '{' }} value: <span class="str">'comfortable'</span>, label: <span class="kw">this</span>.i18n.<span class="fn">instant</span>(<span class="str">'settings:density.comfortable'</span>) {{ '}' }},
+];</pre>
+      </div>
+    </div>
+
+    <div class="api-method">
+      <h3>{{ t.reactivity.prefer_title }}</h3>
+      <p [innerHTML]="t.reactivity.prefer_desc"></p>
+      <div class="code-block">
+        <pre><span class="kw">protected readonly</span> densityOptions = <span class="fn">computed</span>(() =&gt; [
+  {{ '{' }} value: <span class="str">'compact'</span>, label: <span class="kw">this</span>.i18n.<span class="fn">translate</span>(<span class="str">'settings:density.compact'</span>)() {{ '}' }},
+  {{ '{' }} value: <span class="str">'comfortable'</span>, label: <span class="kw">this</span>.i18n.<span class="fn">translate</span>(<span class="str">'settings:density.comfortable'</span>)() {{ '}' }},
+]);</pre>
+      </div>
+    </div>
+
+    <div class="api-method">
+      <h3>{{ t.reactivity.escape_title }}</h3>
+      <p [innerHTML]="t.reactivity.escape_desc"></p>
+      <div class="code-block">
+        <pre><span class="kw">protected readonly</span> navItems = <span class="fn">computed</span>(() =&gt; {{ '{' }}
+  <span class="kw">this</span>.i18n.<span class="fn">lang</span>(); <span class="cmt">// make instant() re-run after language changes</span>
+  <span class="kw">return</span> NAV_ITEMS.<span class="fn">map</span>((item) =&gt; ({{ '{' }} ...item, label: <span class="kw">this</span>.i18n.<span class="fn">instant</span>(item.labelKey) {{ '}' }}));
+{{ '}' }});</pre>
+      </div>
+    </div>
+
+    <p class="inline-note" [innerHTML]="t.reactivity.perf_note"></p>
+  </section>
+
+  <!-- Typed Keys -->
+  <section class="api-section" id="typed-keys">
+    <h2>{{ t.typed_keys.title }}</h2>
+    <p class="api-description" [innerHTML]="t.typed_keys.desc"></p>
+
+    <div class="api-method">
+      <h3>{{ t.typed_keys.generated_title }}</h3>
+      <div class="code-block">
+        <pre><span class="kw">export interface</span> <span class="type">I18nTypes</span> {{ '{' }}
+  common: {{ '{' }}
+    nav: {{ '{' }}
+      home: <span class="type">string</span>;
+    {{ '}' }};
+  {{ '}' }};
+{{ '}' }}
+
+<span class="kw">declare module</span> <span class="str">'&#64;angular-translation-service/core'</span> {{ '{' }}
+  <span class="kw">interface</span> <span class="type">TranslationKeyRegistry</span> {{ '{' }}
+    keys: <span class="type">I18nTranslationKey</span>;
+    namespaces: <span class="type">I18nTypes</span>;
+  {{ '}' }}
+{{ '}' }}</pre>
+      </div>
+    </div>
+
+    <div class="api-method">
+      <h3>{{ t.typed_keys.usage_title }}</h3>
+      <p [innerHTML]="t.typed_keys.usage_desc"></p>
+      <div class="code-block">
+        <pre><span class="kw">this</span>.i18n.<span class="fn">translate</span>(<span class="str">'common:nav.home'</span>); <span class="cmt">// OK</span>
+<span class="kw">this</span>.i18n.<span class="fn">translate</span>(<span class="str">'common:nav.hmoe'</span>); <span class="cmt">// TypeScript error</span>
+
+<span class="kw">const</span> common = <span class="kw">this</span>.i18n.<span class="fn">select</span>(<span class="str">'common'</span>);
+common()?.nav.home; <span class="cmt">// typed namespace schema</span></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interpolation -->
+  <section class="api-section" id="interpolation">
+    <h2>{{ t.interpolation.title }}</h2>
+    <p class="api-description" [innerHTML]="t.interpolation.desc"></p>
+
+    <div class="api-method">
+      <h3>{{ t.interpolation.canonical_title }}</h3>
+      <p [innerHTML]="t.interpolation.canonical_desc"></p>
+      <div class="code-block">
+        <pre>{{ '{' }}
+  <span class="str">"greeting"</span>: <span class="str">"Hello, {{ '{' }}name{{ '}' }}!"</span>
+{{ '}' }}
+
+<span class="kw">this</span>.i18n.<span class="fn">translate</span>(<span class="str">'common:greeting'</span>, {{ '{' }} name: <span class="str">'Igor'</span> {{ '}' }});</pre>
+      </div>
+    </div>
+
+    <div class="api-method">
+      <h3>{{ t.interpolation.angular_title }}</h3>
+      <p [innerHTML]="t.interpolation.angular_desc"></p>
+      <div class="code-block">
+        <pre><span class="cmt">&lt;!-- Avoid: object brace touches Angular's closing braces --&gt;</span>
+&lt;p&gt;{{ '{{' }} <span class="str">'common:greeting'</span> | <span class="fn">translate</span>:{{ '{' }} name: userName(){{ '}' }}{{ '}}' }}&lt;/p&gt;
+
+<span class="cmt">&lt;!-- Prefer: keep a space before the interpolation closes --&gt;</span>
+&lt;p&gt;{{ '{{' }} <span class="str">'common:greeting'</span> | <span class="fn">translate</span>:{{ '{' }} name: userName() {{ '}' }} {{ '}}' }}&lt;/p&gt;</pre>
+      </div>
     </div>
   </section>
 

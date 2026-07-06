@@ -4,9 +4,9 @@
   "translation_service": {
     "title": "TranslationService",
     "desc": "Le service central fournissant l'i18n réactif pour les applications Angular. Injecter via Angular DI.",
-    "select_desc": "Renvoie un signal de portée pour l'accès aux templates. Déclenche automatiquement le chargement lazy de l'espace de noms. Les données sont <code>undefined</code> jusqu'à ce que l'espace de noms soit chargé, puis renvoie un dictionnaire enveloppé par un proxy pour un accès sécurisé aux propriétés profondes.",
-    "translate_desc": "Renvoie un signal mis en cache pour une seule clé de traduction. Déclenche automatiquement le chargement de l'espace de noms. Format de clé : <code>namespace:dotted.path</code>.",
-    "instant_desc": "Renvoie la traduction de manière synchrone. Non réactif et ne déclenche <strong>pas</strong> le chargement lazy — à utiliser uniquement pour le code impératif (toasts, logs) lorsque l'espace de noms est déjà chargé.",
+    "select_desc": "Returns a scope signal for template access. Automatically triggers lazy loading for the namespace. Data is <code>undefined</code> until the namespace loads, then returns a proxy-wrapped dictionary for safe deep property access. When generated types are registered, the namespace name and returned schema are typed.",
+    "translate_desc": "Returns a cached signal for a single translation key. Automatically triggers namespace loading and re-runs when the active language changes. Key format: <code>namespace:dotted.path</code>. When generated types are registered, invalid keys become TypeScript errors.",
+    "instant_desc": "Returns the translation synchronously. It is non-reactive: values read with <code>instant()</code> do not update after <code>setLang()</code>. If called before a lazy namespace has ever been requested, dev mode warns once and starts loading that namespace; the current synchronous call still returns <code>''</code>. Use <code>ensureNamespaces()</code> first or prefer <code>translate()</code> for reactive UI state.",
     "setlang_desc": "Change la langue active. Recharge tous les espaces de noms précédemment demandés pour la nouvelle langue et conserve la préférence dans le <code>localStorage</code> (si <code>storageKey</code> est configuré). Enregistre un avertissement et s'arrête si la langue n'est pas dans <code>supportedLangs</code>.",
     "ensure_desc": "Précharge des espaces de noms supplémentaires. Déduplique automatiquement les chargements simultanés. Utile pour les route guards ou les resolvers.",
     "lang_desc": "Le signal de la langue actuelle. À lire dans les templates pour afficher la langue active.",
@@ -103,5 +103,31 @@
     "unsupported_lang_behavior": "Enregistre un avertissement et s'arrête prématurément — pas de changement d'état",
     "nested_loading": "Accès aux clés imbriquées pendant le chargement",
     "nested_loading_behavior": "Le proxy récursif renvoie des chaînes vides, empêchant les plantages de template"
+  },
+  "reactivity": {
+    "title": "Reactivity: translate() vs instant()",
+    "desc": "<code>translate()</code> and <code>select()</code> are reactive signal APIs. Use them for labels, menus, option arrays, and anything that should update after <code>setLang()</code>. <code>instant()</code> is a synchronous snapshot for imperative code such as logs, confirm prompts, or already-loaded toast messages.",
+    "avoid_title": "Avoid frozen option arrays",
+    "avoid_desc": "Calling <code>instant()</code> while defining component fields freezes those labels in the boot language and may read before a lazy namespace is ready.",
+    "prefer_title": "Prefer computed() + translate()",
+    "prefer_desc": "Build derived UI state inside <code>computed()</code> and read the translation signals there. The array rebuilds when the namespace loads and whenever the language changes.",
+    "escape_title": "Escape hatch for imperative key maps",
+    "escape_desc": "When you truly need <code>instant()</code>, read <code>lang()</code> inside the computed and make sure the namespace was preloaded with <code>ensureNamespaces()</code>.",
+    "perf_note": "<strong>Performance note:</strong> parameterized <code>translate(key, params)</code> calls return uncached computed signals, so avoid recreating them inside very large loops. Hoist stable params or use <code>select()</code> where possible."
+  },
+  "typed_keys": {
+    "title": "Typed Translation Keys",
+    "desc": "<code>ats generate</code> now emits a module augmentation for <code>@angular-translation-service/core</code>. Include the generated file in your TypeScript program and the service API narrows from permissive <code>string</code> keys to your generated key union and namespace schemas. Apps that do not generate types keep the old flexible string API.",
+    "generated_title": "Generated registry",
+    "usage_title": "What TypeScript catches",
+    "usage_desc": "Static TypeScript call sites get checked end-to-end. The pipe still accepts template strings because Angular template expressions cannot expose the same module augmentation contract."
+  },
+  "interpolation": {
+    "title": "Interpolation Placeholders",
+    "desc": "Use single braces as the canonical placeholder style in JSON values: <code>{name}</code>. Existing double-brace placeholders such as <code>{{name}}</code> are still tolerated for compatibility.",
+    "canonical_title": "Canonical form",
+    "canonical_desc": "Single braces match the <code>translate(key, { name })</code> mental model and avoid visual collision with Angular template interpolation.",
+    "angular_title": "Angular pipe params gotcha",
+    "angular_desc": "When passing an object literal to the pipe inside Angular interpolation, leave a space between the object closing brace and Angular's closing braces. Without the space, Angular may parse the braces together."
   }
 }

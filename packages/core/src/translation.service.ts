@@ -3,11 +3,20 @@ import {
     Injectable,
     Signal,
     computed,
+    isDevMode,
     signal,
     inject,
     type WritableSignal,
 } from '@angular/core';
-import { TRANSLATION_CONFIG, CURRENT_LANGUAGE, type TranslationConfig } from './types';
+import {
+    TRANSLATION_CONFIG,
+    CURRENT_LANGUAGE,
+    type TranslationConfig,
+    type TranslationKey,
+    type TranslationNamespace,
+    type TranslationNamespaces,
+    type TranslationParams,
+} from './types';
 import { createRecursiveProxy } from './recursive-proxy';
 
 /** Type alias for the nested dictionary structure */
@@ -48,6 +57,9 @@ export class TranslationService {
 
     /** All namespaces ever requested (not just loaded) — fixes setLang() race condition (DT v3 #4) */
     private readonly requestedNamespaces = new Set<string>();
+
+    /** Namespaces that already emitted the instant-before-request dev warning */
+    private readonly instantUnrequestedNamespaceWarnings = new Set<string>();
 
     /** Whether core namespaces have been loaded */
     readonly ready: Signal<boolean>;
@@ -97,6 +109,7 @@ export class TranslationService {
         (instance as any).dictionaries = signal(new Map() as DictionaryMap);
         (instance as any).loadingPromises = new Map<string, Promise<void>>();
         (instance as any).requestedNamespaces = new Set<string>();
+        (instance as any).instantUnrequestedNamespaceWarnings = new Set<string>();
         (instance as any).signalCache = new Map<string, Signal<string>>();
         (instance as any).scopeCache = new Map<string, Signal<Record<string, unknown> | undefined>>();
         (instance as any).lang = signal(instance._resolveInitialLang(ssrLang));
@@ -121,9 +134,9 @@ export class TranslationService {
      * protected common = this.i18n.select('common');
      * // template: @let t = common(); {{ t.nav.title }}
      */
-    select<K extends string>(scope: K): Signal<Record<string, unknown> | undefined> {
+    select<N extends TranslationNamespace>(scope: N): Signal<TranslationNamespaces[N] | undefined> {
         if (this.scopeCache.has(scope)) {
-            return this.scopeCache.get(scope)!;
+            return this.scopeCache.get(scope)! as Signal<TranslationNamespaces[N] | undefined>;
         }
 
         // Trigger loading if not yet loaded
@@ -145,7 +158,7 @@ export class TranslationService {
         });
 
         this.scopeCache.set(scope, scopeSignal);
-        return scopeSignal;
+        return scopeSignal as Signal<TranslationNamespaces[N] | undefined>;
     }
 
     /**
@@ -154,9 +167,9 @@ export class TranslationService {
      *
      * Key format: 'namespace:dotted.path' (e.g., 'common:nav.title')
      */
-    translate(
-        key: string,
-        params?: Record<string, string | number>,
+    translate<K extends TranslationKey>(
+        key: K,
+        params?: TranslationParams<K>,
     ): Signal<string> {
         // If parameterized, return uncached computed to prevent memory leaks
         if (params) {
@@ -171,7 +184,8 @@ export class TranslationService {
      * Returns the translation string synchronously (non-reactive).
      * Use for imperative code like toasts, logging, etc.
      */
-    instant(key: string, params?: Record<string, string | number>): string {
+    instant<K extends TranslationKey>(key: K, params?: TranslationParams<K>): string {
+        this.requestNamespaceForInstantIfNeeded(key);
         const value = this.resolveKey(key);
         return params ? this.interpolate(value, params) : value;
     }
@@ -344,6 +358,36 @@ export class TranslationService {
         const sig = computed(() => this.resolveKey(key));
         this.signalCache.set(key, sig);
         return sig;
+    }
+
+    private requestNamespaceForInstantIfNeeded(key: string): void {
+        const namespace = this.getNamespaceFromKey(key);
+        if (!namespace) return;
+
+        const wasRequested = this.requestedNamespaces.has(namespace);
+        if (wasRequested || this.isNamespaceLoadedForCurrentLang(namespace)) return;
+
+        if (isDevMode() && !this.instantUnrequestedNamespaceWarnings.has(namespace)) {
+            this.instantUnrequestedNamespaceWarnings.add(namespace);
+            console.warn(
+                `[angular-translation-service] instant("${key}") called before namespace "${namespace}" was requested. ` +
+                `Call ensureNamespaces(["${namespace}"]) or use translate() for reactive lazy loading.`,
+            );
+        }
+
+        void this.ensureNamespaces([namespace]);
+    }
+
+    private getNamespaceFromKey(key: string): string | undefined {
+        const sepIndex = key.indexOf(this.sep);
+        if (sepIndex === -1) return undefined;
+        const namespace = key.substring(0, sepIndex);
+        return namespace || undefined;
+    }
+
+    private isNamespaceLoadedForCurrentLang(namespace: string): boolean {
+        const langDict = this.dictionaries().get(this.lang());
+        return langDict?.has(namespace) ?? false;
     }
 
     private resolveKey(key: string): string {

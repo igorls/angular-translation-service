@@ -10,7 +10,7 @@
   "th_default": "По умолчанию",
   "th_description": "Описание",
   "generate": {
-    "desc": "Генерирует интерфейсы TypeScript из ваших JSON-файлов перевода, обеспечивая типобезопасность ключей перевода на этапе компиляции.",
+    "desc": "Generates TypeScript interfaces from your JSON translation files and registers them with <code>@angular-translation-service/core</code>, providing compile-time type safety for service keys and <code>select()</code> namespace schemas.",
     "input_desc": "Исходная директория, содержащая JSON-файлы пространств имен",
     "output_desc": "Путь к выходному файлу TypeScript",
     "check_desc": "Режим CI: выход с кодом 1, если типы не синхронизированы",
@@ -47,7 +47,7 @@
     "features": "Особенности",
     "feature_batch": "Пакетный перевод (35 записей за один вызов LLM для оптимального контекста)",
     "feature_fallback": "Автоматический резервный перевод для каждого ключа при сбое пакетного анализа",
-    "feature_placeholders": "Сохраняет плейсхолдеры интерполяции (<code>{{name}}</code>, <code>{count}</code>)",
+    "feature_placeholders": "Preserves interpolation placeholders and documents <code>{name}</code> / <code>{count}</code> as the canonical form; existing <code>{{name}}</code> placeholders remain compatible.",
     "feature_codefence": "Обрабатывает JSON-ответы от LLM, обернутые в блоки кода"
   },
   "editor": {

@@ -66,6 +66,19 @@ h1 {
   margin-bottom: 0;
 }
 
+.guidance-section .api-method h3 {
+  color: var(--text-primary);
+}
+
+.inline-note {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  background: rgba(34, 211, 238, 0.06);
+  border: 1px solid rgba(34, 211, 238, 0.16);
+  border-radius: var(--radius-md);
+  padding: var(--space-md) var(--space-lg);
+}
+
 .config-table {
   overflow-x: auto;
 }

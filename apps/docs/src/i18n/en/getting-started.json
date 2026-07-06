@@ -6,10 +6,12 @@
   "step2_desc": "Create JSON files in your project's <code>public/</code> directory. Angular serves files from <code>public/</code> at the root URL, so <code>public/i18n/en/common.json</code> is available at <code>/i18n/en/common.json</code>. The loader uses the pattern <code>basePath/lang/namespace.json</code>:",
   "step3_title": "3. Configure the Provider",
   "step4_title": "4. Use in Components",
-  "step4_desc": "Use <code>select()</code> to get a namespace signal. The <code>@if</code> guard handles the loading state — while the namespace loads, the recursive proxy prevents template crashes.",
+  "step4_desc": "Use <code>select()</code> to get a namespace signal. Optional chaining keeps the DOM stable while the namespace loads; the recursive proxy prevents template crashes.",
   "step5_title": "5. Alternative: Use the Pipe",
   "step5_desc": "For simpler cases, use <code>TranslatePipe</code> instead of <code>select()</code>:",
   "whats_next": "What's Next?",
   "btn_api_reference": "API Reference →",
-  "btn_view_source": "View Source on GitHub ↗"
+  "btn_view_source": "View Source on GitHub ↗",
+  "step6_title": "6. Optional: Generate Typed Keys",
+  "step6_desc": "Install the CLI and run <code>ats generate</code> when you want compile-time checking for service calls. The generated file registers its keys with <code>@angular-translation-service/core</code>, so typo'd keys and namespace paths fail TypeScript before they ship."
 }

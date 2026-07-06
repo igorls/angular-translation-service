@@ -74,7 +74,14 @@
 <span class="keyword">export type</span> <span class="type">TranslationKey</span> =
   | <span class="str">'common:title'</span>
   | <span class="str">'common:nav.home'</span>
-  | <span class="str">'common:nav.about'</span>;</pre>
+  | <span class="str">'common:nav.about'</span>;
+
+<span class="keyword">declare module</span> <span class="str">'&#64;angular-translation-service/core'</span> {{ '{' }}
+  <span class="keyword">interface</span> <span class="type">TranslationKeyRegistry</span> {{ '{' }}
+    keys: <span class="type">I18nTranslationKey</span>;
+    namespaces: <span class="type">I18nTypes</span>;
+  {{ '}' }}
+{{ '}' }}</pre>
       </div>
     </div>
   </section>

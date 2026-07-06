@@ -10,7 +10,7 @@
   "th_default": "デフォルト",
   "th_description": "説明",
   "generate": {
-    "desc": "JSON 翻訳ファイルから TypeScript インターフェースを生成し、翻訳キーにコンパイル時の型安全性を提供します。",
+    "desc": "Generates TypeScript interfaces from your JSON translation files and registers them with <code>@angular-translation-service/core</code>, providing compile-time type safety for service keys and <code>select()</code> namespace schemas.",
     "input_desc": "JSON 名前空間ファイルを含むソースディレクトリ",
     "output_desc": "出力する TypeScript ファイルのパス",
     "check_desc": "CI モード：型が同期されていない場合に終了コード 1 で終了します",
@@ -47,7 +47,7 @@
     "features": "機能",
     "feature_batch": "バッチ翻訳（最適なコンテキストのために 1 回の LLM 呼び出しにつき 35 エントリ）",
     "feature_fallback": "バッチ解析が失敗した場合の自動的なキーごとのフォールバック",
-    "feature_placeholders": "補間プレースホルダー（<code>{{name}}</code>、<code>{count}</code>）を保持する",
+    "feature_placeholders": "Preserves interpolation placeholders and documents <code>{name}</code> / <code>{count}</code> as the canonical form; existing <code>{{name}}</code> placeholders remain compatible.",
     "feature_codefence": "LLM からのコードフェンス付き JSON レスポンスを処理する"
   },
   "editor": {

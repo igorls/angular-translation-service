@@ -55,7 +55,45 @@ export class MyComponent {
 
 > **Avoid wrapping translated content in `@if (t)` blocks.** This causes layout shift (CLS) because the entire DOM structure is hidden until translations load, then everything appears at once. Use optional chaining (`t?.key`) instead — the proxy handles missing keys gracefully.
 
-### 3. SSR Support
+### 3. Reactivity: `translate()` vs `instant()`
+
+Use `translate()` or `select()` for UI state that should update after `setLang()`. `instant()` is a synchronous snapshot for imperative code and does not create reactive dependencies:
+
+```typescript
+// Rebuilds when the namespace loads and when the language changes
+protected readonly densityOptions = computed(() => [
+  { value: 'compact', label: this.i18n.translate('settings:density.compact')() },
+  { value: 'comfortable', label: this.i18n.translate('settings:density.comfortable')() },
+]);
+```
+
+If `instant()` is called before a lazy namespace has ever been requested, dev mode warns once and starts loading that namespace. The current synchronous call still returns `''`, so call `ensureNamespaces()` first when imperative text must be ready.
+
+### 4. Typed Keys (Optional)
+
+Run `ats generate` to register your generated key union and namespace schemas with the core API:
+
+```bash
+npx ats generate -i src/i18n/en -o src/app/i18n.generated.ts
+```
+
+When that file is included in your TypeScript program, `translate()`, `instant()`, and `select()` narrow from permissive strings to generated types. Apps that skip generation keep the flexible string API.
+
+### 5. Interpolation
+
+Use single braces as the canonical placeholder form in JSON values:
+
+```json
+{ "greeting": "Hello, {name}!" }
+```
+
+Double braces such as `{{name}}` remain supported for compatibility. In Angular templates, leave a space between pipe params and Angular's closing braces:
+
+```html
+{{ 'common:greeting' | translate:{ name: userName() } }}
+```
+
+### 6. SSR Support
 
 ```typescript
 // app.config.server.ts
@@ -70,7 +108,7 @@ const serverConfig = {
 };
 ```
 
-### 4. Choosing a Loader (SSG vs SSR)
+### 7. Choosing a Loader (SSG vs SSR)
 
 The library ships two loaders. The right choice depends on your rendering strategy:
 
@@ -98,7 +136,7 @@ provideTranslation({
 >
 > **Trade-off:** `importLoader` bundles all referenced locale files into the JS output. This is ideal for small-to-medium sites. For apps with many large locale files, use `httpLoader` with SSR instead.
 
-### 5. Loading States with `ready`
+### 8. Loading States with `ready`
 
 The `TranslationService` exposes a `ready` signal that becomes `true` once all `coreNamespaces` have loaded for the current language. Use it to prevent flash of untranslated content (FOUC) on heavier sites:
 
@@ -128,7 +166,7 @@ This pattern is useful when:
 
 > **Note:** With `importLoader`, translations resolve synchronously during SSG, so `ready()` is `true` from the first render and the loading screen never appears in prerendered HTML.
 
-### 6. CLI Tools
+### 9. CLI Tools
 
 ```bash
 npx ats generate    # Generate TypeScript types from JSON
@@ -137,6 +175,8 @@ npx ats validate    # Detect structural issues
 npx ats translate   # Auto-translate with LLM
 npx ats editor      # Launch visual editor
 ```
+
+> The core and CLI packages are currently versioned independently. Install the latest compatible `@angular-translation-service/cli` alongside `@angular-translation-service/core`; release notes call out any required pairing.
 
 ## Documentation
 

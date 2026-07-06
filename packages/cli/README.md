@@ -47,6 +47,21 @@ npx ats translate -i src/i18n --from en --to pt-BR --model llama3.1
 npx ats editor
 ```
 
+## Generated Types
+
+`ats generate` keeps the existing exported namespace/key types and also augments `@angular-translation-service/core`:
+
+```typescript
+declare module '@angular-translation-service/core' {
+  interface TranslationKeyRegistry {
+    keys: I18nTranslationKey;
+    namespaces: I18nTypes;
+  }
+}
+```
+
+Once the generated file is included in your app, `translate()`, `instant()`, and `select()` are checked against your JSON packs. Without generated types, the core API remains permissive.
+
 ## CI Integration
 
 ```yaml
@@ -58,6 +73,10 @@ npx ats editor
 - run: npx ats validate -i src/i18n
 - run: npx ats check --i18n src/i18n/en --src src
 ```
+
+## Versioning
+
+`@angular-translation-service/core` and `@angular-translation-service/cli` are currently versioned independently. Use the latest compatible CLI with your core package unless a release note calls out a required pairing.
 
 ## Documentation
 

@@ -184,8 +184,69 @@ describe('TranslationService', () => {
         it('should return empty string when namespace is not loaded (FOUC prevention)', () => {
             const loader = createMockLoader({});
             const service = createService({ loader });
+            const originalWarn = console.warn;
+            const warnSpy = mock(() => { });
+            console.warn = warnSpy;
 
-            expect(service.instant('missing:key')).toBe('');
+            try {
+                expect(service.instant('missing:key')).toBe('');
+                expect(warnSpy).toHaveBeenCalledTimes(1);
+            } finally {
+                console.warn = originalWarn;
+            }
+        });
+
+        it('should warn once and auto-request a never-requested lazy namespace', async () => {
+            const loader = createMockLoader({
+                en: { settings: { theme: 'Dark' } },
+            });
+            const service = createService({ loader, coreNamespaces: [] });
+            const originalWarn = console.warn;
+            const warnSpy = mock(() => { });
+            console.warn = warnSpy;
+
+            try {
+                expect(service.instant('settings:theme')).toBe('');
+                expect(warnSpy).toHaveBeenCalledTimes(1);
+                expect(loader).toHaveBeenCalledWith('en', 'settings');
+
+                await new Promise((r) => setTimeout(r, 20));
+
+                expect(service.instant('settings:theme')).toBe('Dark');
+                expect(warnSpy).toHaveBeenCalledTimes(1);
+            } finally {
+                console.warn = originalWarn;
+            }
+        });
+
+        it('should not warn or duplicate loads for an already-requested namespace', async () => {
+            let resolveLoad: ((value: Record<string, unknown>) => void) | undefined;
+            const loader = mock((_lang: string, _namespace: string) =>
+                new Promise<Record<string, unknown>>((resolve) => {
+                    resolveLoad = resolve;
+                }),
+            );
+            const service = createService({ loader, coreNamespaces: [] });
+            const originalWarn = console.warn;
+            const warnSpy = mock(() => { });
+
+            const sig = service.translate('settings:theme');
+            expect(sig()).toBe('');
+            expect(loader).toHaveBeenCalledTimes(1);
+
+            console.warn = warnSpy;
+            try {
+                expect(service.instant('settings:theme')).toBe('');
+                expect(warnSpy).not.toHaveBeenCalled();
+                expect(loader).toHaveBeenCalledTimes(1);
+
+                resolveLoad?.({ theme: 'Dark' });
+                await new Promise((r) => setTimeout(r, 20));
+
+                expect(sig()).toBe('Dark');
+            } finally {
+                console.warn = originalWarn;
+            }
         });
 
         it('should return the raw key when namespace IS loaded but key is missing', async () => {
@@ -328,13 +389,18 @@ describe('TranslationService', () => {
         it('should warn and skip unsupported languages', async () => {
             const loader = createMockLoader({ en: { common: { title: 'Hello' } } });
             const service = createService({ loader });
+            const originalWarn = console.warn;
             const warnSpy = mock(() => { });
             console.warn = warnSpy;
 
-            await service.setLang('fr');
+            try {
+                await service.setLang('fr');
 
-            expect(service.lang()).toBe('en');
-            expect(warnSpy).toHaveBeenCalled();
+                expect(service.lang()).toBe('en');
+                expect(warnSpy).toHaveBeenCalled();
+            } finally {
+                console.warn = originalWarn;
+            }
         });
     });
 

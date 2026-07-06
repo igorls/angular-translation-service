@@ -10,7 +10,7 @@
   "th_default": "默认",
   "th_description": "描述",
   "generate": {
-    "desc": "根据 JSON 翻译文件生成 TypeScript 接口，为翻译键提供编译时类型安全。",
+    "desc": "Generates TypeScript interfaces from your JSON translation files and registers them with <code>@angular-translation-service/core</code>, providing compile-time type safety for service keys and <code>select()</code> namespace schemas.",
     "input_desc": "包含 JSON 命名空间文件的源目录",
     "output_desc": "输出 TypeScript 文件路径",
     "check_desc": "CI 模式：如果类型不同步，则以代码 1 退出",
@@ -47,7 +47,7 @@
     "features": "功能",
     "feature_batch": "批量翻译（每次 LLM 调用处理 35 条，以获得最佳上下文）",
     "feature_fallback": "批量解析失败时自动逐键回退",
-    "feature_placeholders": "保留插值占位符（<code>{{name}}</code>, <code>{count}</code>）",
+    "feature_placeholders": "Preserves interpolation placeholders and documents <code>{name}</code> / <code>{count}</code> as the canonical form; existing <code>{{name}}</code> placeholders remain compatible.",
     "feature_codefence": "处理 LLM 返回的带代码块的 JSON 响应"
   },
   "editor": {

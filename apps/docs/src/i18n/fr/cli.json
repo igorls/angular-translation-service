@@ -10,7 +10,7 @@
   "th_default": "Défaut",
   "th_description": "Description",
   "generate": {
-    "desc": "Génère des interfaces TypeScript à partir de vos fichiers de traduction JSON, offrant une sécurité de type au moment de la compilation pour les clés de traduction.",
+    "desc": "Generates TypeScript interfaces from your JSON translation files and registers them with <code>@angular-translation-service/core</code>, providing compile-time type safety for service keys and <code>select()</code> namespace schemas.",
     "input_desc": "Répertoire source contenant les fichiers d'espace de noms JSON",
     "output_desc": "Chemin du fichier TypeScript de sortie",
     "check_desc": "Mode CI : quitte avec le code 1 si les types ne sont pas synchronisés",
@@ -47,7 +47,7 @@
     "features": "Fonctionnalités",
     "feature_batch": "Traduction par lots (35 entrées par appel LLM pour un contexte optimal)",
     "feature_fallback": "Repli automatique par clé en cas d'échec de l'analyse par lots",
-    "feature_placeholders": "Préserve les espaces réservés d'interpolation (<code>{{name}}</code>, <code>{count}</code>)",
+    "feature_placeholders": "Preserves interpolation placeholders and documents <code>{name}</code> / <code>{count}</code> as the canonical form; existing <code>{{name}}</code> placeholders remain compatible.",
     "feature_codefence": "Gère les réponses JSON délimitées par du code du LLM"
   },
   "editor": {

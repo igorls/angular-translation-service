@@ -11,6 +11,40 @@ export interface MissingKeyContext {
 }
 
 /**
+ * Declaration-merge hook for generated i18n types.
+ *
+ * `ats generate` augments this interface with:
+ * - `keys`: a union of all known `namespace:path.to.key` strings
+ * - `namespaces`: the generated namespace schema map
+ *
+ * Without augmentation, the public API falls back to permissive string keys.
+ */
+export interface TranslationKeyRegistry {}
+
+/** Translation key type. Strict when generated types are registered; `string` otherwise. */
+export type TranslationKey = TranslationKeyRegistry extends { keys: infer Keys }
+    ? Extract<Keys, string>
+    : string;
+
+/** Namespace schema map. Strict when generated types are registered; generic otherwise. */
+export type TranslationNamespaces = TranslationKeyRegistry extends { namespaces: infer Namespaces }
+    ? Namespaces
+    : Record<string, Record<string, unknown>>;
+
+/** Namespace name type. Strict when generated types are registered; `string` otherwise. */
+export type TranslationNamespace = Extract<keyof TranslationNamespaces, string>;
+
+/** Placeholder params for a key. Reserved for generated param maps; permissive by default. */
+export type TranslationParams<K extends string = string> =
+    TranslationKeyRegistry extends { params: infer Params }
+        ? K extends keyof Params
+            ? Params[K] extends Record<string, string | number>
+                ? Params[K]
+                : Record<string, string | number>
+            : Record<string, string | number>
+        : Record<string, string | number>;
+
+/**
  * Configuration for provideTranslation().
  */
 export interface TranslationConfig {
