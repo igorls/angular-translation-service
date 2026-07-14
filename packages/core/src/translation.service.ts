@@ -23,6 +23,42 @@ import { createRecursiveProxy } from './recursive-proxy';
 type DictionaryMap = Map<string, Map<string, Record<string, unknown>>>;
 
 /**
+ * Walk a nested dictionary using dotted path segments, preferring the
+ * **longest literal key match** at each level.
+ *
+ * That lets packs store event/id keys with dots inside a single object
+ * property (`{ "lead.captured": "…" }`) while call sites still write
+ * `ns:group.lead.captured`. Nested objects continue to work: when both a
+ * longer literal and a nested segment exist, the longer own-property wins.
+ */
+export function resolveDottedPath(
+    root: Record<string, unknown>,
+    path: string,
+): unknown {
+    if (!path) return root;
+    const segments = path.split('.');
+    let current: unknown = root;
+    let i = 0;
+    while (i < segments.length) {
+        if (current == null || typeof current !== 'object') return undefined;
+        const record = current as Record<string, unknown>;
+        let matched = false;
+        // Longest match first so "lead.captured" wins over "lead" + "captured".
+        for (let end = segments.length; end > i; end--) {
+            const candidate = segments.slice(i, end).join('.');
+            if (Object.prototype.hasOwnProperty.call(record, candidate)) {
+                current = record[candidate];
+                i = end;
+                matched = true;
+                break;
+            }
+        }
+        if (!matched) return undefined;
+    }
+    return current;
+}
+
+/**
  * Core translation service providing reactive i18n for Angular applications.
  *
  * API surface:
@@ -407,19 +443,16 @@ export class TranslationService {
         }
 
         const nsData = langDict.get(namespace);
-
-        // Resolve dotted path
-        const segments = path.split('.');
-        let current: unknown = nsData;
-        for (const segment of segments) {
-            if (current == null || typeof current !== 'object') {
-                // Namespace loaded but key is missing
-                return this.handleMissingKey(key, currentLang, namespace);
-            }
-            current = (current as Record<string, unknown>)[segment];
+        if (nsData == null || typeof nsData !== 'object') {
+            return this.handleMissingKey(key, currentLang, namespace);
         }
 
-        if (typeof current === 'string') return current;
+        // Resolve dotted path with longest-match at each level so JSON keys that
+        // contain literal dots (e.g. eventLabels["lead.captured"]) resolve when
+        // the call site uses `ns:eventLabels.lead.captured`. Nested objects still
+        // win when present as intermediate segments.
+        const resolved = resolveDottedPath(nsData as Record<string, unknown>, path);
+        if (typeof resolved === 'string') return resolved;
 
         // Leaf is not a string — treat as missing key
         return this.handleMissingKey(key, currentLang, namespace);

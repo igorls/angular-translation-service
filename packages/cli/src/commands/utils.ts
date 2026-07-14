@@ -89,15 +89,30 @@ export function findFiles(dir: string, extensions: string[]): string[] {
 
 /**
  * Resolves a value at a dotted key path in a nested object.
+ * Uses longest-match at each level so JSON keys that contain literal dots
+ * (e.g. `"lead.captured"`) resolve for path `eventLabels.lead.captured`.
  * Returns undefined if the path doesn't exist.
  */
 export function getNestedValue(obj: Record<string, unknown>, path: string): unknown {
+    if (!path) return obj;
     const parts = path.split('.');
     let current: unknown = obj;
+    let i = 0;
 
-    for (const part of parts) {
+    while (i < parts.length) {
         if (typeof current !== 'object' || current === null) return undefined;
-        current = (current as Record<string, unknown>)[part];
+        const record = current as Record<string, unknown>;
+        let matched = false;
+        for (let end = parts.length; end > i; end--) {
+            const candidate = parts.slice(i, end).join('.');
+            if (Object.prototype.hasOwnProperty.call(record, candidate)) {
+                current = record[candidate];
+                i = end;
+                matched = true;
+                break;
+            }
+        }
+        if (!matched) return undefined;
     }
 
     return current;

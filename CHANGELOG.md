@@ -1,5 +1,22 @@
 # Changelog
 
+## core 0.3.4 / cli 0.4.6 (2026-07-14)
+
+### Core
+
+- **Fixed resolution of dictionary keys that contain literal dots.** Paths like
+  `operator:apiAccess.webhooks.eventLabels.lead.captured` now resolve when the
+  pack stores `"lead.captured"` as a single object property (not nested
+  `lead.captured` objects). Resolution uses longest-match at each path level so
+  nested objects continue to work as before.
+- Exported `resolveDottedPath` helper used by the service (available for tests /
+  advanced tooling).
+
+### CLI
+
+- `getNestedValue` uses the same longest-match rules so `ats check` / validate
+  stay consistent with runtime resolution.
+
 ## 0.4.4 / core 0.3.2 (2026-06-22)
 
 ### Core

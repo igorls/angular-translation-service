@@ -110,6 +110,52 @@ describe('TranslationService', () => {
             expect(service.translate('common:nav.about')()).toBe('About');
         });
 
+        it('should resolve literal keys that contain dots (longest match)', async () => {
+            const loader = createMockLoader({
+                en: {
+                    operator: {
+                        apiAccess: {
+                            webhooks: {
+                                eventLabels: {
+                                    'lead.captured': 'A new lead was captured',
+                                    'handoff.requested': 'A handoff was requested',
+                                },
+                            },
+                        },
+                    },
+                },
+            });
+            const service = createService({ loader, coreNamespaces: [] });
+            await service.ensureNamespaces(['operator']);
+
+            expect(service.instant('operator:apiAccess.webhooks.eventLabels.lead.captured')).toBe(
+                'A new lead was captured',
+            );
+            expect(
+                service.translate('operator:apiAccess.webhooks.eventLabels.handoff.requested')(),
+            ).toBe('A handoff was requested');
+        });
+
+        it('should prefer nested objects when intermediate segments exist', async () => {
+            const loader = createMockLoader({
+                en: {
+                    common: {
+                        nav: {
+                            home: 'Nested Home',
+                            'home.page': 'Literal home.page',
+                        },
+                    },
+                },
+            });
+            const service = createService({ loader });
+            await service.ensureNamespaces(['common']);
+
+            // "nav.home" resolves via nested object (nav → home), not a missing literal.
+            expect(service.instant('common:nav.home')).toBe('Nested Home');
+            // Longer literal still wins when requested as nav.home.page → "home.page" key.
+            expect(service.instant('common:nav.home.page')).toBe('Literal home.page');
+        });
+
         it('should cache base key signals', async () => {
             const loader = createMockLoader({ en: { common: { title: 'Hello' } } });
             const service = createService({ loader });

@@ -1,7 +1,7 @@
 // angular-translation-service — Public API
 
 // Core service
-export { TranslationService } from './translation.service';
+export { TranslationService, resolveDottedPath } from './translation.service';
 
 // Provider function
 export { provideTranslation } from './provide-translation';
