@@ -98,6 +98,22 @@
     <p [innerHTML]="t.step6_desc"></p>
     <div class="code-block">
       <div class="code-header">
+        <span class="code-lang">language-switcher.ts</span>
+      </div>
+      <pre><span class="kw">protected readonly</span> i18n = <span class="fn">inject</span>(<span class="type">TranslationService</span>);
+<span class="kw">protected readonly</span> languages = <span class="kw">this</span>.i18n.supportedLangs;
+
+<span class="kw">async</span> <span class="fn">switchTo</span>(lang: <span class="type">string</span>) {{ '{' }}
+  <span class="kw">await</span> <span class="kw">this</span>.i18n.<span class="fn">setLang</span>(lang);
+{{ '}' }}</pre>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 [innerHTML]="t.step7_title"></h2>
+    <p [innerHTML]="t.step7_desc"></p>
+    <div class="code-block">
+      <div class="code-header">
         <span class="code-lang">terminal</span>
       </div>
       <pre><span class="fn">npx</span> <span class="str">&#64;angular-translation-service/cli</span> generate \
@@ -117,6 +133,7 @@
     <h2>{{ t.whats_next }}</h2>
     <div class="next-links">
       <a routerLink="/api" class="btn btn-primary">{{ t.btn_api_reference }}</a>
+      <a routerLink="/guides" class="btn btn-secondary">{{ t.btn_guides }}</a>
       <a href="https://github.com/igorls/angular-translation-service" target="_blank" class="btn btn-secondary">{{ t.btn_view_source }}</a>
     </div>
   </section>

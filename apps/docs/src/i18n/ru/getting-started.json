@@ -3,15 +3,18 @@
   "subtitle": "Настройте @angular-translation-service/core в вашем проекте Angular v19+ за 3 минуты.",
   "step1_title": "1. Установка",
   "step2_title": "2. Создание файлов перевода",
-  "step2_desc": "Создайте JSON-файлы в директории <code>public/</code> вашего проекта. Angular обслуживает файлы из <code>public/</code> по корневому URL, поэтому <code>public/i18n/en/common.json</code> доступен по адресу <code>/i18n/en/common.json</code>. Загрузчик использует шаблон <code>basePath/lang/namespace.json</code>:",
   "step3_title": "3. Настройка провайдера",
   "step4_title": "4. Использование в компонентах",
-  "step4_desc": "Use <code>select()</code> to get a namespace signal. Optional chaining keeps the DOM stable while the namespace loads; the recursive proxy prevents template crashes.",
   "step5_title": "5. Альтернатива: Использование Pipe",
-  "step5_desc": "Для более простых случаев используйте <code>TranslatePipe</code> вместо <code>select()</code>:",
   "whats_next": "Что дальше?",
   "btn_api_reference": "Справочник API →",
   "btn_view_source": "Просмотреть исходный код на GitHub ↗",
-  "step6_title": "6. Optional: Generate Typed Keys",
-  "step6_desc": "Install the CLI and run <code>ats generate</code> when you want compile-time checking for service calls. The generated file registers its keys with <code>@angular-translation-service/core</code>, so typo'd keys and namespace paths fail TypeScript before they ship."
+  "step6_title": "6. Switch Language",
+  "step7_title": "6. Optional: Generate Typed Keys",
+  "step2_desc": "Для <code >httpLoader('/i18n')</code> поместите JSON в папку <code >public/i18n/</code>. Angular отдает <code >public/</code> в корне сайта, поэтому <code >public/i18n/en/common.json</code> доступен по адресу <code>/i18n/en/common.json</code>. CLI-инструменты по умолчанию используют <code >src/i18n/</code> — создайте там соответствующую структуру, или используйте опции <code>-i</code> и <code>--i18n</code>. Шаблон загрузчика: <code >basePath/lang/namespace.json</code>:",
+  "step4_desc": "Используйте <code >select()</code> для получения сигнала пространства имен. Опциональная цепочка сохраняет стабильность DOM во время загрузки пространства имен; рекурсивный прокси предотвращает сбои шаблонов.",
+  "step5_desc": "Для более простых случаев используйте <code >TranslatePipe</code> вместо <code >select()</code>. Ключи всегда используют формат <code >namespace:path</code> (разделитель по умолчанию <code>:</code>):",
+  "step6_desc": "Вызовите <code >setLang()</code> (а не <code >use()</code>). Сохраняйте с помощью <code >storageKey</code> и включите обнаружение браузера с помощью <code >detectLanguage: true</code> в провайдере.",
+  "step7_desc": "Установите CLI и запустите <code >ats generate</code>, когда вам нужна проверка на этапе компиляции вызовов сервисов. Сгенерированный файл регистрирует свои ключи с помощью <code >@angular-translation-service/core</code>, поэтому опечатки в ключах и путях пространства имен прерывают работу TypeScript до отправки.",
+  "btn_guides": "Руководства (устранение неполадок и миграция) →"
 }

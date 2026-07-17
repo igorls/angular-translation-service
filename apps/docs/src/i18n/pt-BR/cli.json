@@ -10,39 +10,40 @@
   "th_default": "Padrão",
   "th_description": "Descrição",
   "generate": {
-    "desc": "Generates TypeScript interfaces from your JSON translation files and registers them with <code>@angular-translation-service/core</code>, providing compile-time type safety for service keys and <code>select()</code> namespace schemas.",
-    "input_desc": "Diretório de origem contendo os arquivos de namespace JSON",
     "output_desc": "Caminho do arquivo TypeScript de saída",
     "check_desc": "Modo CI: sai com o código 1 se os tipos estiverem fora de sincronia",
-    "generated_output": "Saída Gerada"
+    "generated_output": "Saída Gerada",
+    "desc": "Gera interfaces TypeScript a partir de seus arquivos de tradução JSON e as registra com <code-@angular-translation-service/core</code>, fornecendo segurança de tipo em tempo de compilação para chaves de serviço e esquemas de namespace <code-select()</code>.",
+    "input_desc": "Diretório de origem contendo arquivos de namespace JSON (geralmente um idioma, ex: <code-src/i18n/en</code>)"
   },
   "check": {
-    "desc": "Scans source code (<code>.ts</code> and <code>.html</code>) for translation references, validates them across every locale pack, checks dynamic key prefixes, reports cross-locale parity drift, and flags empty values.",
-    "i18n_desc": "Single locale directory or root i18n directory containing language subdirectories",
-    "src_desc": "Diretório de origem para analisar o uso de chaves",
     "ns_desc": "Limitar a verificação a um namespace específico",
     "detected_patterns": "Padrões Detectados",
     "pattern_translate": "<code>translate('ns:key')</code> — chamadas de tradução baseadas em signals",
     "pattern_instant": "<code>instant('ns:key')</code> — chamadas de tradução síncronas",
     "pattern_select": "<code>select('ns')</code> — marca o namespace inteiro como usado",
     "pattern_pipe": "<code>'ns:key' | translate</code> — uso de pipe do Angular em templates",
-    "pattern_quoted": "<code>'ns:key'</code> anywhere in source — validates helper arrays, configs, and option objects",
-    "pattern_prefix": "<code>'ns:dynamic.prefix.'</code> — dynamic key family prefix that must match at least one key in every locale",
-    "pattern_parity": "Cross-locale parity — reports missing and extra keys per namespace",
-    "pattern_empty": "Empty values — reports keys present with <code>\"\"</code> before they render invisible text"
+    "desc": "Varre o código fonte (<code-.ts</code> e <code-.html</code>) em busca de referências de tradução, valida-as em cada pacote de idioma, verifica prefixos de chaves dinâmicas, relata desvio de paridade entre idiomas e sinaliza valores vazios.",
+    "i18n_desc": "Diretório de idioma único ou diretório raiz i18n contendo subdiretórios de idioma",
+    "src_desc": "Diretório de origem para varredura de uso de chaves (prefira o código da aplicação em vez de documentação/amostras para evitar falsos positivos)",
+    "pattern_quoted": "<code>'ns:key'</code> em qualquer lugar na fonte — valida arrays auxiliares, configs e objetos de opção",
+    "pattern_prefix": "<code>'ns:dynamic.prefix.'</code> — prefixo dinâmico da família de chaves que deve corresponder a pelo menos uma chave em cada localidade",
+    "pattern_parity": "paridade entre localidades — relata chaves ausentes e extras por namespace",
+    "pattern_empty": "valores vazios — relata chaves presentes com <code>\"\"</code> antes que sejam renderizadas como texto invisível"
   },
   "validate": {
     "desc": "Compara arquivos de tradução em todos os idiomas para encontrar inconsistências estruturais: chaves ausentes, chaves extras e valores vazios.",
     "input_desc": "Diretório i18n raiz contendo os subdiretórios de idiomas",
-    "example_output": "Exemplo de Saída"
+    "example_output": "Exemplo de Saída",
+    "default_lang_desc": "Idioma de referência. Sem esta flag, o primeiro diretório de localidade ordenado alfabeticamente é usado (ex: <code>de</code> antes de <code>en</code>)"
   },
   "clean": {
     "desc": "Remove chaves órfãs dos arquivos de idioma de destino — chaves que existem em uma tradução, mas não existem mais no idioma padrão.",
     "input_desc": "Diretório i18n raiz",
-    "dry_run_desc": "Mostra o que seria removido sem modificar os arquivos"
+    "dry_run_desc": "Mostra o que seria removido sem modificar os arquivos",
+    "default_lang_desc": "Idioma de referência para decidir quais chaves são órfãs"
   },
   "translate": {
-    "desc": "Usa um LLM local (via Ollama) para traduzir automaticamente chaves ausentes do idioma padrão para um idioma de destino. Suporta tradução em lote com fallback por chave.",
     "locale_desc": "Código do idioma de destino",
     "ns_desc": "Limitar a um namespace específico",
     "model_desc": "Modelo Ollama a ser usado",
@@ -51,8 +52,11 @@
     "features": "Funcionalidades",
     "feature_batch": "Tradução em lote (35 entradas por chamada ao LLM para contexto ideal)",
     "feature_fallback": "Fallback automático por chave quando a análise em lote falha",
-    "feature_placeholders": "Preserves interpolation placeholders and documents <code>{name}</code> / <code>{count}</code> as the canonical form; existing <code>{{name}}</code> placeholders remain compatible.",
-    "feature_codefence": "Lida com respostas JSON em blocos de código do LLM"
+    "feature_codefence": "Lida com respostas JSON em blocos de código do LLM",
+    "input_desc": "Root i18n directory",
+    "desc": "Usa um LLM local (via Ollama) para traduzir automaticamente chaves ausentes do idioma padrão para um idioma de destino. Requer um host Ollama em execução. Suporta tradução em lote com fallback por chave.",
+    "default_lang_desc": "Idioma de origem. Sem esta flag, o primeiro local ordenado alfabeticamente é usado",
+    "feature_placeholders": "Preserva placeholders de interpolação e documenta <code>{name}</code> / <code>{count}</code> como a forma canônica; os placeholders existentes <code>{{name}}</code> permanecem compatíveis."
   },
   "editor": {
     "desc": "Inicia uma interface web completa do editor de tradução no seu navegador. Inclui um editor de chaves lado a lado, tradução automática via Ollama, rastreamento de uso no código-fonte por chave, barras de progresso e suporte para adicionar/excluir chaves.",
@@ -94,5 +98,19 @@
     "feature_multi_provider": "Suporte multi-provedor LLM (Ollama, OpenAI, Gemini)",
     "feature_batch": "Tradução em lote com agrupamento automático e fallback por chave",
     "feature_scan": "Varredura de modelos para strings hardcoded com candidatos pontuados"
+  },
+  "paths": {
+    "title": "Default paths",
+    "desc": "A maioria dos comandos é definida como padrão em <code-src/i18n</code> (ou <code-src/i18n/en</code> para entrada de idioma único). Apenas <code-editor</code> e <code-mcp</code> descobrem automaticamente o diretório a partir de <code-angular.json</code> ou convenções comuns. Use <code-i</code> / <code---i18n</code> para outros layouts (incluindo <code-public/i18n</code> ou <code-src/assets/i18n</code>)."
+  },
+  "scan": {
+    "src_desc": "Source directory to scan",
+    "host_desc": "Ollama server address",
+    "json_desc": "Output results as JSON",
+    "desc": "Escaneia modelos HTML em busca de strings codificadas que provavelmente precisam ser traduzidas. Pontua os candidatos com heurísticas; verificação opcional por LLM via Ollama. Use <code>--json</code> para exportação amigável a agentes.",
+    "extensions_desc": "Extensões de arquivo separadas por vírgula",
+    "min_score_desc": "Pontuação heurística mínima a ser relatada",
+    "verify_desc": "Use LLM para verificar candidatos (requer Ollama)",
+    "model_desc": "Modelo Ollama para verificação"
   }
 }

@@ -1,0 +1,210 @@
+@let t = $any(g());
+
+@if (t) {
+<div class="page container">
+  <h1 class="gradient-text">{{ t.title }}</h1>
+  <p class="page-subtitle">{{ t.subtitle }}</p>
+
+  <nav class="toc" aria-label="Table of contents">
+    <div class="toc-label">{{ t.toc.title }}</div>
+    <a href="#troubleshooting">{{ t.toc.troubleshooting }}</a>
+    <a href="#migration">{{ t.toc.migration }}</a>
+    <a href="#versions">{{ t.toc.versions }}</a>
+  </nav>
+
+  <!-- Troubleshooting -->
+  <section class="guide-section" id="troubleshooting">
+    <h2>{{ t.troubleshooting.title }}</h2>
+    <p class="section-desc">{{ t.troubleshooting.desc }}</p>
+
+    <div class="issue">
+      <h3>{{ t.troubleshooting.empty_title }}</h3>
+      <p><span class="label">{{ t.troubleshooting.th_symptom }}</span> {{ t.troubleshooting.empty_symptom }}</p>
+      <p><span class="label">{{ t.troubleshooting.th_cause }}</span> {{ t.troubleshooting.empty_cause }}</p>
+      <p><span class="label">{{ t.troubleshooting.th_fix }}</span> <span [innerHTML]="t.troubleshooting.empty_fix"></span></p>
+    </div>
+
+    <div class="issue">
+      <h3>{{ t.troubleshooting.missing_title }}</h3>
+      <p><span class="label">{{ t.troubleshooting.th_symptom }}</span> {{ t.troubleshooting.missing_symptom }}</p>
+      <p><span class="label">{{ t.troubleshooting.th_cause }}</span> {{ t.troubleshooting.missing_cause }}</p>
+      <p><span class="label">{{ t.troubleshooting.th_fix }}</span> <span [innerHTML]="t.troubleshooting.missing_fix"></span></p>
+    </div>
+
+    <div class="issue">
+      <h3>{{ t.troubleshooting.lang_title }}</h3>
+      <p><span class="label">{{ t.troubleshooting.th_symptom }}</span> {{ t.troubleshooting.lang_symptom }}</p>
+      <p><span class="label">{{ t.troubleshooting.th_cause }}</span> <span [innerHTML]="t.troubleshooting.lang_cause"></span></p>
+      <p><span class="label">{{ t.troubleshooting.th_fix }}</span> <span [innerHTML]="t.troubleshooting.lang_fix"></span></p>
+    </div>
+
+    <div class="issue">
+      <h3>{{ t.troubleshooting.pipe_title }}</h3>
+      <p><span class="label">{{ t.troubleshooting.th_symptom }}</span> {{ t.troubleshooting.pipe_symptom }}</p>
+      <p><span class="label">{{ t.troubleshooting.th_cause }}</span> <span [innerHTML]="t.troubleshooting.pipe_cause"></span></p>
+      <p><span class="label">{{ t.troubleshooting.th_fix }}</span> <span [innerHTML]="t.troubleshooting.pipe_fix"></span></p>
+    </div>
+
+    <div class="issue">
+      <h3>{{ t.troubleshooting.ssr_title }}</h3>
+      <p><span class="label">{{ t.troubleshooting.th_symptom }}</span> {{ t.troubleshooting.ssr_symptom }}</p>
+      <p><span class="label">{{ t.troubleshooting.th_cause }}</span> {{ t.troubleshooting.ssr_cause }}</p>
+      <p><span class="label">{{ t.troubleshooting.th_fix }}</span> <span [innerHTML]="t.troubleshooting.ssr_fix"></span></p>
+    </div>
+
+    <div class="issue">
+      <h3>{{ t.troubleshooting.cli_title }}</h3>
+      <p><span class="label">{{ t.troubleshooting.th_symptom }}</span> {{ t.troubleshooting.cli_symptom }}</p>
+      <p><span class="label">{{ t.troubleshooting.th_cause }}</span> <span [innerHTML]="t.troubleshooting.cli_cause"></span></p>
+      <p><span class="label">{{ t.troubleshooting.th_fix }}</span> <span [innerHTML]="t.troubleshooting.cli_fix"></span></p>
+    </div>
+
+    <div class="issue">
+      <h3>{{ t.troubleshooting.default_lang_title }}</h3>
+      <p><span class="label">{{ t.troubleshooting.th_symptom }}</span> <span [innerHTML]="t.troubleshooting.default_lang_symptom"></span></p>
+      <p><span class="label">{{ t.troubleshooting.th_cause }}</span> <span [innerHTML]="t.troubleshooting.default_lang_cause"></span></p>
+      <p><span class="label">{{ t.troubleshooting.th_fix }}</span> <span [innerHTML]="t.troubleshooting.default_lang_fix"></span></p>
+    </div>
+
+    <div class="issue">
+      <h3>{{ t.troubleshooting.instant_title }}</h3>
+      <p><span class="label">{{ t.troubleshooting.th_symptom }}</span> {{ t.troubleshooting.instant_symptom }}</p>
+      <p><span class="label">{{ t.troubleshooting.th_cause }}</span> <span [innerHTML]="t.troubleshooting.instant_cause"></span></p>
+      <p><span class="label">{{ t.troubleshooting.th_fix }}</span> <span [innerHTML]="t.troubleshooting.instant_fix"></span></p>
+    </div>
+
+    <div class="issue">
+      <h3>{{ t.troubleshooting.check_title }}</h3>
+      <p><span class="label">{{ t.troubleshooting.th_symptom }}</span> <span [innerHTML]="t.troubleshooting.check_symptom"></span></p>
+      <p><span class="label">{{ t.troubleshooting.th_cause }}</span> <span [innerHTML]="t.troubleshooting.check_cause"></span></p>
+      <p><span class="label">{{ t.troubleshooting.th_fix }}</span> <span [innerHTML]="t.troubleshooting.check_fix"></span></p>
+    </div>
+
+    <div class="issue">
+      <h3>{{ t.troubleshooting.ollama_title }}</h3>
+      <p><span class="label">{{ t.troubleshooting.th_symptom }}</span> {{ t.troubleshooting.ollama_symptom }}</p>
+      <p><span class="label">{{ t.troubleshooting.th_cause }}</span> {{ t.troubleshooting.ollama_cause }}</p>
+      <p><span class="label">{{ t.troubleshooting.th_fix }}</span> <span [innerHTML]="t.troubleshooting.ollama_fix"></span></p>
+    </div>
+  </section>
+
+  <!-- Migration -->
+  <section class="guide-section" id="migration">
+    <h2 [innerHTML]="t.migration.title"></h2>
+    <p class="section-desc" [innerHTML]="t.migration.desc"></p>
+
+    <div class="config-table">
+      <table>
+        <thead>
+          <tr>
+            <th>{{ t.migration.th_ngx }}</th>
+            <th>{{ t.migration.th_ats }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td [innerHTML]="t.migration.setup_ngx"></td>
+            <td [innerHTML]="t.migration.setup_ats"></td>
+          </tr>
+          <tr>
+            <td [innerHTML]="t.migration.service_ngx"></td>
+            <td [innerHTML]="t.migration.service_ats"></td>
+          </tr>
+          <tr>
+            <td [innerHTML]="t.migration.get_ngx"></td>
+            <td [innerHTML]="t.migration.get_ats"></td>
+          </tr>
+          <tr>
+            <td [innerHTML]="t.migration.instant_ngx"></td>
+            <td [innerHTML]="t.migration.instant_ats"></td>
+          </tr>
+          <tr>
+            <td [innerHTML]="t.migration.pipe_ngx"></td>
+            <td [innerHTML]="t.migration.pipe_ats"></td>
+          </tr>
+          <tr>
+            <td [innerHTML]="t.migration.use_ngx"></td>
+            <td [innerHTML]="t.migration.use_ats"></td>
+          </tr>
+          <tr>
+            <td [innerHTML]="t.migration.lang_ngx"></td>
+            <td [innerHTML]="t.migration.lang_ats"></td>
+          </tr>
+          <tr>
+            <td [innerHTML]="t.migration.loader_ngx"></td>
+            <td [innerHTML]="t.migration.loader_ats"></td>
+          </tr>
+          <tr>
+            <td [innerHTML]="t.migration.json_ngx"></td>
+            <td [innerHTML]="t.migration.json_ats"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="subsection-title">{{ t.migration.steps_title }}</h3>
+    <ol class="steps">
+      <li [innerHTML]="t.migration.step1"></li>
+      <li [innerHTML]="t.migration.step2"></li>
+      <li [innerHTML]="t.migration.step3"></li>
+      <li [innerHTML]="t.migration.step4"></li>
+      <li [innerHTML]="t.migration.step5"></li>
+    </ol>
+
+    <h3 class="subsection-title">{{ t.migration.notes_title }}</h3>
+    <ul class="notes">
+      <li [innerHTML]="t.migration.note_params"></li>
+      <li [innerHTML]="t.migration.note_plural"></li>
+      <li [innerHTML]="t.migration.note_events"></li>
+    </ul>
+  </section>
+
+  <!-- Versions -->
+  <section class="guide-section" id="versions">
+    <h2>{{ t.versions.title }}</h2>
+    <p class="section-desc">{{ t.versions.desc }}</p>
+
+    <div class="config-table">
+      <table>
+        <thead>
+          <tr>
+            <th>{{ t.versions.th_package }}</th>
+            <th>{{ t.versions.th_version }}</th>
+            <th>{{ t.versions.th_notes }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>{{ t.versions.core_name }}</code></td>
+            <td><code>{{ t.versions.core_version }}</code></td>
+            <td>{{ t.versions.core_notes }}</td>
+          </tr>
+          <tr>
+            <td><code>{{ t.versions.cli_name }}</code></td>
+            <td><code>{{ t.versions.cli_version }}</code></td>
+            <td [innerHTML]="t.versions.cli_notes"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="subsection-title">{{ t.versions.angular_title }}</h3>
+    <p class="section-desc">{{ t.versions.angular_desc }}</p>
+
+    <h3 class="subsection-title">{{ t.versions.pairing_title }}</h3>
+    <p class="section-desc">{{ t.versions.pairing_desc }}</p>
+    <div class="code-block">
+      <pre><span class="fn">npm</span> <span class="str">install</span> @angular-translation-service/core
+<span class="fn">npm</span> <span class="str">install</span> -D @angular-translation-service/cli</pre>
+    </div>
+
+    <h3 class="subsection-title">{{ t.versions.history_title }}</h3>
+    <ul class="notes">
+      <li>{{ t.versions.history_034 }}</li>
+      <li>{{ t.versions.history_032 }}</li>
+      <li [innerHTML]="t.versions.history_rename"></li>
+      <li [innerHTML]="t.versions.history_note"></li>
+    </ul>
+  </section>
+</div>
+}

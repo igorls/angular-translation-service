@@ -10,39 +10,40 @@
   "th_default": "默认",
   "th_description": "描述",
   "generate": {
-    "desc": "Generates TypeScript interfaces from your JSON translation files and registers them with <code>@angular-translation-service/core</code>, providing compile-time type safety for service keys and <code>select()</code> namespace schemas.",
-    "input_desc": "包含 JSON 命名空间文件的源目录",
     "output_desc": "输出 TypeScript 文件路径",
     "check_desc": "CI 模式：如果类型不同步，则以代码 1 退出",
-    "generated_output": "生成的输出"
+    "generated_output": "生成的输出",
+    "desc": "从您的 JSON 翻译文件中生成 TypeScript 接口，并将其注册到 <code>@angular-translation-service/core</code> 中，为服务键和 <code>select()</code> 命名空间模式提供编译时类型安全。",
+    "input_desc": "包含 JSON 命名空间文件的源目录（通常是单个语言，例如 <code>src/i18n/en</code>）"
   },
   "check": {
-    "desc": "Scans source code (<code>.ts</code> and <code>.html</code>) for translation references, validates them across every locale pack, checks dynamic key prefixes, reports cross-locale parity drift, and flags empty values.",
-    "i18n_desc": "Single locale directory or root i18n directory containing language subdirectories",
-    "src_desc": "要扫描键使用情况的源目录",
     "ns_desc": "将检查限制在特定命名空间",
     "detected_patterns": "检测到的模式",
     "pattern_translate": "<code>translate('ns:key')</code> — 基于信号的翻译调用",
     "pattern_instant": "<code>instant('ns:key')</code> — 同步翻译调用",
     "pattern_select": "<code>select('ns')</code> — 将整个命名空间标记为已使用",
     "pattern_pipe": "<code>'ns:key' | translate</code> — 模板中的 Angular 管道使用",
-    "pattern_quoted": "<code>'ns:key'</code> anywhere in source — validates helper arrays, configs, and option objects",
-    "pattern_prefix": "<code>'ns:dynamic.prefix.'</code> — dynamic key family prefix that must match at least one key in every locale",
-    "pattern_parity": "Cross-locale parity — reports missing and extra keys per namespace",
-    "pattern_empty": "Empty values — reports keys present with <code>\"\"</code> before they render invisible text"
+    "desc": "扫描源代码（<code>.ts</code> 和 <code>.html</code>）中的翻译引用，在每个语言包中进行验证，检查动态键前缀，报告跨语言一致性漂移，并标记空值。",
+    "i18n_desc": "单个语言目录或包含语言子目录的根 i18n 目录",
+    "src_desc": "用于扫描键使用的源目录（优先选择应用代码而不是文档/样本以避免误报）",
+    "pattern_quoted": "<code>'ns:key'</code> 任何位置 — 用于验证辅助数组、配置和选项对象的模式",
+    "pattern_prefix": "<code>'ns:dynamic.prefix.'</code> — 动态键家族前缀，必须与每个语言中的至少一个键匹配",
+    "pattern_parity": "跨语言一致性检查 — 按命名空间报告缺失和多余的键",
+    "pattern_empty": "空值 — 在渲染不可见文本之前报告包含 <code>\"\"</code> 的键"
   },
   "validate": {
     "desc": "比较所有语言的翻译文件，找出结构性不一致：缺失的键、多余的键和空值。",
     "input_desc": "包含语言子目录的根 i18n 目录",
-    "example_output": "输出示例"
+    "example_output": "输出示例",
+    "default_lang_desc": "参考语言。如果没有此标志，将使用按字母顺序排序的第一个本地化目录（例如，<code>de</code> 在 <code>en</code> 之前）"
   },
   "clean": {
     "desc": "从目标语言文件中删除孤立的键 — 即存在于翻译中但不再存在于默认语言中的键。",
     "input_desc": "根 i18n 目录",
-    "dry_run_desc": "显示将要删除的内容而不实际修改文件"
+    "dry_run_desc": "显示将要删除的内容而不实际修改文件",
+    "default_lang_desc": "用于决定哪些键是孤儿的参考语言"
   },
   "translate": {
-    "desc": "使用本地 LLM（通过 Ollama）自动将缺失的键从默认语言翻译为目标语言。支持带逐键回退的批量翻译。",
     "locale_desc": "目标语言代码",
     "ns_desc": "限制在特定命名空间",
     "model_desc": "要使用的 Ollama 模型",
@@ -51,8 +52,11 @@
     "features": "功能",
     "feature_batch": "批量翻译（每次 LLM 调用处理 35 条，以获得最佳上下文）",
     "feature_fallback": "批量解析失败时自动逐键回退",
-    "feature_placeholders": "Preserves interpolation placeholders and documents <code>{name}</code> / <code>{count}</code> as the canonical form; existing <code>{{name}}</code> placeholders remain compatible.",
-    "feature_codefence": "处理 LLM 返回的带代码块的 JSON 响应"
+    "feature_codefence": "处理 LLM 返回的带代码块的 JSON 响应",
+    "input_desc": "Root i18n directory",
+    "desc": "使用本地LLM（通过Ollama）自动将默认语言中缺失的键翻译成目标语言。需要运行Ollama主机。支持按键回退的批量翻译。",
+    "default_lang_desc": "源语言。如果没有此标志，将使用首个按字母顺序排序的本地化语言",
+    "feature_placeholders": "保留插值占位符并记录 <code>{name}</code> / <code>{count}</code> 作为规范形式；现有的 <code>{{name}}</code> 占位符保持兼容。"
   },
   "editor": {
     "desc": "在浏览器中启动全功能翻译编辑器 Web UI。包括并排键编辑器、基于 Ollama 的 LLM 自动翻译、逐键源码使用跟踪、进度条以及添加/删除键支持。",
@@ -94,5 +98,19 @@
     "feature_multi_provider": "多提供商 LLM 支持 (Ollama, OpenAI, Gemini)",
     "feature_batch": "批量翻译，带自动批处理和每键回退",
     "feature_scan": "带评分候选项的硬编码字符串模板扫描"
+  },
+  "paths": {
+    "title": "Default paths",
+    "desc": "大多数命令默认使用 <code>src/i18n</code>（或用于单语言输入的 <code>src/i18n/en</code>）。只有 <code>editor</code> 和 <code>mcp</code> 会从 <code>angular.json</code> 或常见约定中自动发现目录。对于其他布局（包括 <code>public/i18n</code> 或 <code>src/assets/i18n</code>），请使用 <code>-i</code> / <code>--i18n</code>。"
+  },
+  "scan": {
+    "src_desc": "Source directory to scan",
+    "host_desc": "Ollama server address",
+    "json_desc": "Output results as JSON",
+    "desc": "扫描HTML模板中可能需要翻译的硬编码字符串。使用启发式方法对候选项进行评分；通过Ollama可选LLM验证。使用 <code>--json</code> 进行面向代理的导出。",
+    "extensions_desc": "逗号分隔的文件扩展名",
+    "min_score_desc": "需要报告的最低启发式分数",
+    "verify_desc": "使用LLM验证候选人（需要Ollama）",
+    "model_desc": "用于验证的Ollama模型"
   }
 }

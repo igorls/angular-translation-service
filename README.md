@@ -16,6 +16,14 @@ npm install @angular-translation-service/core
 npm install -D @angular-translation-service/cli
 ```
 
+### File layout
+
+| Purpose | Path |
+|---------|------|
+| CLI tools (`generate`, `check`, `validate`, `translate`, `clean`) | `src/i18n/{lang}/{namespace}.json` |
+| Runtime with `httpLoader('/i18n')` | `public/i18n/{lang}/{namespace}.json` (served at `/i18n/...`) |
+| Runtime with `importLoader` | Import from source, e.g. `src/i18n/{lang}/{namespace}.json` |
+
 ### 1. Configure
 
 ```typescript
@@ -95,6 +103,8 @@ Double braces such as `{{name}}` remain supported for compatibility. In Angular 
 
 ### 6. SSR Support
 
+TransferState is handled automatically by `provideTranslation()`. Use the SSR entry only to inject language from the request:
+
 ```typescript
 // app.config.server.ts
 import { provideTranslationSSR } from '@angular-translation-service/core/ssr';
@@ -102,7 +112,11 @@ import { provideTranslationSSR } from '@angular-translation-service/core/ssr';
 const serverConfig = {
   providers: [
     provideTranslationSSR({
-      resolveLanguage: (req) => req.headers['accept-language']?.split(',')[0] ?? 'en',
+      langFromRequest: (req) => {
+        const accept = (req as { headers?: { get?: (k: string) => string | null } })?.headers
+          ?.get?.('accept-language') ?? 'en';
+        return accept.split(',')[0] ?? 'en';
+      },
     }),
   ],
 };
@@ -172,17 +186,33 @@ This pattern is useful when:
 npx ats generate    # Generate TypeScript types from JSON
 npx ats check       # Check source references, locale parity, and empty values
 npx ats validate    # Detect structural issues
-npx ats translate   # Auto-translate with LLM
+npx ats translate   # Auto-translate with LLM (Ollama)
+npx ats clean       # Remove orphaned keys
+npx ats scan        # Find hardcoded strings in templates
 npx ats editor      # Launch visual editor
+npx ats mcp         # Start MCP server for AI agents
+```
+
+Defaults assume `src/i18n` (or `src/i18n/en` for single-locale commands). Only `editor` and `mcp` auto-discover the directory.
+
+```bash
+npx ats generate -i src/i18n/en -o src/app/i18n.generated.ts
+npx ats check --i18n src/i18n --src src
+npx ats validate -i src/i18n --default-lang en
+npx ats translate -i src/i18n --locale pt-BR --default-lang en --model gemma3:12b
 ```
 
 > The core and CLI packages are currently versioned independently. Install the latest compatible `@angular-translation-service/cli` alongside `@angular-translation-service/core`; release notes call out any required pairing.
 
 ## Documentation
 
-Full documentation: [angular-translation-service.pages.dev](https://igorls.github.io/angular-translation-service/)
+Full documentation: [igorls.github.io/angular-translation-service](https://igorls.github.io/angular-translation-service/)
+
+- [Getting Started](https://igorls.github.io/angular-translation-service/getting-started)
+- [API Reference](https://igorls.github.io/angular-translation-service/api)
+- [CLI](https://igorls.github.io/angular-translation-service/cli)
+- [Guides](https://igorls.github.io/angular-translation-service/guides) — troubleshooting, ngx-translate migration, version matrix
 
 ## License
 
 MIT © [Igor LS](https://github.com/igorls)
-

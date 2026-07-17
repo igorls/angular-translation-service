@@ -7,5 +7,5 @@ out-tsc/
 bun.lockb
 .env
 .env.*
-docs/
+/docs/
 *.generated.ts

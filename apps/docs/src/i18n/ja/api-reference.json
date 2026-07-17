@@ -4,14 +4,14 @@
   "translation_service": {
     "title": "TranslationService",
     "desc": "Angular アプリケーションに反応的な i18n を提供するコアサービス。Angular DI 経由で注入します。",
-    "select_desc": "Returns a scope signal for template access. Automatically triggers lazy loading for the namespace. Data is <code>undefined</code> until the namespace loads, then returns a proxy-wrapped dictionary for safe deep property access. When generated types are registered, the namespace name and returned schema are typed.",
-    "translate_desc": "Returns a cached signal for a single translation key. Automatically triggers namespace loading and re-runs when the active language changes. Key format: <code>namespace:dotted.path</code>. When generated types are registered, invalid keys become TypeScript errors.",
-    "instant_desc": "Returns the translation synchronously. It is non-reactive: values read with <code>instant()</code> do not update after <code>setLang()</code>. If called before a lazy namespace has ever been requested, dev mode warns once and starts loading that namespace; the current synchronous call still returns <code>''</code>. Use <code>ensureNamespaces()</code> first or prefer <code>translate()</code> for reactive UI state.",
     "setlang_desc": "アクティブな言語を切り替えます。新しい言語に対して以前にリクエストされたすべての名前空間を再ロードし、言語設定を <code>localStorage</code> に保存します（<code>storageKey</code> が設定されている場合）。言語が <code>supportedLangs</code> に含まれていない場合は警告をログに記録し、早期に復帰します。",
     "ensure_desc": "追加の名前空間を事前ロードします。重複する同時ロードを自動的に排除します。ルートガードやリゾルバに便利です。",
     "lang_desc": "現在の言語シグナル。テンプレートで読み取ってアクティブな言語を表示します。",
     "supported_desc": "設定されたすべてのサポート対象言語コードの読み取り専用配列。言語スイッチャーの構築に便利です。",
-    "ready_desc": "現在の言語に対してすべての <code>coreNamespaces</code> がロードされたときに true になります。"
+    "ready_desc": "現在の言語に対してすべての <code>coreNamespaces</code> がロードされたときに true になります。",
+    "select_desc": "テンプレートアクセス用のスコープシグナルを返します。名前空間の遅延読み込みを自動的にトリガーします。名前空間がロードされるまでデータは<code >undefined</code>ですが、ロード後は安全な深いプロパティアクセス用にプロキシでラップされた辞書が返されます。生成された型が登録されると、名前空間名と返されるスキーマが型付けされます。",
+    "translate_desc": "単一の翻訳キーに対するキャッシュシグナルを返します。アクティブな言語が変更されると、名前空間のロードが自動的にトリガーされ、再実行されます。キー形式: <code >namespace:dotted.path</code>。生成された型が登録されると、無効なキーはTypeScriptのエラーになります。",
+    "instant_desc": "翻訳を同期して返します。非リアクティブです。<code >instant()</code>で読み取った値は<code >setLang()</code>後に更新されません。遅延名前空間がリクエストされる前に呼び出された場合、開発モードでは一度警告が表示され、その名前空間のロードが開始されます。現在の同期呼び出しでも<code >''</code>が返されます。<code >ensureNamespaces()</code>を先に使用するか、リアクティブなUI状態には<code >translate()</code>を優先してください。"
   },
   "translate_pipe": {
     "title": "TranslatePipe",
@@ -33,7 +33,8 @@
     "detect_lang": "<code>navigator.language</code> 経由でブラウザの言語検出を有効にする",
     "storage_key": "セッションをまたいで言語設定を維持するための <code>localStorage</code> キー",
     "ns_separator": "名前空間とキーパスの間のセパレータ（デフォルト：<code>':'</code>）",
-    "fallback_chain": "地域ロケールのためのフォールバック言語チェーン"
+    "fallback_chain": "地域ロケールのためのフォールバック言語チェーン",
+    "missing_key_handler": "ロードされた名前空間にキーが存在しない場合のカスタムハンドラです。 <code>(key, { lang, namespace })</code>を受け取り、文字列を返さなければなりません。デフォルトでは、生のキー（例: <code>'common:nav.missing'</code>）を返します。"
   },
   "loaders": {
     "title": "ローダー",
@@ -52,7 +53,6 @@
     "th_access": "アクセス",
     "th_result": "結果",
     "string_coercion": "文字列強制 / テンプレート補間",
-    "string_coercion_result": "キーパスを返します（例：<code>'common.nav.title'</code>）",
     "property_access": "プロパティアクセス",
     "property_access_result": "別の再帰プロキシを返します",
     "json_serialization": "JSON シリアライズ",
@@ -60,7 +60,8 @@
     "promise_detection": "Promise 検出（<code>then</code>/<code>catch</code>）",
     "promise_detection_result": "<code>undefined</code> を返します（非同期の展開を防ぎます）",
     "iteration": "反復（<code>@for</code> ループ）",
-    "iteration_result": "何も生成しません（空のイテレータ）"
+    "iteration_result": "何も生成しません（空のイテレータ）",
+    "string_coercion_result": "空文字列<code >''</code>を返します"
   },
   "fallback_chains": {
     "title": "フォールバックチェーン",
@@ -76,19 +77,19 @@
   },
   "ssr": {
     "title": "SSR とハイドレーション",
-    "desc": "<code>@angular-translation-service/core/ssr</code> セカンダリエントリポイントは、翻訳されていないコンテンツのフラッシュ（FOUC）やハイドレーションの不一致なしに、シームレスなサーバーサイドレンダリングを提供します。",
-    "provide_desc": "<strong>サーバー</strong> アプリケーション設定に追加します。サーバー上では HTTP リクエストから <code>CURRENT_LANGUAGE</code> を提供し、ロードされたすべての翻訳を <code>TransferState</code> にスナップショットします。クライアント上では、翻訳を同期的にハイドレートします。初期レンダリングに HTTP リクエストは不要です。",
     "how_it_works": "仕組み",
     "th_phase": "フェーズ",
     "th_what_happens": "何が起こるか",
     "server_render": "サーバーレンダリング",
-    "server_render_desc": "リクエストから <code>CURRENT_LANGUAGE</code> が設定され、コア名前空間がロードされ、その後、ロードされたすべての翻訳が <code>TransferState</code> にシリアライズされます",
     "client_hydration": "クライアントハイドレーション",
-    "client_hydration_desc": "翻訳は <code>TransferState</code> から同期的に復元されます — HTTP リクエストなし、FOUC なし、NG0501 なし",
     "after_hydration": "ハイドレーション後",
-    "after_hydration_desc": "メモリを解放するために <code>TransferState</code> エントリが削除されます。その後の名前空間のロードは通常の HTTP ロードを使用します",
     "config_title": "TranslationSSRConfig",
-    "config_lang_from_request": "着信 HTTP リクエストから言語を抽出します"
+    "desc": "TransferStateスナップショット/ハイデートはcoreの<code >provideTranslation()</code>に組み込まれています。<code >@angular-translation-service/core/ssr</code>のエントリは、サーバーがレンダリング前に正しいロケールを選択できるように、<code >CURRENT_LANGUAGE</code>を<code >langFromRequest</code>経由で注入します。",
+    "provide_desc": "アプリケーションの<strong >server</strong>設定に追加します。これは<code >langFromRequest</code>を使用して<code >CURRENT_LANGUAGE</code>を提供します。ロードされた名前空間を<code >TransferState</code>にシリアル化するのは、このヘルパーではなくcoreの<code >provideTranslation()</code>によって処理されます。",
+    "server_render_desc": "SSRが構成されている場合、<code >langFromRequest</code>から<code >CURRENT_LANGUAGE</code>が取得され、コア名前空間がロードされ、<code >provideTranslation()</code>がロードされた辞書を<code >TransferState</code>にシリアル化します",
+    "client_hydration_desc": "翻訳は<code >TransferState</code>から同期的に復元されます。すでにロードされている名前空間に対するHTTPリクエストはなく、FOUCもNG0501もありません。",
+    "after_hydration_desc": "その後の名前空間のロードには、設定されたローダー（HTTPまたはimport）を使用します。ビルド時にHTTPサーバーが利用できない場合は、純粋なSSG/プリレンダリングのために<code >importLoader</code>を優先してください",
+    "config_lang_from_request": "受信中のHTTPリクエストから言語を抽出します（型は<code >unknown</code>です。サーバーアダプターのタイプにキャストしてください）"
   },
   "error_behavior": {
     "title": "エラー時の振る舞い",
@@ -105,29 +106,29 @@
     "nested_loading_behavior": "再帰プロキシは空の文字列を返し、テンプレートのクラッシュを防ぎます"
   },
   "reactivity": {
-    "title": "Reactivity: translate() vs instant()",
-    "desc": "<code>translate()</code> and <code>select()</code> are reactive signal APIs. Use them for labels, menus, option arrays, and anything that should update after <code>setLang()</code>. <code>instant()</code> is a synchronous snapshot for imperative code such as logs, confirm prompts, or already-loaded toast messages.",
-    "avoid_title": "Avoid frozen option arrays",
-    "avoid_desc": "Calling <code>instant()</code> while defining component fields freezes those labels in the boot language and may read before a lazy namespace is ready.",
-    "prefer_title": "Prefer computed() + translate()",
-    "prefer_desc": "Build derived UI state inside <code>computed()</code> and read the translation signals there. The array rebuilds when the namespace loads and whenever the language changes.",
-    "escape_title": "Escape hatch for imperative key maps",
-    "escape_desc": "When you truly need <code>instant()</code>, read <code>lang()</code> inside the computed and make sure the namespace was preloaded with <code>ensureNamespaces()</code>.",
-    "perf_note": "<strong>Performance note:</strong> parameterized <code>translate(key, params)</code> calls return uncached computed signals, so avoid recreating them inside very large loops. Hoist stable params or use <code>select()</code> where possible."
+    "title": "リアクティビティ：translate() 対 instant()",
+    "desc": "<code >translate()</code>と<code >select()</code>はリアクティブなシグナルAPIです。これらはラベル、メニュー、オプション配列、および<code >setLang()</code>の後に更新されるべきすべてのものに使用します。<code >instant()</code>は、ログ、確認プロンプト、またはすでにロードされたトーストメッセージなどの命令型コードのための同期スナップショットです。",
+    "avoid_title": "固定されたオプション配列を避ける",
+    "avoid_desc": "コンポーネントフィールドを定義している間に<code >instant()</code>を呼び出すと、それらのラベルはブート言語でフリーズされ、遅延名前空間が準備できる前に読み取られる可能性があります。",
+    "prefer_title": "computed() + translate() を優先する",
+    "prefer_desc": "派生UI状態を<code>computed()</code>内に構築し、そこで翻訳シグナルを読み取ります。名前空間がロードされたときや言語が変更されるたびに配列が再構築されます。",
+    "escape_title": "命令的なキーマップのための脱出経路",
+    "escape_desc": "本当に<code>instant()</code>が必要な場合は、computed内で<code>lang()</code>を読み取り、名前空間が<code>ensureNamespaces()</code>でプリロードされていることを確認してください。",
+    "perf_note": "<strong>パフォーマンスに関する注意：</strong> パラメータ化された<code>translate(key, params)</code>呼び出しは、キャッシュされていないcomputedシグナルを返します。そのため、非常に大きなループ内で再作成することを避けてください。可能な場合は、安定したパラメータをホイストするか、<code>select()</code>を使用してください。"
   },
   "typed_keys": {
     "title": "Typed Translation Keys",
-    "desc": "<code>ats generate</code> now emits a module augmentation for <code>@angular-translation-service/core</code>. Include the generated file in your TypeScript program and the service API narrows from permissive <code>string</code> keys to your generated key union and namespace schemas. Apps that do not generate types keep the old flexible string API.",
     "generated_title": "Generated registry",
     "usage_title": "What TypeScript catches",
-    "usage_desc": "Static TypeScript call sites get checked end-to-end. The pipe still accepts template strings because Angular template expressions cannot expose the same module augmentation contract."
+    "desc": "<code>ats generate</code>は現在、<code>@angular-translation-service/core</code>のモジュール拡張をエミットします。生成されたファイルをTypeScriptプログラムに含め、サービスAPIは許容的な<code>string</code>キーから、生成されたキーユニオンと名前空間スキーマへと絞り込まれます。型を生成しないアプリは古い柔軟な文字列APIを維持します。",
+    "usage_desc": "静的なTypeScriptの呼び出しサイトはエンドツーエンドでチェックされます。Angularテンプレート式は同じモジュール拡張契約を公開できないため、パイプは引き続きテンプレート文字列を受け入れます。"
   },
   "interpolation": {
-    "title": "Interpolation Placeholders",
-    "desc": "Use single braces as the canonical placeholder style in JSON values: <code>{name}</code>. Existing double-brace placeholders such as <code>{{name}}</code> are still tolerated for compatibility.",
     "canonical_title": "Canonical form",
-    "canonical_desc": "Single braces match the <code>translate(key, { name })</code> mental model and avoid visual collision with Angular template interpolation.",
-    "angular_title": "Angular pipe params gotcha",
-    "angular_desc": "When passing an object literal to the pipe inside Angular interpolation, leave a space between the object closing brace and Angular's closing braces. Without the space, Angular may parse the braces together."
+    "title": "補間プレースホルダー",
+    "desc": "JSON値では、単一のブレースを標準的なプレースホルダー形式として使用してください：<code>{name}</code>。互換性のために、既存の二重ブレースプレースホルダーである<code>{{name}}</code>は引き続き許容されます。",
+    "canonical_desc": "単一の波括弧は <code >translate(key, { name })</code> のメンタルモデルと一致し、Angularテンプレート補間との視覚的な衝突を避けてください。",
+    "angular_title": "Angularパイプのパラメータ注意点",
+    "angular_desc": "Angular補間内のパイプにオブジェクトリテラルを渡す際、オブジェクトの閉じ波括弧とAngularの閉じ波括弧の間にスペースを入れます。スペースがない場合、Angularは波括弧をまとめて解釈する可能性があります。"
   }
 }

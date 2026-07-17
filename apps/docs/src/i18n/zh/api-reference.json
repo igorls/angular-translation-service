@@ -4,14 +4,14 @@
   "translation_service": {
     "title": "TranslationService",
     "desc": "为 Angular 应用程序提供响应式 i18n 的核心服务。通过 Angular DI 注入。",
-    "select_desc": "Returns a scope signal for template access. Automatically triggers lazy loading for the namespace. Data is <code>undefined</code> until the namespace loads, then returns a proxy-wrapped dictionary for safe deep property access. When generated types are registered, the namespace name and returned schema are typed.",
-    "translate_desc": "Returns a cached signal for a single translation key. Automatically triggers namespace loading and re-runs when the active language changes. Key format: <code>namespace:dotted.path</code>. When generated types are registered, invalid keys become TypeScript errors.",
-    "instant_desc": "Returns the translation synchronously. It is non-reactive: values read with <code>instant()</code> do not update after <code>setLang()</code>. If called before a lazy namespace has ever been requested, dev mode warns once and starts loading that namespace; the current synchronous call still returns <code>''</code>. Use <code>ensureNamespaces()</code> first or prefer <code>translate()</code> for reactive UI state.",
     "setlang_desc": "切换活动语言。为新语言重新加载所有先前请求的命名空间，并将偏好持久化到 <code>localStorage</code>（如果配置了 <code>storageKey</code>）。如果语言不在 <code>supportedLangs</code> 中，则记录警告并提前返回。",
     "ensure_desc": "预加载额外的命名空间。自动去重并发加载。适用于路由守卫或解析器。",
     "lang_desc": "当前语言信号。在模板中读取以显示活动语言。",
     "supported_desc": "配置中所有支持的语言代码的只读数组。适用于构建语言切换器。",
-    "ready_desc": "当当前语言的所有 <code>coreNamespaces</code> 都已加载时为 true。"
+    "ready_desc": "当当前语言的所有 <code>coreNamespaces</code> 都已加载时为 true。",
+    "select_desc": "返回一个作用域信号用于模板访问。自动触发命名空间的懒加载。在命名空间加载之前，数据是 <code>undefined</code>，然后返回一个代理包装的字典以进行安全深度属性访问。当生成类型被注册时，命名空间名称和返回的模式会被类型化。",
+    "translate_desc": "返回单个翻译键的缓存信号。当活动语言更改时，自动触发命名空间的加载和重新运行。键格式：<code>namespace:dotted.path</code>。当生成类型被注册时，无效键将成为 TypeScript 错误。",
+    "instant_desc": "同步返回翻译。它是非反应性的：使用 <code>instant()</code> 读取的值在调用 <code>setLang()</code> 之后不会更新。如果在请求懒加载命名空间之前调用，开发模式会发出一次警告并开始加载该命名空间；当前的同步调用仍然返回 <code>''</code>。请先使用 <code>ensureNamespaces()</code> 或优先使用 <code>translate()</code> 来处理反应性的 UI 状态。"
   },
   "translate_pipe": {
     "title": "TranslatePipe",
@@ -33,7 +33,8 @@
     "detect_lang": "通过 <code>navigator.language</code> 启用浏览器语言检测",
     "storage_key": "用于跨会话持久化语言偏好的 <code>localStorage</code> 键",
     "ns_separator": "命名空间和键路径之间的分隔符（默认为：<code>':'</code>）",
-    "fallback_chain": "区域设置的备用语言链"
+    "fallback_chain": "区域设置的备用语言链",
+    "missing_key_handler": "当加载的命名空间中缺少键时使用的自定义处理器。接收 <code>(key, { lang, namespace })</code> 并必须返回一个字符串。默认：返回原始键（例如 <code>'common:nav.missing'</code>）"
   },
   "loaders": {
     "title": "加载器",
@@ -52,7 +53,6 @@
     "th_access": "访问",
     "th_result": "结果",
     "string_coercion": "字符串强制转换 / 模板插值",
-    "string_coercion_result": "返回键路径（例如：<code>'common.nav.title'</code>）",
     "property_access": "属性访问",
     "property_access_result": "返回另一个递归代理",
     "json_serialization": "JSON 序列化",
@@ -60,7 +60,8 @@
     "promise_detection": "Promise 检测（<code>then</code>/<code>catch</code>）",
     "promise_detection_result": "返回 <code>undefined</code>（防止异步解包）",
     "iteration": "迭代（<code>@for</code> 循环）",
-    "iteration_result": "不产出任何内容（空迭代器）"
+    "iteration_result": "不产出任何内容（空迭代器）",
+    "string_coercion_result": "返回空字符串 <code>''</code>"
   },
   "fallback_chains": {
     "title": "回退链",
@@ -76,19 +77,19 @@
   },
   "ssr": {
     "title": "SSR 与水合",
-    "desc": "<code>@angular-translation-service/core/ssr</code> 二级入口点提供无缝的服务器端渲染，零翻译内容闪烁（FOUC）且无水合不匹配。",
-    "provide_desc": "添加到您的<strong>服务器</strong>应用配置中。在服务器上，它从 HTTP 请求提供 <code>CURRENT_LANGUAGE</code>，并将所有加载的翻译快照到 <code>TransferState</code> 中。在客户端，它同步水合翻译 — 初始渲染无需 HTTP 请求。",
     "how_it_works": "工作原理",
     "th_phase": "阶段",
     "th_what_happens": "发生了什么",
     "server_render": "服务器渲染",
-    "server_render_desc": "从请求中设置 <code>CURRENT_LANGUAGE</code>，加载核心命名空间，然后将所有加载的翻译序列化到 <code>TransferState</code> 中",
     "client_hydration": "客户端水合",
-    "client_hydration_desc": "翻译从 <code>TransferState</code> 同步恢复 — 无 HTTP 请求，无 FOUC，无 NG0501",
     "after_hydration": "水合后",
-    "after_hydration_desc": "删除 <code>TransferState</code> 条目以释放内存。后续的命名空间加载使用正常的 HTTP 加载",
     "config_title": "TranslationSSRConfig",
-    "config_lang_from_request": "从传入的 HTTP 请求中提取语言"
+    "desc": "TransferState 快照/水合功能内置于核心的 <code>provideTranslation()</code> 中。 <code>@angular-translation-service/core/ssr</code> 入口通过 <code>CURRENT_LANGUAGE</code> 注入请求语言，以便服务器在渲染之前选择正确的本地化设置。",
+    "provide_desc": "添加到您的 <strong>服务器</strong> 应用程序配置中。它使用 <code>langFromRequest</code> 提供 <code>CURRENT_LANGUAGE</code>。将加载的命名空间序列化到 <code>TransferState</code> 由核心 <code>provideTranslation()</code> 处理，而不是由这个辅助函数处理。",
+    "server_render_desc": "<code>CURRENT_LANGUAGE</code> 在配置了 SSR 时来自 <code>langFromRequest</code>；核心命名空间加载；<code>provideTranslation()</code> 将加载的字典序列化到 <code>TransferState</code> 中",
+    "client_hydration_desc": "翻译会同步从 <code>TransferState</code> 中恢复——对于已经加载的命名空间没有 HTTP 请求，没有 FOUC，没有 NG0501",
+    "after_hydration_desc": "后续命名空间加载使用配置的加载器（HTTP 或导入）。在构建时没有 HTTP 服务器可用时，优先使用 <code>importLoader</code> 进行纯 SSG/预渲染",
+    "config_lang_from_request": "从传入的 HTTP 请求中提取语言（类型是 <code>unknown</code> —— 转换为您服务器适配器的请求类型）"
   },
   "error_behavior": {
     "title": "错误行为",
@@ -105,29 +106,29 @@
     "nested_loading_behavior": "递归代理返回空字符串，防止模板崩溃"
   },
   "reactivity": {
-    "title": "Reactivity: translate() vs instant()",
-    "desc": "<code>translate()</code> and <code>select()</code> are reactive signal APIs. Use them for labels, menus, option arrays, and anything that should update after <code>setLang()</code>. <code>instant()</code> is a synchronous snapshot for imperative code such as logs, confirm prompts, or already-loaded toast messages.",
-    "avoid_title": "Avoid frozen option arrays",
-    "avoid_desc": "Calling <code>instant()</code> while defining component fields freezes those labels in the boot language and may read before a lazy namespace is ready.",
-    "prefer_title": "Prefer computed() + translate()",
-    "prefer_desc": "Build derived UI state inside <code>computed()</code> and read the translation signals there. The array rebuilds when the namespace loads and whenever the language changes.",
-    "escape_title": "Escape hatch for imperative key maps",
-    "escape_desc": "When you truly need <code>instant()</code>, read <code>lang()</code> inside the computed and make sure the namespace was preloaded with <code>ensureNamespaces()</code>.",
-    "perf_note": "<strong>Performance note:</strong> parameterized <code>translate(key, params)</code> calls return uncached computed signals, so avoid recreating them inside very large loops. Hoist stable params or use <code>select()</code> where possible."
+    "title": "可响应性：translate() 对比 instant()",
+    "desc": "<code>translate()</code> 和 <code>select()</code> 是响应式信号 API。将它们用于标签、菜单、选项数组以及任何需要在 <code>setLang()</code> 之后更新的内容。<code>instant()</code> 是日志、确认提示或已加载的 Toast 消息等命令式代码的同步快照。",
+    "avoid_title": "避免冻结选项数组",
+    "avoid_desc": "在定义组件字段时调用 <code>instant()</code> 会冻结这些标签在启动语言中，并且可能在懒加载命名空间准备好之前就读取了它们。",
+    "prefer_title": "优先使用 computed() + translate()",
+    "prefer_desc": "在 <code>computed()</code> 内部构建派生 UI 状态并读取翻译信号。当命名空间加载时和语言每次更改时，数组都会重新构建。",
+    "escape_title": "命令式键映射的逃生舱",
+    "escape_desc": "当您真正需要 <code>instant()</code> 时，请在 computed 中读取 <code>lang()</code>，并确保命名空间已使用 <code>ensureNamespaces()</code> 进行预加载。",
+    "perf_note": "<strong>性能提示：</strong>参数化的 <code>translate(key, params)</code> 调用会返回未缓存的 computed 信号，因此避免在非常大的循环中重新创建它们。尽可能提升稳定的参数或使用 <code>select()</code>。"
   },
   "typed_keys": {
     "title": "Typed Translation Keys",
-    "desc": "<code>ats generate</code> now emits a module augmentation for <code>@angular-translation-service/core</code>. Include the generated file in your TypeScript program and the service API narrows from permissive <code>string</code> keys to your generated key union and namespace schemas. Apps that do not generate types keep the old flexible string API.",
     "generated_title": "Generated registry",
     "usage_title": "What TypeScript catches",
-    "usage_desc": "Static TypeScript call sites get checked end-to-end. The pipe still accepts template strings because Angular template expressions cannot expose the same module augmentation contract."
+    "desc": "<code>ats generate</code> 现在为 <code>@angular-translation-service/core</code>  emits 一个模块增强文件。将生成的代码包含在您的 TypeScript 程序中，服务 API 会从宽松的 <code>string</code> 键缩小到您生成的键联合和命名空间模式。不生成类型的应用程序将保留旧的灵活字符串 API。",
+    "usage_desc": "静态 TypeScript 调用站点会进行端到端的检查。管道仍然接受模板字符串，因为 Angular 模板表达式无法暴露相同的模块增强契约。"
   },
   "interpolation": {
-    "title": "Interpolation Placeholders",
-    "desc": "Use single braces as the canonical placeholder style in JSON values: <code>{name}</code>. Existing double-brace placeholders such as <code>{{name}}</code> are still tolerated for compatibility.",
     "canonical_title": "Canonical form",
-    "canonical_desc": "Single braces match the <code>translate(key, { name })</code> mental model and avoid visual collision with Angular template interpolation.",
-    "angular_title": "Angular pipe params gotcha",
-    "angular_desc": "When passing an object literal to the pipe inside Angular interpolation, leave a space between the object closing brace and Angular's closing braces. Without the space, Angular may parse the braces together."
+    "title": "插值占位符",
+    "desc": "在 JSON 值中使用单花括号作为规范的占位符样式：<code>{name}</code>。现有的双花括号占位符，例如 <code>{{name}}</code>，仍为兼容性而受到容忍。",
+    "canonical_desc": "单个花括号匹配 <code>translate(key, { name })</code> 的心智模型，并避免与 Angular 模板插值的视觉冲突。",
+    "angular_title": "Angular 管道参数的陷阱",
+    "angular_desc": "当将对象字面量传递给 Angular 插值中的管道时，在对象闭合花括号和 Angular 闭合花括号之间留一个空格。如果没有这个空格，Angular 可能会将花括号解析在一起。"
   }
 }

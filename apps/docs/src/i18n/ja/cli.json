@@ -10,39 +10,40 @@
   "th_default": "デフォルト",
   "th_description": "説明",
   "generate": {
-    "desc": "Generates TypeScript interfaces from your JSON translation files and registers them with <code>@angular-translation-service/core</code>, providing compile-time type safety for service keys and <code>select()</code> namespace schemas.",
-    "input_desc": "JSON 名前空間ファイルを含むソースディレクトリ",
     "output_desc": "出力する TypeScript ファイルのパス",
     "check_desc": "CI モード：型が同期されていない場合に終了コード 1 で終了します",
-    "generated_output": "生成された出力"
+    "generated_output": "生成された出力",
+    "desc": "JSON翻訳ファイルからTypeScriptインターフェースを生成し、それらを <code>@angular-translation-service/core</code> に登録することで、サービスキーと <code>select()</code> 名前空間スキーマのコンパイル時型安全性を確保します。",
+    "input_desc": "JSON名前空間ファイルを含むソースディレクトリ（通常は単一ロケール、例: <code>src/i18n/en</code>）"
   },
   "check": {
-    "desc": "Scans source code (<code>.ts</code> and <code>.html</code>) for translation references, validates them across every locale pack, checks dynamic key prefixes, reports cross-locale parity drift, and flags empty values.",
-    "i18n_desc": "Single locale directory or root i18n directory containing language subdirectories",
-    "src_desc": "キーの使用状況をスキャンするソースディレクトリ",
     "ns_desc": "特定の名前空間にチェックを制限する",
     "detected_patterns": "検出されたパターン",
     "pattern_translate": "<code>translate('ns:key')</code> — シグナルベースの翻訳呼び出し",
     "pattern_instant": "<code>instant('ns:key')</code> — 同期的な翻訳呼び出し",
     "pattern_select": "<code>select('ns')</code> — 名前空間全体を使用済みとしてマークする",
     "pattern_pipe": "<code>'ns:key' | translate</code> — テンプレートでの Angular パイプの使用",
-    "pattern_quoted": "<code>'ns:key'</code> anywhere in source — validates helper arrays, configs, and option objects",
-    "pattern_prefix": "<code>'ns:dynamic.prefix.'</code> — dynamic key family prefix that must match at least one key in every locale",
-    "pattern_parity": "Cross-locale parity — reports missing and extra keys per namespace",
-    "pattern_empty": "Empty values — reports keys present with <code>\"\"</code> before they render invisible text"
+    "desc": "ソースコード（<code>.ts</code> および <code>.html</code>）をスキャンし、翻訳参照をチェックし、すべてのロケールパック間で検証し、動的キープレフィックスを確認し、クロスロケールの整合性ドリフトを報告し、空の値をフラグ付けします。",
+    "i18n_desc": "単一ロケールディレクトリ、または言語サブディレクトリを含むルート i18n ディレクトリ",
+    "src_desc": "キーの使用をスキャンするソースディレクトリ（誤検知を避けるため、ドキュメントやサンプルよりもアプリのコードを優先してください）",
+    "pattern_quoted": "<code>'ns:key'</code> をソース内のどこかに使用 — ヘルパー配列、設定、オプションオブジェクトを検証します",
+    "pattern_prefix": "<code>'ns:dynamic.prefix.'</code> — すべてのロケールで少なくとも1つのキーと一致する必要がある動的キーファミリープレフィックス",
+    "pattern_parity": "異なるロケールの整合性 — 名前空間ごとに欠落キーと余分なキーを報告します",
+    "pattern_empty": "空の値 — 鍵が不可視テキストとして表示される前に、<code>\"\"</code> で存在する場合に報告します"
   },
   "validate": {
     "desc": "すべての言語の翻訳ファイルを比較し、不足しているキー、余分なキー、空の値などの構造的な不一致を見つけます。",
     "input_desc": "言語サブディレクトリを含むルート i18n ディレクトリ",
-    "example_output": "出力例"
+    "example_output": "出力例",
+    "default_lang_desc": "参照言語。このフラグがない場合、アルファベット順で最初に来るロケールディレクトリが使用されます（例：<code>de</code> は <code >en</code> より前）"
   },
   "clean": {
     "desc": "ターゲット言語ファイルから、デフォルト言語には存在しなくなった孤立したキーを削除します。",
     "input_desc": "ルート i18n ディレクトリ",
-    "dry_run_desc": "ファイルを変更せずに削除される内容を表示する"
+    "dry_run_desc": "ファイルを変更せずに削除される内容を表示する",
+    "default_lang_desc": "孤立キーを決定するための参照言語"
   },
   "translate": {
-    "desc": "ローカル LLM（Ollama 経由）を使用して、デフォルト言語からターゲット言語に不足しているキーを自動的に翻訳します。キーごとのフォールバックを備えたバッチ翻訳をサポートしています。",
     "locale_desc": "ターゲット言語コード",
     "ns_desc": "特定の名前空間に制限する",
     "model_desc": "使用する Ollama モデル",
@@ -51,8 +52,11 @@
     "features": "機能",
     "feature_batch": "バッチ翻訳（最適なコンテキストのために 1 回の LLM 呼び出しにつき 35 エントリ）",
     "feature_fallback": "バッチ解析が失敗した場合の自動的なキーごとのフォールバック",
-    "feature_placeholders": "Preserves interpolation placeholders and documents <code>{name}</code> / <code>{count}</code> as the canonical form; existing <code>{{name}}</code> placeholders remain compatible.",
-    "feature_codefence": "LLM からのコードフェンス付き JSON レスポンスを処理する"
+    "feature_codefence": "LLM からのコードフェンス付き JSON レスポンスを処理する",
+    "input_desc": "Root i18n directory",
+    "desc": "ローカルLLM（Ollama経由）を使用して、デフォルト言語からターゲット言語への欠落キーを自動的に翻訳します。実行中のOllamaホストが必要です。キーごとのフォールバック付きバッチ翻訳をサポートしています。",
+    "default_lang_desc": "ソース言語。このフラグがない場合、アルファベット順で最初に来るロケールが使用されます",
+    "feature_placeholders": "補間プレースホルダーを保持し、<code>{name}</code> / <code>{count}</code> を正規形式として文書化します。既存の <code>{{name}}</code> プレースホルダーは互換性を維持します"
   },
   "editor": {
     "desc": "ブラウザでフル機能の翻訳エディタ Web UI を起動します。サイドバイサイドのキーエディタ、Ollama による LLM 駆動の自動翻訳、キーごとのソースコード使用状況追跡、プログレスバー、キーの追加/削除サポートが含まれています。",
@@ -94,5 +98,19 @@
     "feature_multi_provider": "マルチプロバイダー LLM サポート（Ollama、OpenAI、Gemini）",
     "feature_batch": "自動バッチ処理とキーごとのフォールバックを備えたバッチ翻訳",
     "feature_scan": "ハードコーディングされた文字列のテンプレートスキャン（スコア付き候補を含む）"
+  },
+  "paths": {
+    "title": "Default paths",
+    "desc": "ほとんどのコマンドは <code>src/i18n</code>（または単一ロケールの入力の場合は <code>src/i18n/en</code>）をデフォルトとします。 <code>editor</code> と <code>mcp</code> のみ、<code>angular.json</code> または一般的な慣習からディレクトリを自動検出します。他のレイアウト（<code>public/i18n</code> や <code>src/assets/i18n</code> を含む）の場合は、<code>-i</code> / <code>--i18n</code> を渡してください。"
+  },
+  "scan": {
+    "src_desc": "Source directory to scan",
+    "host_desc": "Ollama server address",
+    "json_desc": "Output results as JSON",
+    "desc": "翻訳が必要な可能性のあるハードコードされた文字列をHTMLテンプレートからスキャンします。ヒューリスティックで候補のスコアリングを行い、Ollama経由でのオプションのLLM検証を行います。エージェントフレンドリーなエクスポートには <code>--json</code> を使用してください",
+    "extensions_desc": "カンマ区切りのファイル拡張子",
+    "min_score_desc": "レポートする最小のヒューリスティックスコア",
+    "verify_desc": "候補を検証するためにLLMを使用する（Ollamaが必要）",
+    "model_desc": "検証用のOllamaモデル"
   }
 }

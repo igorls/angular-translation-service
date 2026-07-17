@@ -4,14 +4,14 @@
   "translation_service": {
     "title": "TranslationService",
     "desc": "Der Kern-Service, der reaktives i18n für Angular-Anwendungen bereitstellt. Über Angular DI injizieren.",
-    "select_desc": "Returns a scope signal for template access. Automatically triggers lazy loading for the namespace. Data is <code>undefined</code> until the namespace loads, then returns a proxy-wrapped dictionary for safe deep property access. When generated types are registered, the namespace name and returned schema are typed.",
-    "translate_desc": "Returns a cached signal for a single translation key. Automatically triggers namespace loading and re-runs when the active language changes. Key format: <code>namespace:dotted.path</code>. When generated types are registered, invalid keys become TypeScript errors.",
-    "instant_desc": "Returns the translation synchronously. It is non-reactive: values read with <code>instant()</code> do not update after <code>setLang()</code>. If called before a lazy namespace has ever been requested, dev mode warns once and starts loading that namespace; the current synchronous call still returns <code>''</code>. Use <code>ensureNamespaces()</code> first or prefer <code>translate()</code> for reactive UI state.",
     "setlang_desc": "Wechselt die aktive Sprache. Lädt alle zuvor angeforderten Namespaces für die neue Sprache neu und speichert die Einstellung in <code>localStorage</code> (falls <code>storageKey</code> konfiguriert ist). Protokolliert eine Warnung und bricht vorzeitig ab, wenn die Sprache nicht in <code>supportedLangs</code> enthalten ist.",
     "ensure_desc": "Lädt zusätzliche Namespaces vor. Dublizierte gleichzeitige Ladevorgänge werden automatisch entfernt. Nützlich für Route Guards oder Resolver.",
     "lang_desc": "Das Signal der aktuellen Sprache. In Templates auslesen, um die aktive Sprache anzuzeigen.",
     "supported_desc": "Schreibgeschütztes Array aller unterstützten Sprachcodes aus der Konfiguration. Nützlich für den Aufbau von Sprachumschaltern.",
-    "ready_desc": "Wahr, wenn alle <code>coreNamespaces</code> für die aktuelle Sprache geladen wurden."
+    "ready_desc": "Wahr, wenn alle <code>coreNamespaces</code> für die aktuelle Sprache geladen wurden.",
+    "select_desc": "Gibt ein Scope Signal für Template-Zugriff zurück. Löst automatisch das Lazy Loading für den Namespace aus. Die Daten sind <code>undefined</code>, bis der Namespace geladen ist, und geben dann ein Proxy-umwickeltes Dictionary für sicheren Deep Property Access zurück. Wenn generierte Typen registriert werden, werden der Namespacesname und das Schema typisiert.",
+    "translate_desc": "Gibt ein gecachtes Signal für einen einzelnen Übersetzungsschlüssel zurück. Löst automatisch das Laden des Namespaces aus und führt es neu aus, wenn sich die aktive Sprache ändert. Schlüsselformat: <code>namespace:dotted.path</code>. Wenn generierte Typen registriert werden, werden ungültige Schlüssel zu TypeScript-Fehlern.",
+    "instant_desc": "Gibt die Übersetzung synchron zurück. Es ist nicht reaktiv: Werte, die mit <code>instant()</code> gelesen werden, aktualisieren sich nicht nach <code>setLang()</code>. Wenn es vor der Anforderung eines Lazy Namespace aufgerufen wird, warnt der Dev-Modus einmal und beginnt, diesen Namespace zu laden; der aktuelle synchrone Aufruf gibt immer noch <code>''</code> zurück. Verwenden Sie zuerst <code>ensureNamespaces()</code> oder bevorzugen Sie <code>translate()</code> für reaktiven UI-Zustand."
   },
   "translate_pipe": {
     "title": "TranslatePipe",
@@ -33,7 +33,8 @@
     "detect_lang": "Browser-Spracherkennung über <code>navigator.language</code> aktivieren",
     "storage_key": "<code>localStorage</code>-Schlüssel zum Speichern der Sprachpräferenz über Sitzungen hinweg",
     "ns_separator": "Trennzeichen zwischen Namespace und Schlüsselpfad (Standard: <code>':'</code>)",
-    "fallback_chain": "Fallback-Sprachketten für regionale Locales"
+    "fallback_chain": "Fallback-Sprachketten für regionale Locales",
+    "missing_key_handler": "Benutzerdefinierter Handler, wenn ein Schlüssel in einem geladenen Namespace fehlt. Er erhält <code>(key, { lang, namespace })</code> und muss einen String zurückgeben. Standard: Gib den rohen Schlüssel zurück (z. B. <code>'common:nav.missing'</code>)"
   },
   "loaders": {
     "title": "Loader",
@@ -52,7 +53,6 @@
     "th_access": "Zugriff",
     "th_result": "Ergebnis",
     "string_coercion": "String-Umwandlung / Template-Interpolation",
-    "string_coercion_result": "Gibt den Schlüsselpfad zurück (z. B. <code>'common.nav.title'</code>)",
     "property_access": "Eigenschaftszugriff",
     "property_access_result": "Gibt einen weiteren rekursiven Proxy zurück",
     "json_serialization": "JSON-Serialisierung",
@@ -60,7 +60,8 @@
     "promise_detection": "Promise-Erkennung (<code>then</code>/<code>catch</code>)",
     "promise_detection_result": "Gibt <code>undefined</code> zurück (verhindert asynchrones Entpacken)",
     "iteration": "Iteration (<code>@for</code>-Schleifen)",
-    "iteration_result": "Liefert nichts (leerer Iterator)"
+    "iteration_result": "Liefert nichts (leerer Iterator)",
+    "string_coercion_result": "Gibt einen leeren String <code>''</code> zurück"
   },
   "fallback_chains": {
     "title": "Fallback-Ketten",
@@ -76,19 +77,19 @@
   },
   "ssr": {
     "title": "SSR & Hydratisierung",
-    "desc": "Der sekundäre Einstiegspunkt <code>@angular-translation-service/core/ssr</code> ermöglicht nahtloses serverseitiges Rendering ohne „Flash-of-untranslated-content“ (FOUC) und ohne Hydratisierungsfehler.",
-    "provide_desc": "Fügen Sie dies zu Ihrer <strong>Server</strong>-Anwendungskonfiguration hinzu. Auf dem Server stellt es <code>CURRENT_LANGUAGE</code> aus der HTTP-Anfrage bereit und speichert alle geladenen Übersetzungen im <code>TransferState</code>. Auf dem Client werden Übersetzungen synchron hydratisiert — für das erste Rendering sind keine HTTP-Anfragen erforderlich.",
     "how_it_works": "Wie es funktioniert",
     "th_phase": "Phase",
     "th_what_happens": "Was passiert",
     "server_render": "Server-Rendering",
-    "server_render_desc": "<code>CURRENT_LANGUAGE</code> wird aus der Anfrage gesetzt, Kern-Namespaces werden geladen und alle geladenen Übersetzungen werden in den <code>TransferState</code> serialisiert",
     "client_hydration": "Client-Hydratisierung",
-    "client_hydration_desc": "Übersetzungen werden synchron aus dem <code>TransferState</code> wiederhergestellt — keine HTTP-Anfragen, kein FOUC, kein NG0501",
     "after_hydration": "Nach der Hydratisierung",
-    "after_hydration_desc": "Der <code>TransferState</code>-Eintrag wird entfernt, um Speicher freizugeben. Nachfolgende Namespace-Ladevorgänge nutzen das normale HTTP-Laden",
     "config_title": "TranslationSSRConfig",
-    "config_lang_from_request": "Extrahiert die Sprache aus der eingehenden HTTP-Anfrage"
+    "desc": "TransferState Snapshot/Hydration ist in <code>provideTranslation()</code> im Core integriert. Die <code>@angular-translation-service/core/ssr</code> Entry injiziert die Anforderungs-Sprache über <code>CURRENT_LANGUAGE</code>, damit der Server vor dem Rendern die richtige Sprache wählt.",
+    "provide_desc": "Fügen Sie Ihrer <strong >server</strong>-Anwendungskonfiguration hinzu. Es stellt <code>CURRENT_LANGUAGE</code> mithilfe von <code>langFromRequest</code> bereit. Die Serialisierung geladener Namespaces in <code>TransferState</code> wird von Core <code>provideTranslation()</code> und nicht von diesem Helper übernommen.",
+    "server_render_desc": "<code>CURRENT_LANGUAGE</code> stammt von <code>langFromRequest</code>, wenn SSR konfiguriert ist; Core-Namespaces werden geladen; <code>provideTranslation()</code> serialisiert die geladenen Dictionaries in <code>TransferState</code>",
+    "client_hydration_desc": "Übersetzungen werden synchron aus <code>TransferState</code> wiederhergestellt — keine HTTP-Anfragen für bereits geladene Namespaces, kein FOUC, kein NG0501",
+    "after_hydration_desc": "Folgende Namespace-Ladevorgänge verwenden den konfigurierten Loader (HTTP oder import). Bevorzugen Sie <code>importLoader</code> für reines SSG/Prerender, wenn zum Zeitpunkt des Builds kein HTTP-Server verfügbar ist",
+    "config_lang_from_request": "Extrahieren Sie die Sprache aus der eingehenden HTTP-Anfrage (Typ ist <code>unknown</code> — casten Sie auf den Anfragetyp Ihres Serveradapters)"
   },
   "error_behavior": {
     "title": "Fehlerverhalten",
@@ -105,29 +106,29 @@
     "nested_loading_behavior": "Rekursiver Proxy gibt leere Strings zurück, um Template-Abstürze zu verhindern"
   },
   "reactivity": {
-    "title": "Reactivity: translate() vs instant()",
-    "desc": "<code>translate()</code> and <code>select()</code> are reactive signal APIs. Use them for labels, menus, option arrays, and anything that should update after <code>setLang()</code>. <code>instant()</code> is a synchronous snapshot for imperative code such as logs, confirm prompts, or already-loaded toast messages.",
-    "avoid_title": "Avoid frozen option arrays",
-    "avoid_desc": "Calling <code>instant()</code> while defining component fields freezes those labels in the boot language and may read before a lazy namespace is ready.",
-    "prefer_title": "Prefer computed() + translate()",
-    "prefer_desc": "Build derived UI state inside <code>computed()</code> and read the translation signals there. The array rebuilds when the namespace loads and whenever the language changes.",
-    "escape_title": "Escape hatch for imperative key maps",
-    "escape_desc": "When you truly need <code>instant()</code>, read <code>lang()</code> inside the computed and make sure the namespace was preloaded with <code>ensureNamespaces()</code>.",
-    "perf_note": "<strong>Performance note:</strong> parameterized <code>translate(key, params)</code> calls return uncached computed signals, so avoid recreating them inside very large loops. Hoist stable params or use <code>select()</code> where possible."
+    "title": "Reaktivität: translate() vs instant()",
+    "desc": "<code>translate()</code> und <code>select()</code> sind reaktive Signal-APIs. Verwenden Sie sie für Labels, Menüs, Option-Arrays und alles, was sich nach <code>setLang()</code> aktualisieren sollte. <code>instant()</code> ist ein synchroner Snapshot für imperativen Code wie Logs, Bestätigungsaufforderungen oder bereits geladene Toast-Nachrichten.",
+    "avoid_title": "Vermeiden Sie eingefrorene Option-Arrays",
+    "avoid_desc": "Das Aufrufen von <code>instant()</code> bei der Definition von Komponentenfeldern friert diese Labels in die Startsprache ein und kann sie lesen, bevor ein Lazy Namespace bereit ist.",
+    "prefer_title": "Bevorzugen Sie computed() + translate()",
+    "prefer_desc": "Baue den abgeleiteten UI-Zustand innerhalb von <code>computed()</code> auf und lies dort die Übersetzungssignale aus. Das Array wird neu aufgebaut, wenn das Namespace geladen wird und wann immer sich die Sprache ändert.",
+    "escape_title": "Escape-Hatch für imperative Schlüssel-Maps",
+    "escape_desc": "Wenn du wirklich <code>instant()</code> benötigst, lies <code>lang()</code> im computed aus und stelle sicher, dass das Namespace mit <code>ensureNamespaces()</code> vorbeladen wurde.",
+    "perf_note": "<strong>Leistungshinweis:</strong> Parameterisierte Aufrufe von <code>translate(key, params)</code> geben nicht gecachte computed-Signale zurück, vermeide daher deren Neuschaffung in sehr großen Schleifen. Hoist stabile Parameter oder verwende <code>select()</code>, wo immer möglich."
   },
   "typed_keys": {
     "title": "Typed Translation Keys",
-    "desc": "<code>ats generate</code> now emits a module augmentation for <code>@angular-translation-service/core</code>. Include the generated file in your TypeScript program and the service API narrows from permissive <code>string</code> keys to your generated key union and namespace schemas. Apps that do not generate types keep the old flexible string API.",
     "generated_title": "Generated registry",
     "usage_title": "What TypeScript catches",
-    "usage_desc": "Static TypeScript call sites get checked end-to-end. The pipe still accepts template strings because Angular template expressions cannot expose the same module augmentation contract."
+    "desc": "<code>ats generate</code> sendet jetzt eine Modul-Erweiterung für <code>@angular-translation-service/core</code>. Füge die generierte Datei in dein TypeScript-Programm ein und die Service-API verengt sich von permissiven <code>string</code>-Schlüsseln zu deinen generierten Schlüsselunion- und Namespace-Schemata. Apps, die keine Typen generieren, behalten die alte flexible String-API.",
+    "usage_desc": "Statische TypeScript-Aufrufe werden Ende-zu-Ende überprüft. Der Pipe akzeptiert immer noch Template Strings, da Angular-Template-Ausdrücke nicht denselben Modul-Erweiterungskontrakt offenlegen können."
   },
   "interpolation": {
-    "title": "Interpolation Placeholders",
-    "desc": "Use single braces as the canonical placeholder style in JSON values: <code>{name}</code>. Existing double-brace placeholders such as <code>{{name}}</code> are still tolerated for compatibility.",
     "canonical_title": "Canonical form",
-    "canonical_desc": "Single braces match the <code>translate(key, { name })</code> mental model and avoid visual collision with Angular template interpolation.",
-    "angular_title": "Angular pipe params gotcha",
-    "angular_desc": "When passing an object literal to the pipe inside Angular interpolation, leave a space between the object closing brace and Angular's closing braces. Without the space, Angular may parse the braces together."
+    "title": "Interpolations-Platzhalter",
+    "desc": "Verwende einfache geschweifte Klammern als kanonischen Platzhalterstil in JSON-Werten: <code>{name}</code>. Bestehende Doppelgeschweifte Platzhalter wie <code>{{name}}</code> werden aus Kompatibilitätsgründen weiterhin toleriert.",
+    "canonical_desc": "Einzelne geschweifte Klammern entsprechen dem mentalen Modell von <code >translate(key, { name })</code> und vermeiden visuelle Kollision mit der Angular-Template-Interpolation.",
+    "angular_title": "Angular Pipe Parameter Falle",
+    "angular_desc": "Wenn Sie einen Objektliteral in die Pipe innerhalb der Angular-Interpolation übergeben, lassen Sie ein Leerzeichen zwischen der schließenden geschweiften Klammer des Objekts und den schließenden geschweiften Klammern von Angular. Ohne das Leerzeichen kann Angular die Klammern zusammen parsen."
   }
 }

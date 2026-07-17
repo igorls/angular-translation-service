@@ -3,15 +3,18 @@
   "subtitle": "Set up @angular-translation-service/core in your Angular v19+ project in 3 minutes.",
   "step1_title": "1. Install",
   "step2_title": "2. Create Translation Files",
-  "step2_desc": "Create JSON files in your project's <code>public/</code> directory. Angular serves files from <code>public/</code> at the root URL, so <code>public/i18n/en/common.json</code> is available at <code>/i18n/en/common.json</code>. The loader uses the pattern <code>basePath/lang/namespace.json</code>:",
+  "step2_desc": "For <code>httpLoader('/i18n')</code>, put JSON under <code>public/i18n/</code>. Angular serves <code>public/</code> at the site root, so <code>public/i18n/en/common.json</code> is available at <code>/i18n/en/common.json</code>. CLI tools default to <code>src/i18n/</code> — keep a matching tree there, or pass <code>-i</code>/<code>--i18n</code>. Loader pattern: <code>basePath/lang/namespace.json</code>:",
   "step3_title": "3. Configure the Provider",
   "step4_title": "4. Use in Components",
   "step4_desc": "Use <code>select()</code> to get a namespace signal. Optional chaining keeps the DOM stable while the namespace loads; the recursive proxy prevents template crashes.",
   "step5_title": "5. Alternative: Use the Pipe",
-  "step5_desc": "For simpler cases, use <code>TranslatePipe</code> instead of <code>select()</code>:",
+  "step5_desc": "For simpler cases, use <code>TranslatePipe</code> instead of <code>select()</code>. Keys always use <code>namespace:path</code> (default separator <code>:</code>):",
+  "step6_title": "6. Switch Language",
+  "step6_desc": "Call <code>setLang()</code> (not <code>use()</code>). Persist with <code>storageKey</code> and enable browser detection with <code>detectLanguage: true</code> on the provider.",
+  "step7_title": "7. Optional: Generate Typed Keys",
+  "step7_desc": "Install the CLI and run <code>ats generate</code> when you want compile-time checking for service calls. The generated file registers its keys with <code>@angular-translation-service/core</code>, so typo'd keys and namespace paths fail TypeScript before they ship.",
   "whats_next": "What's Next?",
   "btn_api_reference": "API Reference →",
-  "btn_view_source": "View Source on GitHub ↗",
-  "step6_title": "6. Optional: Generate Typed Keys",
-  "step6_desc": "Install the CLI and run <code>ats generate</code> when you want compile-time checking for service calls. The generated file registers its keys with <code>@angular-translation-service/core</code>, so typo'd keys and namespace paths fail TypeScript before they ship."
+  "btn_guides": "Guides (troubleshooting & migration) →",
+  "btn_view_source": "View Source on GitHub ↗"
 }

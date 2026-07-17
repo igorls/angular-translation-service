@@ -33,7 +33,8 @@
     "detect_lang": "Enable browser language detection via <code>navigator.language</code>",
     "storage_key": "<code>localStorage</code> key for persisting language preference across sessions",
     "ns_separator": "Separator between namespace and key path (default: <code>':'</code>)",
-    "fallback_chain": "Fallback language chains for regional locales"
+    "fallback_chain": "Fallback language chains for regional locales",
+    "missing_key_handler": "Custom handler when a key is missing in a loaded namespace. Receives <code>(key, { lang, namespace })</code> and must return a string. Default: return the raw key (e.g. <code>'common:nav.missing'</code>)"
   },
   "loaders": {
     "title": "Loaders",
@@ -52,7 +53,7 @@
     "th_access": "Access",
     "th_result": "Result",
     "string_coercion": "String coercion / template interpolation",
-    "string_coercion_result": "Returns the key path (e.g., <code>'common.nav.title'</code>)",
+    "string_coercion_result": "Returns an empty string <code>''</code>",
     "property_access": "Property access",
     "property_access_result": "Returns another recursive proxy",
     "json_serialization": "JSON serialization",
@@ -76,19 +77,19 @@
   },
   "ssr": {
     "title": "SSR & Hydration",
-    "desc": "The <code>@angular-translation-service/core/ssr</code> secondary entry point provides seamless server-side rendering with zero flash-of-untranslated-content (FOUC) and no hydration mismatch.",
-    "provide_desc": "Add to your <strong>server</strong> application config. On the server, it provides <code>CURRENT_LANGUAGE</code> from the HTTP request and snapshots all loaded translations into <code>TransferState</code>. On the client, it hydrates translations synchronously — no HTTP requests needed for the initial render.",
+    "desc": "TransferState snapshot/hydrate is built into <code>provideTranslation()</code> in core. The <code>@angular-translation-service/core/ssr</code> entry injects the request language via <code>CURRENT_LANGUAGE</code> so the server picks the right locale before render.",
+    "provide_desc": "Add to your <strong>server</strong> application config. It provides <code>CURRENT_LANGUAGE</code> using <code>langFromRequest</code>. Serialization of loaded namespaces into <code>TransferState</code> is handled by core <code>provideTranslation()</code>, not by this helper.",
     "how_it_works": "How it works",
     "th_phase": "Phase",
     "th_what_happens": "What happens",
     "server_render": "Server render",
-    "server_render_desc": "<code>CURRENT_LANGUAGE</code> is set from the request, core namespaces load, then all loaded translations are serialized into <code>TransferState</code>",
+    "server_render_desc": "<code>CURRENT_LANGUAGE</code> comes from <code>langFromRequest</code> when SSR is configured; core namespaces load; <code>provideTranslation()</code> serializes loaded dictionaries into <code>TransferState</code>",
     "client_hydration": "Client hydration",
-    "client_hydration_desc": "Translations are restored from <code>TransferState</code> synchronously — no HTTP requests, no FOUC, no NG0501",
+    "client_hydration_desc": "Translations are restored from <code>TransferState</code> synchronously — no HTTP requests for already-loaded namespaces, no FOUC, no NG0501",
     "after_hydration": "After hydration",
-    "after_hydration_desc": "<code>TransferState</code> entry is removed to free memory. Subsequent namespace loads use normal HTTP loading",
+    "after_hydration_desc": "Subsequent namespace loads use the configured loader (HTTP or import). Prefer <code>importLoader</code> for pure SSG/prerender when no HTTP server is available at build time",
     "config_title": "TranslationSSRConfig",
-    "config_lang_from_request": "Extract the language from the incoming HTTP request"
+    "config_lang_from_request": "Extract the language from the incoming HTTP request (type is <code>unknown</code> — cast to your server adapter's request type)"
   },
   "error_behavior": {
     "title": "Error Behavior",

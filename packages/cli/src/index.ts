@@ -8,6 +8,9 @@
  *   npx ats validate    # Detect duplicates/orphans
  *   npx ats translate   # LLM batch translation via Ollama
  *   npx ats clean       # Remove orphaned keys
+ *   npx ats scan        # Find hardcoded template strings
+ *   npx ats editor      # Visual translation editor
+ *   npx ats mcp         # MCP server for agents
  */
 
 import { program } from 'commander';
@@ -26,7 +29,7 @@ program
 program
     .command('generate')
     .description('Generate TypeScript interfaces from JSON translation files')
-    .option('-i, --input <dir>', 'i18n source directory', 'src/assets/i18n/en')
+    .option('-i, --input <dir>', 'i18n source directory', 'src/i18n/en')
     .option('-o, --output <file>', 'Output file path', 'src/app/i18n.generated.ts')
     .option('--check', 'Assert generated file is in sync (for CI)')
     .action(async (options) => {
@@ -48,7 +51,7 @@ program
 program
     .command('validate')
     .description('Detect duplicate keys, values, and structural issues')
-    .option('-i, --input <dir>', 'i18n source directory', 'src/assets/i18n')
+    .option('-i, --input <dir>', 'i18n source directory', 'src/i18n')
     .option('--default-lang <lang>', 'Reference language (overrides alphabetical detection)')
     .action(async (options) => {
         const { validateTranslations } = await import('./commands/validate');
@@ -58,6 +61,7 @@ program
 program
     .command('translate')
     .description('Translate missing keys using LLM (Ollama)')
+    .option('-i, --input <dir>', 'i18n source directory', 'src/i18n')
     .option('--locale <locale>', 'Target locale', 'pt-BR')
     .option('--namespace <ns>', 'Limit to specific namespace')
     .option('--model <model>', 'Ollama model to use', 'gemma3:12b')
@@ -72,7 +76,7 @@ program
 program
     .command('clean')
     .description('Remove orphaned keys from translation files')
-    .option('-i, --input <dir>', 'i18n source directory', 'src/assets/i18n')
+    .option('-i, --input <dir>', 'i18n source directory', 'src/i18n')
     .option('--dry-run', 'Show what would be removed without removing')
     .option('--default-lang <lang>', 'Reference language (overrides alphabetical detection)')
     .action(async (options) => {

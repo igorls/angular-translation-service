@@ -11,6 +11,7 @@ import { collectFlatKeys, writeJsonFile, getNestedValue, setNestedValue } from '
 import { resolveDefaultLang } from './resolve-default-lang';
 
 interface TranslateOptions {
+    input?: string;
     locale: string;
     namespace?: string;
     model: string;
@@ -28,11 +29,11 @@ interface OllamaResponse {
 const BATCH_SIZE = 35;
 
 export async function translateKeys(options: TranslateOptions): Promise<void> {
-    const i18nDir = resolve('src/i18n');
+    const i18nDir = resolve(options.input ?? 'src/i18n');
 
     if (!existsSync(i18nDir)) {
         console.error(`❌ i18n directory not found: ${i18nDir}`);
-        console.error('   Run this command from your project root.');
+        console.error('   Pass -i <dir> or run from your project root with src/i18n present.');
         process.exit(1);
     }
 

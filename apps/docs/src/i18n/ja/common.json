@@ -5,7 +5,8 @@
     "api": "API",
     "cli": "CLI",
     "examples": "サンプル",
-    "github": "GitHub"
+    "github": "GitHub",
+    "guides": "ガイド"
   },
   "footer": {
     "built_with": "Angular Translation Serviceで作成されました",

@@ -8,7 +8,7 @@ description: >
 license: MIT
 metadata:
   author: igorls
-  version: "0.2"
+  version: "0.3"
 ---
 
 # Angular Translation Service — Agent Skill
@@ -20,8 +20,8 @@ Signal-based i18n library for Angular v19+ with lazy-loaded namespaces, SSR hydr
 | Package | Purpose |
 |---------|---------|
 | `@angular-translation-service/core` | Runtime library (signals, pipe, providers) |
-| `@angular-translation-service/core/ssr` | SSR/SSG hydration via TransferState |
-| `@angular-translation-service/cli` | CLI tools: scan, generate types, translate, validate |
+| `@angular-translation-service/core/ssr` | Request language injection for SSR |
+| `@angular-translation-service/cli` | CLI tools: scan, generate types, translate, validate, editor, MCP |
 
 ## Quick Setup
 
@@ -33,6 +33,8 @@ npm install -D @angular-translation-service/cli
 ```
 
 ### 2. Create i18n folder structure
+
+**Canonical layout for CLI tooling** (`ats generate`, `check`, `validate`, `translate`, `clean`):
 
 ```
 src/i18n/
@@ -47,7 +49,16 @@ src/i18n/
     └── home.json
 ```
 
-Each language gets a folder. Each JSON file is a **namespace**. Keys use flat or nested format:
+Each language gets a folder. Each JSON file is a **namespace**.
+
+**Runtime loading:**
+
+| Loader | Put JSON here | Why |
+|--------|---------------|-----|
+| `httpLoader('/i18n')` | `public/i18n/{lang}/{ns}.json` | Angular serves `public/` at the site root (`/i18n/...`) |
+| `importLoader(...)` | e.g. `src/i18n/{lang}/{ns}.json` | Bundler imports from source; no HTTP server needed (SSG) |
+
+Keys may be flat or nested (including mixed keys with literal dots — runtime uses longest-match path resolution):
 
 ```json
 {
@@ -72,7 +83,7 @@ export const appConfig: ApplicationConfig = {
       defaultLang: 'en',
       supportedLangs: ['en', 'fr', 'de'],
       coreNamespaces: ['common'],       // Loaded eagerly on boot
-      loader: httpLoader('/i18n'),       // Base URL for JSON files
+      loader: httpLoader('/i18n'),       // Fetches /i18n/{lang}/{ns}.json
       detectLanguage: true,             // Auto-detect from browser
       storageKey: 'app-lang',           // Persist selection in localStorage
     }),
@@ -80,12 +91,30 @@ export const appConfig: ApplicationConfig = {
 };
 ```
 
+For SSG / prerender without a live HTTP server, prefer `importLoader`:
+
+```typescript
+import { provideTranslation, importLoader } from '@angular-translation-service/core';
+
+provideTranslation({
+  defaultLang: 'en',
+  supportedLangs: ['en', 'fr'],
+  coreNamespaces: ['common'],
+  loader: importLoader((lang, ns) => import(`./i18n/${lang}/${ns}.json`)),
+});
+```
+
 ### 4. Use translations in templates
+
+**Key format is always `namespace:dotted.path`** (separator defaults to `:`).
 
 **Pipe (simplest):**
 ```html
-<h1>{{ 'home.title' | translate }}</h1>
+<h1>{{ 'home:title' | translate }}</h1>
+<p>{{ 'common:greeting' | translate:{ name: userName() } }}</p>
 ```
+
+Import `TranslatePipe` in the component `imports` array.
 
 **Service (reactive — preferred):**
 ```typescript
@@ -97,18 +126,21 @@ export class HomeComponent {
   // select() loads the namespace lazily and returns a Signal
   home = this.t.select('home');
 
-  // Access keys: this.home().title, this.home().hero.subtitle
+  // Access keys: this.home()?.title, this.home()?.hero?.subtitle
 }
 ```
 
 ```html
-<h1>{{ home().title }}</h1>
-<p>{{ home().hero.subtitle }}</p>
+@let h = home();
+<h1>{{ h?.title }}</h1>
+<p>{{ h?.hero?.subtitle }}</p>
 ```
+
+> Prefer optional chaining (`h?.title`) over wrapping the whole UI in `@if (h)`. Hiding the DOM until load causes layout shift (CLS).
 
 **Language switching:**
 ```typescript
-this.t.use('fr'); // Switches language, reloads active namespaces
+await this.t.setLang('fr'); // Switches language, reloads active namespaces
 ```
 
 **Current language signal:**
@@ -116,26 +148,54 @@ this.t.use('fr'); // Switches language, reloads active namespaces
 currentLang = this.t.lang; // Signal<string>
 ```
 
+**Language switcher sketch:**
+```typescript
+readonly languages = this.t.supportedLangs;
+// template: @for (lang of languages; track lang) {
+//   <button (click)="t.setLang(lang)" [class.active]="t.lang() === lang">{{ lang }}</button>
+// }
+```
+
 ### 5. SSR / SSG hydration
+
+TransferState snapshot/hydrate is built into `provideTranslation()` (core).  
+`provideTranslationSSR` only injects the request language via `CURRENT_LANGUAGE`.
 
 ```typescript
 // app.config.server.ts
 import { provideTranslationSSR } from '@angular-translation-service/core/ssr';
 
 export const serverConfig: ApplicationConfig = {
-  providers: [provideTranslationSSR()],
+  providers: [
+    provideTranslationSSR({
+      langFromRequest: (req) => {
+        // Adapt to your server adapter; type is unknown by design
+        const headers = (req as { headers?: { get?: (k: string) => string | null } })?.headers;
+        const accept = headers?.get?.('accept-language') ?? 'en';
+        return accept.split(',')[0]?.split('-')[0] ?? 'en';
+      },
+    }),
+  ],
 };
 ```
 
-This captures loaded translations on the server and hydrates them on the client, avoiding double-fetch.
+For pure SSG/prerender with `importLoader`, core TransferState is usually enough; still set `defaultLang` / prerender routes per locale as needed.
 
 ## CLI Reference
 
-The CLI binary is `ats`. All commands auto-discover the i18n directory from `angular.json`.
+The CLI binary is `ats`. **Only `ats editor` and `ats mcp` auto-discover the i18n directory** (angular.json + common paths). Other commands use defaults under `src/i18n` unless you pass flags.
+
+### Canonical paths
+
+| Command | Default input |
+|---------|----------------|
+| `generate` | `src/i18n/en` |
+| `check` | `src/i18n/en` (or root `src/i18n`) |
+| `validate` / `clean` | `src/i18n` |
+| `translate` | `src/i18n` (`-i` to override) |
+| `editor` / `mcp` | auto-detect |
 
 ### `ats scan` — Find hardcoded strings
-
-Scans HTML templates for text that should be translated.
 
 ```bash
 ats scan --src src --min-score 3
@@ -145,42 +205,49 @@ ats scan --json                          # Machine-readable output
 
 ### `ats generate` — Generate TypeScript types
 
-Creates type-safe key definitions from your JSON files.
-
 ```bash
-ats generate
+ats generate -i src/i18n/en -o src/app/i18n.generated.ts
 ```
 
 ### `ats validate` — Check for issues
 
-Finds missing keys, empty values, and structural mismatches across languages.
-
 ```bash
-ats validate
+ats validate -i src/i18n --default-lang en
 ```
+
+Without `--default-lang`, the reference language is the first alphabetically sorted locale directory (e.g. `de` before `en`).
 
 ### `ats translate` — LLM batch translation
 
-Translates missing keys using a local Ollama model.
+Requires a running [Ollama](https://ollama.com) (or compatible) host.
 
 ```bash
-ats translate --source en --target fr --model gemma3:12b
+ats translate --locale fr --default-lang en --model gemma3:12b
+ats translate -i src/i18n --locale pt-BR --auto-accept
 ```
 
 ### `ats check` — Verify key usage
 
-Checks if translation keys used in source code exist in JSON files.
+```bash
+ats check --i18n src/i18n --src src
+```
+
+### `ats clean` — Remove orphan keys
 
 ```bash
-ats check --src src
+ats clean -i src/i18n --dry-run --default-lang en
 ```
 
 ### `ats editor` — Visual translation editor
 
-Launches a web UI for managing translations, with scan, translate, and validate panels.
+```bash
+ats editor --port 4800
+```
+
+### `ats mcp` — MCP server for agents
 
 ```bash
-ats editor --port 4500
+ats mcp --provider ollama --model qwen3.5:9b
 ```
 
 ## Interpreting the Scan Report
@@ -205,7 +272,7 @@ The `ats scan --json` command (or the editor's **Export JSON** button) generates
         "text": "Welcome to our platform",
         "context": "<h1>Welcome to our platform</h1>",
         "suggestedKey": "home:heading.1",
-        "codeExample": false
+        "hasInlineCode": false
       }
     ]
   }
@@ -221,7 +288,7 @@ The `ats scan --json` command (or the editor's **Export JSON** button) generates
 | `score` | Heuristic confidence score (higher = more likely translatable) |
 | `reasons` | Array of reason tags explaining the score |
 | `text` | The extracted hardcoded string (full, not truncated) |
-| `context` | Source line(s) around the finding — use for direct `replace_file_content` |
+| `context` | Source line(s) around the finding — use for direct replace |
 | `suggestedKey` | Text-derived `namespace:kebab-slug` key — adopt or override |
 | `hasInlineCode` | `true` if context contains `<code>` tags — likely API docs, not UI text |
 
@@ -255,9 +322,9 @@ When internationalizing an app based on a scan report, follow this process:
 
 1. **Process by file**: Iterate over `files` keys. For each file, process findings sorted by `score` descending.
 
-2. **Skip documentation strings**: Filter out entries where `hasInlineCode === true`. Also skip any text that appears to be API reference material or technical documentation, even if `hasInlineCode` is false.
+2. **Skip documentation strings**: Filter out entries where `hasInlineCode === true`. Also skip any text that appears to be API reference material or technical documentation.
 
-3. **Adopt or override keys**: `suggestedKey` provides a text-derived slug (e.g., `home:returns-scope-signal`). Adopt it directly or override if you can derive a better semantic name.
+3. **Adopt or override keys**: `suggestedKey` provides a text-derived slug (e.g., `home:returns-scope-signal`). Adopt it or override with a better semantic name.
 
 4. **For each string to extract**:
    ```
@@ -266,7 +333,7 @@ When internationalizing an app based on a scan report, follow this process:
    c. Add placeholder keys for other languages (or use `ats translate` to auto-fill)
    ```
 
-5. **After processing a file**, run `ats validate` to check for structural issues.
+5. **After processing a file**, run `ats validate -i src/i18n --default-lang en`.
 
 ### Example transformation
 
@@ -279,9 +346,9 @@ When internationalizing an app based on a scan report, follow this process:
 
 **After (internationalized):**
 ```html
-<h1>{{ 'home.hero.title' | translate }}</h1>
-<p>{{ 'home.hero.subtitle' | translate }}</p>
-<button>{{ 'home.hero.cta' | translate }}</button>
+<h1>{{ 'home:hero.title' | translate }}</h1>
+<p>{{ 'home:hero.subtitle' | translate }}</p>
+<button>{{ 'home:hero.cta' | translate }}</button>
 ```
 
 **en/home.json:**
@@ -297,14 +364,36 @@ When internationalizing an app based on a scan report, follow this process:
 
 ## Important Rules
 
-- **`translate()` vs `instant()`**: Always use `translate()` (returns Signal) or `select()` for reactive access. `instant()` is non-reactive; if it is called before a lazy namespace has ever been requested it may start loading that namespace, but the current synchronous call still returns `''`.
-- **Namespace loading**: Namespaces in `coreNamespaces` are loaded at boot. All other namespaces are lazy-loaded on first `select()` call.
-- **SSR**: Always add `provideTranslationSSR()` in the server config to avoid hydration mismatch errors (NG0501).
-- **Key format**: Both flat (`"nav.home": "Home"`) and nested (`{ "nav": { "home": "Home" } }`) formats are supported. Don't mix in the same namespace.
+- **`translate()` vs `instant()`**: Always use `translate()` (returns `Signal`) or `select()` for reactive UI. `instant()` is non-reactive; if called before a lazy namespace has ever been requested it may start loading that namespace, but the current synchronous call still returns `''`. Call `ensureNamespaces()` first when imperative text must be ready.
+- **Namespace loading**: Namespaces in `coreNamespaces` are loaded at boot. All other namespaces are lazy-loaded on first `select()` / `translate()` / `instant()` request.
+- **SSR**: `provideTranslation()` owns TransferState. Use `provideTranslationSSR({ langFromRequest })` when the server should pick language from the request.
+- **Key format**: Always `namespace:path` for pipe / `translate` / `instant` (default separator `:`). Flat and nested JSON shapes are both supported.
+- **Missing keys**: Default returns the raw key string. Configure `missingKeyHandler` for custom behavior.
 
 ## Edge Cases
 
-- **Interpolation in translations**: Use `{variable}` syntax in JSON values. Existing `{{variable}}` placeholders are tolerated for compatibility, but `{variable}` is the canonical form.
+- **Interpolation**: Use `{variable}` in JSON values. `{{variable}}` is tolerated for compatibility.
 - **Pluralization**: Not built-in. Use separate keys (`items.one`, `items.many`) and conditional rendering.
-- **RTL languages**: The library handles text direction via `CURRENT_LANGUAGE`. Set `dir` attribute on `<html>` reactively.
-- **Missing keys**: By default, the raw key string is shown. Configure `missingKeyHandler` in the provider for custom behavior.
+- **RTL languages**: Set `dir` on `<html>` from `lang()` (e.g. `rtl` for `ar`, `he`).
+- **Missing keys**: `missingKeyHandler?: (key, { lang, namespace }) => string` on the provider config.
+- **Lazy routes**: Call `ensureNamespaces(['orders'])` in a route resolver/guard, or rely on first `select('orders')` in the page component.
+- **CLI false positives**: `ats check` matches quoted `ns:key` strings anywhere (including docs samples). Prefer real app source for CI, or keep sample keys present in JSON.
+
+## Docs site guides
+
+Published docs include a **Guides** page:
+
+- Troubleshooting (empty text, FOUC, SSR, CLI paths, Ollama, false positives)
+- Migration from `@ngx-translate/core`
+- Version matrix (core ↔ CLI, Angular peer range)
+
+URL: https://igorls.github.io/angular-translation-service/guides
+
+## Version pairing
+
+| Package | Typical latest |
+|---------|----------------|
+| `@angular-translation-service/core` | 0.3.x (Angular ^19–^22) |
+| `@angular-translation-service/cli` | 0.4.7+ (`ats` binary) |
+
+Install latest of both together unless `CHANGELOG.md` requires a specific pair.

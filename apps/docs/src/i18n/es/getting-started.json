@@ -3,15 +3,18 @@
   "subtitle": "Configura @angular-translation-service/core en tu proyecto Angular v19+ en 3 minutos.",
   "step1_title": "1. Instalar",
   "step2_title": "2. Crear archivos de traducción",
-  "step2_desc": "Crea archivos JSON en el directorio <code>public/</code> de tu proyecto. Angular sirve los archivos desde <code>public/</code> en la URL raíz, por lo que <code>public/i18n/en/common.json</code> está disponible en <code>/i18n/en/common.json</code>. El cargador utiliza el patrón <code>basePath/lang/namespace.json</code>:",
   "step3_title": "3. Configurar el proveedor",
   "step4_title": "4. Usar en componentes",
-  "step4_desc": "Use <code>select()</code> to get a namespace signal. Optional chaining keeps the DOM stable while the namespace loads; the recursive proxy prevents template crashes.",
   "step5_title": "5. Alternativa: Usar el Pipe",
-  "step5_desc": "Para casos más sencillos, usa <code>TranslatePipe</code> en lugar de <code>select()</code>:",
   "whats_next": "¿Qué sigue?",
   "btn_api_reference": "Referencia de la API →",
   "btn_view_source": "Ver código fuente en GitHub ↗",
-  "step6_title": "6. Optional: Generate Typed Keys",
-  "step6_desc": "Install the CLI and run <code>ats generate</code> when you want compile-time checking for service calls. The generated file registers its keys with <code>@angular-translation-service/core</code>, so typo'd keys and namespace paths fail TypeScript before they ship."
+  "step6_title": "6. Switch Language",
+  "step7_title": "6. Optional: Generate Typed Keys",
+  "step2_desc": "Para <code>httpLoader('/i18n')</code>, coloca el JSON bajo <code>public/i18n/</code>. Angular sirve <code>public/</code> en la raíz del sitio, por lo que <code>public/i18n/en/common.json</code> está disponible en <code>/i18n/en/common.json</code>. Las herramientas CLI utilizan por defecto <code>src/i18n/</code> — mantén un árbol coincidente allí, o pasa <code>-i</code>/<code>--i18n</code>. Patrón de carga: <code>basePath/lang/namespace.json</code>:",
+  "step4_desc": "Usa <code>select()</code> para obtener una señal del namespace. El encadenamiento opcional mantiene el DOM estable mientras se carga el namespace; el proxy recursivo previene fallos en la plantilla.",
+  "step5_desc": "Para casos más simples, usa <code>TranslatePipe</code> en lugar de <code>select()</code>. Las claves siempre utilizan <code>namespace:path</code> (separador predeterminado <code>:</code>):",
+  "step6_desc": "Llama a <code>setLang()</code> (no a <code>use()</code>). Persiste con <code>storageKey</code> y habilita la detección de navegador con <code>detectLanguage: true</code> en el proveedor.",
+  "step7_desc": "Instala la CLI y ejecuta <code>ats generate</code> cuando quieras una verificación en tiempo de compilación para las llamadas al servicio. El archivo generado registra sus claves con <code>@angular-translation-service/core</code>, por lo que las claves o rutas de namespace mal escritas fallan en TypeScript antes de enviarse.",
+  "btn_guides": "Guías (solución de problemas y migración) →"
 }

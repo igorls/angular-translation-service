@@ -22,4 +22,8 @@ export const routes: Routes = [
         path: 'cli',
         loadComponent: () => import('./pages/cli').then((m) => m.CliPage),
     },
+    {
+        path: 'guides',
+        loadComponent: () => import('./pages/guides').then((m) => m.GuidesPage),
+    },
 ];

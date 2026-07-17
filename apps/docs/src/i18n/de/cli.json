@@ -10,39 +10,40 @@
   "th_default": "Standard",
   "th_description": "Beschreibung",
   "generate": {
-    "desc": "Generates TypeScript interfaces from your JSON translation files and registers them with <code>@angular-translation-service/core</code>, providing compile-time type safety for service keys and <code>select()</code> namespace schemas.",
-    "input_desc": "Quellverzeichnis mit JSON-Namensraumdateien",
     "output_desc": "Ausgabepfad für die TypeScript-Datei",
     "check_desc": "CI-Modus: beendet den Prozess mit Code 1, wenn die Typen nicht synchron sind",
-    "generated_output": "Generierte Ausgabe"
+    "generated_output": "Generierte Ausgabe",
+    "desc": "Generiert TypeScript-Schnittstellen aus Ihren JSON-Übersetzungsprofilen und registriert sie mit <code>@angular-translation-service/core</code>, wobei sie eine kompilierzeitbasierte Typensicherheit für Service-Schlüssel und <code>select()</code> Namespace-Schemata bietet.",
+    "input_desc": "Quellverzeichnis mit JSON-Namespace-Dateien (normalerweise eine Sprache, z. B. <code>src/i18n/en</code>)"
   },
   "check": {
-    "desc": "Scans source code (<code>.ts</code> and <code>.html</code>) for translation references, validates them across every locale pack, checks dynamic key prefixes, reports cross-locale parity drift, and flags empty values.",
-    "i18n_desc": "Single locale directory or root i18n directory containing language subdirectories",
-    "src_desc": "Quellverzeichnis, das nach Schlüsselverwendung durchsucht werden soll",
     "ns_desc": "Überprüfung auf einen bestimmten Namensraum beschränken",
     "detected_patterns": "Erkannte Muster",
     "pattern_translate": "<code>translate('ns:key')</code> — signalbasierte Übersetzungsaufrufe",
     "pattern_instant": "<code>instant('ns:key')</code> — synchrone Übersetzungsaufrufe",
     "pattern_select": "<code>select('ns')</code> — markiert den gesamten Namespace als verwendet",
     "pattern_pipe": "<code>'ns:key' | translate</code> — Verwendung des Angular-Pipes in Templates",
-    "pattern_quoted": "<code>'ns:key'</code> anywhere in source — validates helper arrays, configs, and option objects",
-    "pattern_prefix": "<code>'ns:dynamic.prefix.'</code> — dynamic key family prefix that must match at least one key in every locale",
-    "pattern_parity": "Cross-locale parity — reports missing and extra keys per namespace",
-    "pattern_empty": "Empty values — reports keys present with <code>\"\"</code> before they render invisible text"
+    "desc": "Durchsucht den Quellcode (<code>.ts</code> und <code>.html</code>) auf Übersetzungsreferenzen, validiert diese über jedes Lokalisierungspaket hinweg, überprüft dynamische Schlüsselpräfixe, meldet Abweichungen der Parität zwischen Lokalisierungen und markiert leere Werte.",
+    "i18n_desc": "Ein Sprachverzeichnis oder ein Root-i18n-Verzeichnis, das Sprachunterverzeichnisse enthält",
+    "src_desc": "Quellverzeichnis, das auf Schlüsselnutzung überprüft wird (bevorzugt App-Code gegenüber Dokumentation/Beispielen, um Fehlalarme zu vermeiden)",
+    "pattern_quoted": "<code>'ns:key'</code> überall im Quellcode — validiert Hilfs-Arrays, Konfigurationen und Optionsobjekte",
+    "pattern_prefix": "<code>'ns:dynamic.prefix.'</code> — dynamisches Schlüsselfamilien-Präfix, das mindestens einen Schlüssel in jeder Lokalisierung übereinstimmen muss",
+    "pattern_parity": "Cross-lokale Parität — meldet fehlende und zusätzliche Schlüssel pro Namespace",
+    "pattern_empty": "Leere Werte — meldet Schlüssel, die mit <code>\"\"</code> vorhanden sind, bevor sie unsichtbaren Text darstellen"
   },
   "validate": {
     "desc": "Vergleicht Übersetzungsdateien über alle Sprachen hinweg, um strukturelle Inkonsistenzen zu finden: fehlende Schlüssel, zusätzliche Schlüssel und leere Werte.",
     "input_desc": "I18n-Stammverzeichnis, das die Sprach-Unterverzeichnisse enthält",
-    "example_output": "Beispielausgabe"
+    "example_output": "Beispielausgabe",
+    "default_lang_desc": "Referenzsprache. Ohne dieses Flag wird das alphabetisch sortierte Locale-Verzeichnis verwendet (z. B. <code>de</code> vor <code>en</code>)"
   },
   "clean": {
     "desc": "Entfernt verwaiste Schlüssel aus Zielsprachdateien — Schlüssel, die in einer Übersetzung existieren, aber nicht mehr in der Standardsprache vorhanden sind.",
     "input_desc": "I18n-Stammverzeichnis",
-    "dry_run_desc": "Zeigt an, was entfernt würde, ohne Dateien zu ändern"
+    "dry_run_desc": "Zeigt an, was entfernt würde, ohne Dateien zu ändern",
+    "default_lang_desc": "Referenzsprache zur Entscheidung, welche Schlüssel Waisen sind"
   },
   "translate": {
-    "desc": "Verwendet ein lokales LLM (via Ollama), um fehlende Schlüssel automatisch von der Standardsprache in eine Zielsprache zu übersetzen. Unterstützt Batch-Übersetzung mit Fallback pro Schlüssel.",
     "locale_desc": "Zielsprachencode",
     "ns_desc": "Auf einen bestimmten Namespace beschränken",
     "model_desc": "Zu verwendendes Ollama-Modell",
@@ -51,8 +52,11 @@
     "features": "Funktionen",
     "feature_batch": "Batch-Übersetzung (35 Einträge pro LLM-Aufruf für optimalen Kontext)",
     "feature_fallback": "Automatischer Fallback pro Schlüssel, wenn das Batch-Parsing fehlschlägt",
-    "feature_placeholders": "Preserves interpolation placeholders and documents <code>{name}</code> / <code>{count}</code> as the canonical form; existing <code>{{name}}</code> placeholders remain compatible.",
-    "feature_codefence": "Verarbeitet Code-gekapselte JSON-Antworten vom LLM"
+    "feature_codefence": "Verarbeitet Code-gekapselte JSON-Antworten vom LLM",
+    "input_desc": "Root i18n directory",
+    "desc": "Verwendet ein lokales LLM (über Ollama), um fehlende Schlüssel automatisch aus der Standard-Sprache in eine Zielsprache zu übersetzen. Erfordert einen laufenden Ollama-Host. Unterstützt Stapelübersetzungen mit Fallback pro Schlüssel.",
+    "default_lang_desc": "Quellsprache. Ohne dieses Flag wird das alphabetisch sortierte Locale verwendet",
+    "feature_placeholders": "Behält Interpolations-Platzhalter bei und dokumentiert <code>{name}</code> / <code>{count}</code> als die kanonische Form; bestehende <code>{{name}}</code> Platzhalter bleiben kompatibel."
   },
   "editor": {
     "desc": "Startet eine voll ausgestattete Übersetzungs-Editor-Web-UI in Ihrem Browser. Enthält einen Side-by-Side-Schlüssel-Editor, LLM-gestützte automatische Übersetzung via Ollama, Quellcode-Verfolgung pro Schlüssel, Fortschrittsbalken sowie Unterstützung zum Hinzufügen/Löschen von Schlüsseln.",
@@ -94,5 +98,19 @@
     "feature_multi_provider": "Unterstützung für mehrere LLM-Anbieter (Ollama, OpenAI, Gemini)",
     "feature_batch": "Batch-Übersetzung mit automatischer Gruppierung und Fallback pro Schlüssel",
     "feature_scan": "Vorlagen-Scanning für hartcodierte Strings mit bewerteten Kandidaten"
+  },
+  "paths": {
+    "title": "Default paths",
+    "desc": "Die meisten Befehle verwenden standardmäßig <code>src/i18n</code> (oder <code>src/i18n/en</code> für Eingaben mit einer einzelnen Sprache). Nur <code>editor</code> und <code>mcp</code> entdecken das Verzeichnis automatisch aus <code>angular.json</code> oder gängigen Konventionen. Verwenden Sie <code>-i</code> / <code>--i18n</code> für andere Layouts (einschließlich <code>public/i18n</code> oder <code>src/assets/i18n</code>)."
+  },
+  "scan": {
+    "src_desc": "Source directory to scan",
+    "host_desc": "Ollama server address",
+    "json_desc": "Output results as JSON",
+    "desc": "Durchsucht HTML-Vorlagen nach hartkodierten Strings, die wahrscheinlich übersetzt werden müssen. Bewertet Kandidaten mit Heuristiken; optionale LLM-Verifizierung über Ollama. Verwenden Sie <code>--json</code> für einen agentenfreundlichen Export.",
+    "extensions_desc": "Komma-getrennte Dateiendungen",
+    "min_score_desc": "Mindestheuristischer Score zur Berichterstattung",
+    "verify_desc": "Verwenden Sie ein LLM, um Kandidaten zu verifizieren (benötigt Ollama)",
+    "model_desc": "Ollama-Modell zur Verifizierung"
   }
 }

@@ -16,6 +16,29 @@ npm install -g @angular-translation-service/cli
 ats --help
 ```
 
+## Canonical paths
+
+Commands expect this layout by default:
+
+```
+src/i18n/
+├── en/
+│   ├── common.json
+│   └── home.json
+└── pt-BR/
+    ├── common.json
+    └── home.json
+```
+
+| Command | Default path |
+|---------|----------------|
+| `generate` | `src/i18n/en` |
+| `check` | `src/i18n/en` (also accepts root `src/i18n`) |
+| `validate` / `clean` / `translate` | `src/i18n` |
+| `editor` / `mcp` | auto-discovered (`angular.json`, then `src/i18n`, `src/assets/i18n`, `i18n`) |
+
+Only **editor** and **mcp** auto-discover. Pass `-i` / `--i18n` for other locations.
+
 ## Commands
 
 | Command | Description |
@@ -27,25 +50,44 @@ ats --help
 | `ats clean` | Remove orphaned keys from target language files |
 | `ats scan` | Scan HTML templates for hardcoded strings that should be translated |
 | `ats editor` | Launch the visual translation editor in your browser |
+| `ats mcp` | Start an MCP server for agent-controlled translation workflows |
 
 ## Examples
 
 ```bash
 # Generate TypeScript types
-npx ats generate -i src/i18n -o src/i18n.generated.ts
+npx ats generate -i src/i18n/en -o src/app/i18n.generated.ts
 
 # Check source references across every locale
 npx ats check --i18n src/i18n --src src
 
-# Validate all languages
-npx ats validate -i src/i18n
+# Validate all languages (set --default-lang so the reference is not alphabetical)
+npx ats validate -i src/i18n --default-lang en
 
-# Auto-translate with Ollama
-npx ats translate -i src/i18n --from en --to pt-BR --model llama3.1
+# Auto-translate with Ollama (requires a running Ollama host)
+npx ats translate -i src/i18n --locale pt-BR --default-lang en --model gemma3:12b
 
-# Launch the editor
-npx ats editor
+# Scan templates for hardcoded UI strings
+npx ats scan --src src --min-score 3 --json
+
+# Launch the editor (default port 4800)
+npx ats editor -p 4800
+
+# MCP server for agents
+npx ats mcp --provider ollama --model qwen3.5:9b
 ```
+
+### `ats translate` options
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `-i, --input <dir>` | `src/i18n` | Root i18n directory |
+| `--locale <locale>` | `pt-BR` | Target language |
+| `--default-lang <lang>` | alphabetical first | Source language |
+| `--namespace <ns>` | — | Limit to one namespace |
+| `--model <model>` | `gemma3:12b` | Ollama model |
+| `--host <host>` | `127.0.0.1:11434` | Ollama host |
+| `--auto-accept` | — | Skip interactive prompts |
 
 ## Generated Types
 
@@ -68,6 +110,8 @@ Once the generated file is included in your app, `translate()`, `instant()`, and
 
 The first source file reference is included in missing-key output so CI failures point straight to the typo or missing translation.
 
+> **Note:** Quoted strings that look like keys (docs samples, meta tags, `document:click`) can produce false positives. Point `--src` at application code for CI when possible.
+
 ## CI Integration
 
 ```yaml
@@ -75,8 +119,8 @@ The first source file reference is included in missing-key output so CI failures
   with:
     node-version: 22
 - run: npm ci
-- run: npx ats generate --check
-- run: npx ats validate -i src/i18n
+- run: npx ats generate -i src/i18n/en -o src/app/i18n.generated.ts --check
+- run: npx ats validate -i src/i18n --default-lang en
 - run: npx ats check --i18n src/i18n --src src
 ```
 
@@ -86,7 +130,9 @@ The first source file reference is included in missing-key output so CI failures
 
 ## Documentation
 
-Full docs: [angular-translation-service.pages.dev](https://igorls.github.io/angular-translation-service/)
+Full docs: [igorls.github.io/angular-translation-service](https://igorls.github.io/angular-translation-service/)
+
+Guides (troubleshooting, Ollama setup, version matrix): […/guides](https://igorls.github.io/angular-translation-service/guides)
 
 ## License
 

@@ -1,11 +1,11 @@
 {
   "hero": {
-    "badge": "Angular v21+ · Signal-First · SSR Ready",
     "title": "Typensichere i18n für Angular",
     "subtitle": "Eine signalbasierte Übersetzungsbibliothek mit lazy Load von Namensräumen, rekursivem Proxy für crashfreie Templates und CLI-Tools mit LLM-Unterstützung.",
     "cta_primary": "Los geht's",
     "cta_secondary": "Auf GitHub ansehen",
-    "install": "bun add angular-translation-service"
+    "install": "bun add angular-translation-service",
+    "badge": "Angular v19+ · Signalbasiert · SSR bereit"
   },
   "features": {
     "title": "Für moderne Angular entwickelt",

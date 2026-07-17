@@ -1,6 +1,6 @@
 {
   "hero": {
-    "badge": "Angular v21+ · Signal-First · SSR Ready",
+    "badge": "Angular v19+ · Signal-First · SSR Ready",
     "title": "Type-Safe i18n for Angular",
     "subtitle": "A signal-based translation library with lazy namespace loading, recursive proxy for crash-free templates, and LLM-powered CLI tooling.",
     "cta_primary": "Get Started",

@@ -5,7 +5,8 @@
     "api": "API",
     "cli": "CLI",
     "examples": "Примеры",
-    "github": "GitHub"
+    "github": "GitHub",
+    "guides": "Руководства"
   },
   "footer": {
     "built_with": "Создано с помощью Angular Translation Service",

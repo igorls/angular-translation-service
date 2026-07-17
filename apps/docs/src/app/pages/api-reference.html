@@ -256,6 +256,11 @@ common()?.nav.home; <span class="cmt">// typed namespace schema</span></pre>
             <td><code>Record&lt;string, string[]&gt;</code></td>
             <td>{{ t.provide_translation.fallback_chain }}</td>
           </tr>
+          <tr>
+            <td><code>missingKeyHandler</code></td>
+            <td><code>(key, context) =&gt; string</code></td>
+            <td [innerHTML]="t.provide_translation.missing_key_handler"></td>
+          </tr>
         </tbody>
       </table>
     </div>

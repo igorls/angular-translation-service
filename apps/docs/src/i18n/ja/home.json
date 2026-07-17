@@ -1,6 +1,6 @@
 {
   "hero": {
-    "badge": "Angular v21+ · Signal-First · SSR対応",
+    "badge": "Angular v19+ · Signal-First · SSR対応",
     "title": "Angularのためのタイプセーフi18n",
     "subtitle": "レイジーネームスペース読み込み、クラッシュフリーテンプレート用の再帰的プロキシ、LLMパワードCLIツールを備えたシグナルベースの翻訳ライブラリ",
     "cta_primary": "始める",

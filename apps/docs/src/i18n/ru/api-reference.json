@@ -4,14 +4,14 @@
   "translation_service": {
     "title": "TranslationService",
     "desc": "Основной сервис, обеспечивающий реактивную i18n для приложений Angular. Внедряется через Angular DI.",
-    "select_desc": "Returns a scope signal for template access. Automatically triggers lazy loading for the namespace. Data is <code>undefined</code> until the namespace loads, then returns a proxy-wrapped dictionary for safe deep property access. When generated types are registered, the namespace name and returned schema are typed.",
-    "translate_desc": "Returns a cached signal for a single translation key. Automatically triggers namespace loading and re-runs when the active language changes. Key format: <code>namespace:dotted.path</code>. When generated types are registered, invalid keys become TypeScript errors.",
-    "instant_desc": "Returns the translation synchronously. It is non-reactive: values read with <code>instant()</code> do not update after <code>setLang()</code>. If called before a lazy namespace has ever been requested, dev mode warns once and starts loading that namespace; the current synchronous call still returns <code>''</code>. Use <code>ensureNamespaces()</code> first or prefer <code>translate()</code> for reactive UI state.",
     "setlang_desc": "Переключает активный язык. Перезагружает все ранее запрошенные пространства имен для нового языка и сохраняет предпочтение в <code>localStorage</code> (если настроен <code>storageKey</code>). Регистрирует предупреждение и возвращает управление, если язык отсутствует в <code>supportedLangs</code>.",
     "ensure_desc": "Предварительно загружает дополнительные пространства имен. Автоматически устраняет дубликаты одновременных загрузок. Полезно для защитников маршрутов (guards) или преобразователей (resolvers).",
     "lang_desc": "Сигнал текущего языка. Считывается в шаблонах для отображения активного языка.",
     "supported_desc": "Массив только для чтения всех поддерживаемых кодов языков из конфигурации. Полезно для создания переключателей языков.",
-    "ready_desc": "Истина, когда все <code>coreNamespaces</code> были загружены для текущего языка."
+    "ready_desc": "Истина, когда все <code>coreNamespaces</code> были загружены для текущего языка.",
+    "select_desc": "Возвращает сигнал области видимости для доступа к шаблонам. Автоматически запускает ленивую загрузку пространства имен. Данные <code>undefined</code> до загрузки пространства имен, затем возвращает словарь, обернутый прокси, для безопасного глубокого доступа к свойствам. При регистрации сгенерированных типов имя пространства имен и возвращаемая схема типизируются.",
+    "translate_desc": "Возвращает кэшированный сигнал для ключа перевода. Автоматически запускает загрузку пространства имен и повторный запуск при смене активного языка. Формат ключа: <code>namespace:dotted.path</code>. При регистрации сгенерированных типов недопустимые ключи становятся ошибками TypeScript.",
+    "instant_desc": "Возвращает перевод синхронно. Он не реактивен: значения, прочитанные с помощью <code>instant()</code>, не обновляются после <code>setLang()</code>. Если вызывается до того, как была запрошена ленивая область имен, режим разработки предупреждает один раз и начинает загружать это пространство имен; текущий синхронный вызов все равно возвращает <code>''</code>. Сначала используйте <code>ensureNamespaces()</code> или предпочтительно используйте <code>translate()</code> для реактивного состояния пользовательского интерфейса."
   },
   "translate_pipe": {
     "title": "TranslatePipe",
@@ -33,7 +33,8 @@
     "detect_lang": "Включить определение языка браузера через <code>navigator.language</code>",
     "storage_key": "Ключ <code>localStorage</code> для сохранения предпочтения языка между сессиями",
     "ns_separator": "Разделитель между пространством имен и путем к ключу (по умолчанию: <code>':'</code>)",
-    "fallback_chain": "Цепочки резервных языков для региональных локалей"
+    "fallback_chain": "Цепочки резервных языков для региональных локалей",
+    "missing_key_handler": "Пользовательский обработчик при отсутствии ключа в загруженном пространстве имен. Принимает <code>(key, { lang, namespace })</code> и должен возвращать строку. По умолчанию: возвращается исходный ключ (например, <code>'common:nav.missing'</code>)"
   },
   "loaders": {
     "title": "Загрузчики",
@@ -52,7 +53,6 @@
     "th_access": "Доступ",
     "th_result": "Результат",
     "string_coercion": "Приведение к строке / интерполяция шаблона",
-    "string_coercion_result": "Возвращает путь к ключу (например, <code>'common.nav.title'</code>)",
     "property_access": "Доступ к свойству",
     "property_access_result": "Возвращает другой рекурсивный прокси",
     "json_serialization": "Сериализация JSON",
@@ -60,7 +60,8 @@
     "promise_detection": "Обнаружение Promise (<code>then</code>/<code>catch</code>)",
     "promise_detection_result": "Возвращает <code>undefined</code> (предотвращает асинхронную распаковку)",
     "iteration": "Итерация (циклы <code>@for</code>)",
-    "iteration_result": "Ничего не выдает (пустой итератор)"
+    "iteration_result": "Ничего не выдает (пустой итератор)",
+    "string_coercion_result": "Возвращает пустую строку <code>''</code>"
   },
   "fallback_chains": {
     "title": "Цепочки резервирования",
@@ -76,19 +77,19 @@
   },
   "ssr": {
     "title": "SSR и гидратация",
-    "desc": "Вторичная точка входа <code>@angular-translation-service/core/ssr</code> обеспечивает бесшовный серверный рендеринг без мерцания непереведенного контента (FOUC) и без несоответствий гидратации.",
-    "provide_desc": "Добавьте в конфигурацию вашего <strong>серверного</strong> приложения. На сервере он предоставляет <code>CURRENT_LANGUAGE</code> из HTTP-запроса и сохраняет снимки всех загруженных переводов в <code>TransferState</code>. На клиенте он гидрирует переводы синхронно — для начального рендеринга HTTP-запросы не требуются.",
     "how_it_works": "Как это работает",
     "th_phase": "Фаза",
     "th_what_happens": "Что происходит",
     "server_render": "Серверный рендеринг",
-    "server_render_desc": "<code>CURRENT_LANGUAGE</code> устанавливается из запроса, загружаются основные пространства имен, затем все загруженные переводы сериализуются в <code>TransferState</code>",
     "client_hydration": "Клиентская гидратация",
-    "client_hydration_desc": "Переводы синхронно восстанавливаются из <code>TransferState</code> — никаких HTTP-запросов, никакого FOUC, никакой ошибки NG0501",
     "after_hydration": "После гидратации",
-    "after_hydration_desc": "Запись <code>TransferState</code> удаляется для освобождения памяти. Последующие загрузки пространств имен используют обычную HTTP-загрузку",
     "config_title": "TranslationSSRConfig",
-    "config_lang_from_request": "Извлечь язык из входящего HTTP-запроса"
+    "desc": "Снимок/гидратация TransferState встроены в <code>provideTranslation()</code> в ядре. Вставка <code>@angular-translation-service/core/ssr</code> внедряет язык запроса через <code>CURRENT_LANGUAGE</code>, чтобы сервер выбирал правильную локаль перед рендерингом.",
+    "provide_desc": "Добавьте в конфигурацию вашего <strong >server</strong> приложения. Он предоставляет <code>CURRENT_LANGUAGE</code> с помощью <code>langFromRequest</code>. Сериализация загруженных пространств имен в <code>TransferState</code> обрабатывается ядром <code>provideTranslation()</code>, а не этой вспомогательной функцией.",
+    "server_render_desc": "<code>CURRENT_LANGUAGE</code> берется из <code>langFromRequest</code> при настройке SSR; загружаются основные пространства имен; <code>provideTranslation()</code> сериализует загруженные словари в <code>TransferState</code>",
+    "client_hydration_desc": "Переводы восстанавливаются из <code>TransferState</code> синхронно — никаких HTTP-запросов для уже загруженных пространств имен, никакого FOUC, никакого NG0501",
+    "after_hydration_desc": "Последующие загрузки пространств имен используют настроенный загрузчик (HTTP или импорт). Предпочтительнее использовать <code>importLoader</code> для чистого SSG/пререндера, когда сервер HTTP недоступен во время сборки",
+    "config_lang_from_request": "Извлеките язык из входящего HTTP-запроса (тип <code>unknown</code> — приведите к типу запроса вашего адаптера сервера)"
   },
   "error_behavior": {
     "title": "Поведение при ошибках",
@@ -105,29 +106,29 @@
     "nested_loading_behavior": "Рекурсивный прокси возвращает пустые строки, предотвращая сбои шаблона"
   },
   "reactivity": {
-    "title": "Reactivity: translate() vs instant()",
-    "desc": "<code>translate()</code> and <code>select()</code> are reactive signal APIs. Use them for labels, menus, option arrays, and anything that should update after <code>setLang()</code>. <code>instant()</code> is a synchronous snapshot for imperative code such as logs, confirm prompts, or already-loaded toast messages.",
-    "avoid_title": "Avoid frozen option arrays",
-    "avoid_desc": "Calling <code>instant()</code> while defining component fields freezes those labels in the boot language and may read before a lazy namespace is ready.",
-    "prefer_title": "Prefer computed() + translate()",
-    "prefer_desc": "Build derived UI state inside <code>computed()</code> and read the translation signals there. The array rebuilds when the namespace loads and whenever the language changes.",
-    "escape_title": "Escape hatch for imperative key maps",
-    "escape_desc": "When you truly need <code>instant()</code>, read <code>lang()</code> inside the computed and make sure the namespace was preloaded with <code>ensureNamespaces()</code>.",
-    "perf_note": "<strong>Performance note:</strong> parameterized <code>translate(key, params)</code> calls return uncached computed signals, so avoid recreating them inside very large loops. Hoist stable params or use <code>select()</code> where possible."
+    "title": "Реактивность: translate() против instant()",
+    "desc": "<code >translate()</code> и <code >select()</code> являются реактивными API сигналов. Используйте их для меток, меню, массивов опций и всего, что должно обновляться после <code >setLang()</code>. <code >instant()</code> — это синхронный снимок для императивного кода, такого как логи, запросы подтверждения или уже загруженные сообщения тоста.",
+    "avoid_title": "Избегайте замороженных массивов опций",
+    "avoid_desc": "Вызов <code >instant()</code> при определении полей компонента замораживает эти метки на языке загрузки и может привести к чтению до готовности ленивого пространства имен.",
+    "prefer_title": "Предпочитайте computed() + translate()",
+    "prefer_desc": "Создавайте производное состояние пользовательского интерфейса внутри <code >computed()</code> и считывайте там сигналы перевода. Массив будет перестраиваться при загрузке пространства имен и всякий раз, когда меняется язык.",
+    "escape_title": "Выход для императивных карт ключей",
+    "escape_desc": "Когда вам действительно нужно <code >instant()</code>, читайте <code >lang()</code> внутри computed и убедитесь, что пространство имен предварительно загружено с помощью <code >ensureNamespaces()</code>.",
+    "perf_note": "<strong >Примечание о производительности:</strong> вызовы параметризованной функции <code >translate(key, params)</code> возвращают некэшированные computed сигналы, поэтому избегайте их повторного создания внутри очень больших циклов. Выносите стабильные параметры или используйте <code >select()</code> там, где это возможно."
   },
   "typed_keys": {
     "title": "Typed Translation Keys",
-    "desc": "<code>ats generate</code> now emits a module augmentation for <code>@angular-translation-service/core</code>. Include the generated file in your TypeScript program and the service API narrows from permissive <code>string</code> keys to your generated key union and namespace schemas. Apps that do not generate types keep the old flexible string API.",
     "generated_title": "Generated registry",
     "usage_title": "What TypeScript catches",
-    "usage_desc": "Static TypeScript call sites get checked end-to-end. The pipe still accepts template strings because Angular template expressions cannot expose the same module augmentation contract."
+    "desc": "<code >ats generate</code> теперь эмитит модуль дополнения для <code >@angular-translation-service/core</code>. Включите сгенерированный файл в вашу программу TypeScript, и API сервиса сужается от разрешающих <code >string</code> ключей до ваших сгенерированных объединений ключей и схем пространств имен. Приложения, которые не генерируют типы, сохраняют старый гибкий API строк.",
+    "usage_desc": "Статические места вызова TypeScript проверяются от начала до конца. Пайп все еще принимает строковые шаблоны, потому что выражения шаблонов Angular не могут раскрыть тот же контракт дополнения модуля."
   },
   "interpolation": {
-    "title": "Interpolation Placeholders",
-    "desc": "Use single braces as the canonical placeholder style in JSON values: <code>{name}</code>. Existing double-brace placeholders such as <code>{{name}}</code> are still tolerated for compatibility.",
     "canonical_title": "Canonical form",
-    "canonical_desc": "Single braces match the <code>translate(key, { name })</code> mental model and avoid visual collision with Angular template interpolation.",
-    "angular_title": "Angular pipe params gotcha",
-    "angular_desc": "When passing an object literal to the pipe inside Angular interpolation, leave a space between the object closing brace and Angular's closing braces. Without the space, Angular may parse the braces together."
+    "title": "Заполнители интерполяции",
+    "desc": "Используйте одинарные фигурные скобки в качестве основного стиля заполнителя в значениях JSON: <code>{name}</code>. Существующие заполнители с двойными фигурными скобками, такие как <code>{{name}}</code>, все еще допускаются для совместимости.",
+    "canonical_desc": "Одинарные фигурные скобки соответствуют модели translate(ключ, { name }) и избегайте визуального конфликта с интерполяцией шаблона Angular.",
+    "angular_title": "Подводные камни параметров конвейера (pipe) Angular",
+    "angular_desc": "При передаче литерала объекта в конвейер внутри интерполяции Angular оставляйте пробел между закрывающей фигурной скобкой объекта и закрывающими фигурными скобками Angular. Без этого пробела Angular может объединить скобки."
   }
 }

@@ -1,5 +1,30 @@
 # Changelog
 
+## cli 0.4.7 / docs (2026-07-16)
+
+### Docs
+
+- Fixed incorrect APIs and flags across **SKILL.md**, root/core/CLI READMEs, and the docs site:
+  - language switch is `setLang()` (not `use()`)
+  - pipe/service keys use `namespace:path`
+  - SSR option is `langFromRequest` (not `resolveLanguage`)
+  - `ats translate` uses `--locale` / `--default-lang` (not `--from`/`--to`)
+  - editor default port **4800**; MCP default model **qwen3.5:9b**
+- Documented canonical layout: CLI defaults to `src/i18n`; `httpLoader` serves from `public/i18n`
+- Documented `ats scan`, `--default-lang`, `missingKeyHandler`, TransferState ownership in core
+- Corrected recursive proxy string coercion (returns `''`) and SSR wording
+- Homepage badge: Angular **v19+** (matches peer range)
+- Docs URL points at GitHub Pages only (removed dead pages.dev link text)
+- New **Guides** page (`/guides`): troubleshooting, ngx-translate migration, core↔CLI version matrix
+- Nav + Getting Started link to Guides; READMEs/SKILL point at the guides URL
+- Re-translated docs locale packs (de, es, fr, ja, pt-BR, ru, zh) for new/corrected strings
+- Fixed root `.gitignore` so `apps/docs/` is not ignored (`docs/` → `/docs/`)
+
+### CLI (0.4.7)
+
+- Aligned command defaults to `src/i18n` / `src/i18n/en` (was mixed with `src/assets/i18n`)
+- `ats translate` accepts `-i, --input` (was hardcoded to `src/i18n`)
+
 ## core 0.3.4 / cli 0.4.6 (2026-07-14)
 
 ### Core

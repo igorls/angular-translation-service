@@ -3,15 +3,18 @@
   "subtitle": "在 3 分钟内为您的 Angular v19+ 项目配置 @angular-translation-service/core。",
   "step1_title": "1. 安装",
   "step2_title": "2. 创建翻译文件",
-  "step2_desc": "在项目的 <code>public/</code> 目录中创建 JSON 文件。Angular 会从根 URL 提供 <code>public/</code> 目录下的文件，因此 <code>public/i18n/en/common.json</code> 可以通过 <code>/i18n/en/common.json</code> 访问。加载器使用 <code>basePath/lang/namespace.json</code> 模式：",
   "step3_title": "3. 配置提供者",
   "step4_title": "4. 在组件中使用",
-  "step4_desc": "Use <code>select()</code> to get a namespace signal. Optional chaining keeps the DOM stable while the namespace loads; the recursive proxy prevents template crashes.",
   "step5_title": "5. 替代方案：使用管道",
-  "step5_desc": "对于更简单的情况，请使用 <code>TranslatePipe</code> 而不是 <code>select()</code>：",
   "whats_next": "下一步是什么？",
   "btn_api_reference": "API 参考 →",
   "btn_view_source": "在 GitHub 上查看源码 ↗",
-  "step6_title": "6. Optional: Generate Typed Keys",
-  "step6_desc": "Install the CLI and run <code>ats generate</code> when you want compile-time checking for service calls. The generated file registers its keys with <code>@angular-translation-service/core</code>, so typo'd keys and namespace paths fail TypeScript before they ship."
+  "step6_title": "6. Switch Language",
+  "step7_title": "6. Optional: Generate Typed Keys",
+  "step2_desc": "对于 <code>httpLoader('/i18n')</code>，将 JSON 放在 <code>public/i18n/</code> 下。Angular 在站点根目录提供 <code>public/</code>，因此 <code>public/i18n/en/common.json</code> 可在 <code>/i18n/en/common.json</code> 中访问。CLI 工具默认使用 <code>src/i18n/</code> — 在那里保持匹配的树结构，或者传递 <code>-i</code>/ <code>--i18n</code>。加载器模式：<code>basePath/lang/namespace.json</code>：",
+  "step4_desc": "使用 <code>select()</code> 来获取命名空间信号。可选链在命名空间加载期间保持 DOM 稳定；递归代理可以防止模板崩溃。",
+  "step5_desc": "对于更简单的用例，请使用 <code>TranslatePipe</code> 而不是 <code>select()</code>。键始终使用 <code>namespace:path</code>（默认分隔符是 <code>:</code>）：",
+  "step6_desc": "调用 <code>setLang()</code>（而不是 <code>use()</code>）。使用 <code>storageKey</code> 进行持久化，并在提供者上启用浏览器检测，设置 <code>detectLanguage: true</code>。",
+  "step7_desc": "安装 CLI 并运行 <code>ats generate</code> 以获得服务调用的编译时检查。生成的工件将键注册到 <code>@angular-translation-service/core</code> 中，因此拼写错误的键和命名空间路径会在发布前导致 TypeScript 失败。",
+  "btn_guides": "指南（故障排除和迁移）→"
 }

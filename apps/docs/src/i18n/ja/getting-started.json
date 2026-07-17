@@ -3,15 +3,18 @@
   "subtitle": "3分で @angular-translation-service/core を Angular v19+ プロジェクトに設定します。",
   "step1_title": "1. インストール",
   "step2_title": "2. 翻訳ファイルの作成",
-  "step2_desc": "プロジェクトの <code>public/</code> ディレクトリに JSON ファイルを作成します。Angular は <code>public/</code> 内のファイルをルート URL で提供するため、<code>public/i18n/en/common.json</code> は <code>/i18n/en/common.json</code> でアクセス可能になります。ローダーは <code>basePath/lang/namespace.json</code> というパターンを使用します：",
   "step3_title": "3. プロバイダーの設定",
   "step4_title": "4. コンポーネントでの使用",
-  "step4_desc": "Use <code>select()</code> to get a namespace signal. Optional chaining keeps the DOM stable while the namespace loads; the recursive proxy prevents template crashes.",
   "step5_title": "5. 代替案：パイプの使用",
-  "step5_desc": "より単純なケースでは、<code>select()</code> の代わりに <code>TranslatePipe</code> を使用します：",
   "whats_next": "次のステップ",
   "btn_api_reference": "API リファレンス →",
   "btn_view_source": "GitHub でソースを表示 ↗",
-  "step6_title": "6. Optional: Generate Typed Keys",
-  "step6_desc": "Install the CLI and run <code>ats generate</code> when you want compile-time checking for service calls. The generated file registers its keys with <code>@angular-translation-service/core</code>, so typo'd keys and namespace paths fail TypeScript before they ship."
+  "step6_title": "6. Switch Language",
+  "step7_title": "6. Optional: Generate Typed Keys",
+  "step2_desc": "<code>httpLoader('/i18n')</code> の場合、JSONを <code>public/i18n/</code> に配置してください。Angular はサイトのルートで <code>public/</code> を提供するため、<code>public/i18n/en/common.json</code> は <code>/i18n/en/common.json</code> で利用可能です。CLI ツールはデフォルトで <code>src/i18n/</code> を使用します — そこに一致するツリーを保持するか、<code>-i</code> または <code>--i18n</code> を渡してください。ローダーパターン: <code>basePath/lang/namespace.json</code>:",
+  "step4_desc": "ネームスペースシグナルを取得するには <code>select()</code> を使用します。オプションのチェイニングにより、ネームスペースがロードされている間もDOMを安定させることができます。再帰プロキシによりテンプレートのクラッシュを防ぎます。",
+  "step5_desc": "より簡単なケースでは、<code>select()</code> の代わりに <code>TranslatePipe</code> を使用します。キーは常に <code>namespace:path</code> (デフォルトの区切り文字は <code>:</code>>) を使用します：",
+  "step6_desc": "<code>setLang()</code> (use() ではありません) を呼び出します。 <code>storageKey</code> で永続化し、プロバイダーで <code>detectLanguage: true</code> を有効にしてブラウザ検出を可能にします。",
+  "step7_desc": "CLI をインストールし、サービス呼び出しのコンパイル時チェックを行いたい場合は <code>ats generate</code> を実行します。生成されたファイルはキーを <code>@angular-translation-service/core</code> に登録するため、タイプミスのあるキーやネームスペースパスは TypeScript によって出荷前に失敗します。",
+  "btn_guides": "ガイド (トラブルシューティングと移行) →"
 }

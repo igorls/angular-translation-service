@@ -1,6 +1,6 @@
 {
   "hero": {
-    "badge": "Angular v21+ · Signal-First · SSR 就绪",
+    "badge": "Angular v19+ · Signal-First · SSR 就绪",
     "title": "Angular 类型安全的 i18n",
     "subtitle": "基于信号的翻译库，支持延迟命名空间加载、用于无崩溃模板的递归代理，以及 LLM 驱动的 CLI 工具。",
     "cta_primary": "开始使用",

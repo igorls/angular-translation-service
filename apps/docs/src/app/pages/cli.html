@@ -16,6 +16,12 @@
     <p class="section-desc" [innerHTML]="t.installation.run_desc"></p>
   </section>
 
+  <!-- Default paths -->
+  <section class="cli-section">
+    <h2>{{ t.paths.title }}</h2>
+    <p class="section-desc" [innerHTML]="t.paths.desc"></p>
+  </section>
+
   <!-- ats generate -->
   <section class="cli-section">
     <h2><code>ats generate</code></h2>
@@ -38,7 +44,7 @@
         <tbody>
           <tr>
             <td><code>-i, --input &lt;dir&gt;</code></td>
-            <td><code>src/assets/i18n/en</code></td>
+            <td><code>src/i18n/en</code></td>
             <td>{{ t.generate.input_desc }}</td>
           </tr>
           <tr>
@@ -160,8 +166,13 @@
         <tbody>
           <tr>
             <td><code>-i, --input &lt;dir&gt;</code></td>
-            <td><code>src/assets/i18n</code></td>
+            <td><code>src/i18n</code></td>
             <td>{{ t.validate.input_desc }}</td>
+          </tr>
+          <tr>
+            <td><code>--default-lang &lt;lang&gt;</code></td>
+            <td>alphabetical first</td>
+            <td [innerHTML]="t.validate.default_lang_desc"></td>
           </tr>
         </tbody>
       </table>
@@ -210,13 +221,18 @@
         <tbody>
           <tr>
             <td><code>-i, --input &lt;dir&gt;</code></td>
-            <td><code>src/assets/i18n</code></td>
+            <td><code>src/i18n</code></td>
             <td>{{ t.clean.input_desc }}</td>
           </tr>
           <tr>
             <td><code>--dry-run</code></td>
             <td>—</td>
             <td>{{ t.clean.dry_run_desc }}</td>
+          </tr>
+          <tr>
+            <td><code>--default-lang &lt;lang&gt;</code></td>
+            <td>alphabetical first</td>
+            <td>{{ t.clean.default_lang_desc }}</td>
           </tr>
         </tbody>
       </table>
@@ -229,7 +245,9 @@
     <p class="section-desc" [innerHTML]="t.translate.desc"></p>
     <div class="code-block">
       <pre><span class="fn">npx</span> <span class="str">&#64;angular-translation-service/cli</span> translate \
+  <span class="flag">-i</span> <span class="str">src/i18n</span> \
   <span class="flag">--locale</span> <span class="str">pt-BR</span> \
+  <span class="flag">--default-lang</span> <span class="str">en</span> \
   <span class="flag">--model</span> <span class="str">gemma3:12b</span></pre>
     </div>
 
@@ -244,9 +262,19 @@
         </thead>
         <tbody>
           <tr>
+            <td><code>-i, --input &lt;dir&gt;</code></td>
+            <td><code>src/i18n</code></td>
+            <td>{{ t.translate.input_desc }}</td>
+          </tr>
+          <tr>
             <td><code>--locale &lt;locale&gt;</code></td>
             <td><code>pt-BR</code></td>
             <td>{{ t.translate.locale_desc }}</td>
+          </tr>
+          <tr>
+            <td><code>--default-lang &lt;lang&gt;</code></td>
+            <td>alphabetical first</td>
+            <td [innerHTML]="t.translate.default_lang_desc"></td>
           </tr>
           <tr>
             <td><code>--namespace &lt;ns&gt;</code></td>
@@ -283,6 +311,67 @@
     </div>
   </section>
 
+  <!-- ats scan -->
+  <section class="cli-section">
+    <h2><code>ats scan</code></h2>
+    <p class="section-desc" [innerHTML]="t.scan.desc"></p>
+    <div class="code-block">
+      <pre><span class="fn">npx</span> <span class="str">&#64;angular-translation-service/cli</span> scan \
+  <span class="flag">--src</span> <span class="str">src</span> \
+  <span class="flag">--min-score</span> <span class="str">3</span> \
+  <span class="flag">--json</span></pre>
+    </div>
+
+    <div class="options-table">
+      <table>
+        <thead>
+          <tr>
+            <th>{{ t.th_option }}</th>
+            <th>{{ t.th_default }}</th>
+            <th>{{ t.th_description }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>--src &lt;dir&gt;</code></td>
+            <td><code>src</code></td>
+            <td>{{ t.scan.src_desc }}</td>
+          </tr>
+          <tr>
+            <td><code>--extensions &lt;ext&gt;</code></td>
+            <td><code>.html</code></td>
+            <td>{{ t.scan.extensions_desc }}</td>
+          </tr>
+          <tr>
+            <td><code>--min-score &lt;n&gt;</code></td>
+            <td><code>2</code></td>
+            <td>{{ t.scan.min_score_desc }}</td>
+          </tr>
+          <tr>
+            <td><code>--verify</code></td>
+            <td>—</td>
+            <td>{{ t.scan.verify_desc }}</td>
+          </tr>
+          <tr>
+            <td><code>--model &lt;model&gt;</code></td>
+            <td><code>gemma3:12b</code></td>
+            <td>{{ t.scan.model_desc }}</td>
+          </tr>
+          <tr>
+            <td><code>--host &lt;host&gt;</code></td>
+            <td><code>127.0.0.1:11434</code></td>
+            <td>{{ t.scan.host_desc }}</td>
+          </tr>
+          <tr>
+            <td><code>--json</code></td>
+            <td>—</td>
+            <td>{{ t.scan.json_desc }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
   <!-- ats editor -->
   <section class="cli-section">
     <h2><code>ats editor</code></h2>
@@ -313,7 +402,7 @@
           </tr>
           <tr>
             <td><code>-p, --port &lt;port&gt;</code></td>
-            <td><code>4500</code></td>
+            <td><code>4800</code></td>
             <td>{{ t.editor.port_desc }}</td>
           </tr>
         </tbody>
@@ -341,7 +430,7 @@
     <div class="code-block">
       <pre><span class="fn">npx</span> <span class="str">&#64;angular-translation-service/cli</span> mcp \
   <span class="flag">--provider</span> <span class="str">ollama</span> \
-  <span class="flag">--model</span> <span class="str">gemma3:12b</span></pre>
+  <span class="flag">--model</span> <span class="str">qwen3.5:9b</span></pre>
     </div>
 
     <div class="options-table">
@@ -361,7 +450,7 @@
           </tr>
           <tr>
             <td><code>--model &lt;model&gt;</code></td>
-            <td><code>gemma3:12b</code></td>
+            <td><code>qwen3.5:9b</code></td>
             <td>{{ t.mcp.model_desc }}</td>
           </tr>
           <tr>
@@ -416,7 +505,7 @@
         <span class="str">"@angular-translation-service/cli"</span>,
         <span class="str">"mcp"</span>,
         <span class="str">"--provider"</span>, <span class="str">"ollama"</span>,
-        <span class="str">"--model"</span>, <span class="str">"gemma3:12b"</span>
+        <span class="str">"--model"</span>, <span class="str">"qwen3.5:9b"</span>
       ]
     {{ '}' }}
   {{ '}' }}
@@ -451,8 +540,8 @@
       - uses: actions/checkout&#64;v4
       - uses: actions/setup-node&#64;v4
       - run: npm ci
-      - run: npx &#64;angular-translation-service/cli generate --check
-      - run: npx &#64;angular-translation-service/cli validate -i src/i18n
+      - run: npx &#64;angular-translation-service/cli generate -i src/i18n/en --check
+      - run: npx &#64;angular-translation-service/cli validate -i src/i18n --default-lang en
       - run: npx &#64;angular-translation-service/cli check --i18n src/i18n --src src</pre>
     </div>
   </section>

@@ -5,7 +5,8 @@
     "api": "API",
     "cli": "CLI",
     "examples": "示例",
-    "github": "GitHub"
+    "github": "GitHub",
+    "guides": "指南"
   },
   "footer": {
     "built_with": "基于 Angular Translation Service 构建",

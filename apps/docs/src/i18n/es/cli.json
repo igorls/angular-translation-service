@@ -10,39 +10,40 @@
   "th_default": "Predeterminado",
   "th_description": "Descripción",
   "generate": {
-    "desc": "Generates TypeScript interfaces from your JSON translation files and registers them with <code>@angular-translation-service/core</code>, providing compile-time type safety for service keys and <code>select()</code> namespace schemas.",
-    "input_desc": "Directorio fuente que contiene los archivos de espacio de nombres JSON",
     "output_desc": "Ruta del archivo TypeScript de salida",
     "check_desc": "Modo CI: termina con el código 1 si los tipos no están sincronizados",
-    "generated_output": "Salida generada"
+    "generated_output": "Salida generada",
+    "desc": "Genera interfaces de TypeScript a partir de tus archivos de traducción JSON y las registra con <code>@angular-translation-service/core</code>, proporcionando seguridad de tipos en tiempo de compilación para claves de servicio y esquemas de nombres <code>select()</code>.",
+    "input_desc": "Directorio fuente que contiene archivos de espacio de nombres JSON (normalmente un solo idioma, por ejemplo, <code>src/i18n/en</code>)"
   },
   "check": {
-    "desc": "Scans source code (<code>.ts</code> and <code>.html</code>) for translation references, validates them across every locale pack, checks dynamic key prefixes, reports cross-locale parity drift, and flags empty values.",
-    "i18n_desc": "Single locale directory or root i18n directory containing language subdirectories",
-    "src_desc": "Directorio fuente para escanear el uso de claves",
     "ns_desc": "Limitar la verificación a un espacio de nombres específico",
     "detected_patterns": "Patrones detectados",
     "pattern_translate": "<code>translate('ns:key')</code> — llamadas de traducción basadas en señales",
     "pattern_instant": "<code>instant('ns:key')</code> — llamadas de traducción síncronas",
     "pattern_select": "<code>select('ns')</code> — marca el espacio de nombres completo como utilizado",
     "pattern_pipe": "<code>'ns:key' | translate</code> — uso del pipe de Angular en plantillas",
-    "pattern_quoted": "<code>'ns:key'</code> anywhere in source — validates helper arrays, configs, and option objects",
-    "pattern_prefix": "<code>'ns:dynamic.prefix.'</code> — dynamic key family prefix that must match at least one key in every locale",
-    "pattern_parity": "Cross-locale parity — reports missing and extra keys per namespace",
-    "pattern_empty": "Empty values — reports keys present with <code>\"\"</code> before they render invisible text"
+    "desc": "Escanea el código fuente (<code>.ts</code> y <code>.html</code>) en busca de referencias a traducciones, las valida en cada paquete de idioma, comprueba los prefijos de claves dinámicas, informa sobre la deriva de paridad entre idiomas y marca valores vacíos.",
+    "i18n_desc": "Directorio de un solo idioma o directorio raíz de i18n que contiene subdirectorios de idioma",
+    "src_desc": "Directorio fuente para escanear el uso de claves (preferir el código de la aplicación sobre los documentos/muestras para evitar falsos positivos)",
+    "pattern_quoted": "<code>'ns:key'</code> en cualquier parte del código fuente — valida arreglos auxiliares, configuraciones y objetos de opciones",
+    "pattern_prefix": "<code>'ns:dynamic.prefix.'</code> — prefijo dinámico de la familia de claves que debe coincidir con al menos una clave en cada idioma",
+    "pattern_parity": "Paridad entre locales — informa sobre claves faltantes y adicionales por espacio de nombres",
+    "pattern_empty": "Valores vacíos — informa sobre claves presentes con <code>\"\"</code> antes de que se muestren como texto invisible"
   },
   "validate": {
     "desc": "Compara archivos de traducción en todos los idiomas para encontrar inconsistencias estructurales: claves faltantes, claves adicionales y valores vacíos.",
     "input_desc": "Directorio raíz de i18n que contiene los subdirectorios de idiomas",
-    "example_output": "Ejemplo de salida"
+    "example_output": "Ejemplo de salida",
+    "default_lang_desc": "Idioma de referencia. Sin esta bandera, se utiliza el directorio de locales ordenado alfabéticamente primero (p. ej., <code>de</code> antes que <code>en</code>)"
   },
   "clean": {
     "desc": "Elimina las claves huérfanas de los archivos de idioma de destino: claves que existen en una traducción pero que ya no existen en el idioma predeterminado.",
     "input_desc": "Directorio raíz de i18n",
-    "dry_run_desc": "Muestra lo que se eliminaría sin modificar los archivos"
+    "dry_run_desc": "Muestra lo que se eliminaría sin modificar los archivos",
+    "default_lang_desc": "Idioma de referencia para decidir cuáles claves son huérfanas"
   },
   "translate": {
-    "desc": "Utiliza un LLM local (a través de Ollama) para traducir automáticamente las claves faltantes del idioma predeterminado a un idioma de destino. Admite traducción por lotes con respaldo por clave.",
     "locale_desc": "Código del idioma de destino",
     "ns_desc": "Limitar a un espacio de nombres específico",
     "model_desc": "Modelo de Ollama a utilizar",
@@ -51,8 +52,11 @@
     "features": "Características",
     "feature_batch": "Traducción por lotes (35 entradas por llamada al LLM para un contexto óptimo)",
     "feature_fallback": "Respaldo automático por clave cuando falla el análisis por lotes",
-    "feature_placeholders": "Preserves interpolation placeholders and documents <code>{name}</code> / <code>{count}</code> as the canonical form; existing <code>{{name}}</code> placeholders remain compatible.",
-    "feature_codefence": "Maneja respuestas JSON con bloques de código del LLM"
+    "feature_codefence": "Maneja respuestas JSON con bloques de código del LLM",
+    "input_desc": "Root i18n directory",
+    "desc": "Utiliza un LLM local (vía Ollama) para traducir automáticamente claves faltantes del idioma predeterminado a un idioma de destino. Requiere un host de Ollama en ejecución. Soporta traducción por lotes con retroceso por clave.",
+    "default_lang_desc": "Idioma fuente. Sin esta bandera, se utiliza el primer directorio de locales ordenado alfabéticamente",
+    "feature_placeholders": "Preserva los marcadores de interpolación y documenta <code>{name}</code> / <code>{count}</code> como la forma canónica; los marcadores existentes <code>{{name}}</code> siguen siendo compatibles."
   },
   "editor": {
     "desc": "Inicia una interfaz web de edición de traducciones con todas las funciones en su navegador. Incluye un editor de claves lado a lado, traducción automática impulsada por LLM a través de Ollama, seguimiento del uso del código fuente por clave, barras de progreso y soporte para agregar/eliminar claves.",
@@ -94,5 +98,19 @@
     "feature_multi_provider": "Soporte multi-proveedor LLM (Ollama, OpenAI, Gemini)",
     "feature_batch": "Traducción por lotes con agrupación automática y alternativa por clave",
     "feature_scan": "Escaneo de plantillas para cadenas hardcodeadas con candidatos puntuados"
+  },
+  "paths": {
+    "title": "Default paths",
+    "desc": "La mayoría de los comandos tienen como valor predeterminado <code>src/i18n</code> (o <code>src/i18n/en</code> para entrada de un solo idioma). Solo <code>editor</code> y <code>mcp</code> descubren automáticamente el directorio a partir de <code>angular.json</code> o convenciones comunes. Use <code>-i</code> / <code>--i18n</code> para otros diseños (incluyendo <code>public/i18n</code> o <code>src/assets/i18n</code>)."
+  },
+  "scan": {
+    "src_desc": "Source directory to scan",
+    "host_desc": "Ollama server address",
+    "json_desc": "Output results as JSON",
+    "desc": "Escanea plantillas HTML en busca de cadenas codificadas que probablemente necesiten traducción. Califica los candidatos con heurísticas; verificación opcional mediante LLM a través de Ollama. Utiliza <code>--json</code> para una exportación amigable para agentes.",
+    "extensions_desc": "Extensiones de archivo separadas por comas",
+    "min_score_desc": "Puntuación heurística mínima para reportar",
+    "verify_desc": "Utiliza un LLM para verificar candidatos (requiere Ollama)",
+    "model_desc": "Modelo de Ollama para la verificación"
   }
 }
