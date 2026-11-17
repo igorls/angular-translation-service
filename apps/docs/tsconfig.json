@@ -14,7 +14,7 @@
     "module": "preserve",
     "paths": {
       "@angular-translation-service/core": ["../../packages/core/src/index.ts"],
-      "@angular-translation-service/core/ssr": ["../../packages/ssr/src/index.ts"],
+      "@angular-translation-service/core/ssr": ["../../packages/core/ssr/src/index.ts"],
       "tslib": ["../../node_modules/tslib/tslib.d.ts"]
     }
   },
