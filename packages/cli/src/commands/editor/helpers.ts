@@ -1,4 +1,9 @@
 import type { IncomingMessage } from 'http';
+import {
+    getNestedValue as readPath,
+    removeNestedValue,
+    setNestedValue as writePath,
+} from '../utils';
 
 // ─── Node.js Helpers ────────────────────────────────────────
 
@@ -14,36 +19,11 @@ export function readBody(req: IncomingMessage): Promise<string> {
 // ─── Nested Object Utilities ────────────────────────────────
 
 export function getNestedValue(obj: Record<string, unknown>, path: string): unknown {
-    const parts = path.split('.');
-    let current: unknown = obj;
-    for (const p of parts) {
-        if (typeof current !== 'object' || current === null) return undefined;
-        current = (current as Record<string, unknown>)[p];
-    }
-    return current;
+    return readPath(obj, path);
 }
 
 export function removeNestedKey(obj: Record<string, unknown>, path: string): void {
-    const parts = path.split('.');
-    let current: unknown = obj;
-    const stack: Array<{ obj: Record<string, unknown>; key: string }> = [];
-
-    for (let i = 0; i < parts.length - 1; i++) {
-        if (typeof current !== 'object' || current === null) break;
-        stack.push({ obj: current as Record<string, unknown>, key: parts[i] });
-        current = (current as Record<string, unknown>)[parts[i]];
-    }
-
-    if (typeof current === 'object' && current !== null) {
-        delete (current as Record<string, unknown>)[parts[parts.length - 1]];
-        for (let i = stack.length - 1; i >= 0; i--) {
-            const parent = stack[i];
-            const child = parent.obj[parent.key];
-            if (typeof child === 'object' && child !== null && Object.keys(child).length === 0) {
-                delete parent.obj[parent.key];
-            }
-        }
-    }
+    removeNestedValue(obj, path);
 }
 
 export function emptyValues(obj: Record<string, unknown>): Record<string, unknown> {
@@ -61,13 +41,5 @@ export function emptyValues(obj: Record<string, unknown>): Record<string, unknow
 }
 
 export function setNestedValue(obj: Record<string, unknown>, path: string, value: string): void {
-    const parts = path.split('.');
-    let current = obj;
-    for (let i = 0; i < parts.length - 1; i++) {
-        if (typeof current[parts[i]] !== 'object' || current[parts[i]] === null) {
-            current[parts[i]] = {};
-        }
-        current = current[parts[i]] as Record<string, unknown>;
-    }
-    current[parts[parts.length - 1]] = value;
+    writePath(obj, path, value);
 }

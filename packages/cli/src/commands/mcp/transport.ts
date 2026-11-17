@@ -64,8 +64,7 @@ export class MCPTransport {
     start(): void {
         process.stdin.setEncoding('utf-8');
         process.stdin.on('data', (chunk: string) => {
-            this.buffer += chunk;
-            this.processBuffer();
+            this.ingest(chunk);
         });
         process.stdin.on('end', () => {
             process.exit(0);
@@ -73,15 +72,59 @@ export class MCPTransport {
         this.log(`MCP server started (${this.tools.size} tools registered)`);
     }
 
-    private processBuffer(): void {
-        // Handle newline-delimited JSON-RPC
-        const lines = this.buffer.split('\n');
-        this.buffer = lines.pop() ?? '';
+    /**
+     * Feed a chunk of stdin. Accepts newline-delimited JSON and LSP-style
+     * `Content-Length` framing. Incomplete frames stay buffered.
+     * Public so tests can exercise framing without a real stdin.
+     */
+    ingest(chunk: string): void {
+        this.buffer += chunk;
+        this.processBuffer();
+    }
 
-        for (const line of lines) {
-            const trimmed = line.trim();
-            if (!trimmed) continue;
-            this.handleLine(trimmed);
+    private processBuffer(): void {
+        while (this.buffer.length > 0) {
+            if (/^\s*Content-Length:/i.test(this.buffer)) {
+                const sepCrlf = this.buffer.indexOf('\r\n\r\n');
+                const sepLf = this.buffer.indexOf('\n\n');
+                let sep = -1;
+                let sepLen = 0;
+                if (sepCrlf !== -1 && (sepLf === -1 || sepCrlf <= sepLf)) {
+                    sep = sepCrlf;
+                    sepLen = 4;
+                } else if (sepLf !== -1) {
+                    sep = sepLf;
+                    sepLen = 2;
+                }
+                if (sep === -1) return;
+
+                const header = this.buffer.slice(0, sep);
+                const match = header.match(/Content-Length:\s*(\d+)/i);
+                if (!match) {
+                    const nl = this.buffer.indexOf('\n');
+                    if (nl === -1) return;
+                    const bad = this.buffer.slice(0, nl).trim();
+                    this.buffer = this.buffer.slice(nl + 1);
+                    if (bad) void this.handleLine(bad);
+                    continue;
+                }
+
+                const length = Number(match[1]);
+                const bodyAndRest = Buffer.from(this.buffer.slice(sep + sepLen));
+                if (bodyAndRest.length < length) return;
+                const body = bodyAndRest.subarray(0, length).toString('utf8');
+                this.buffer = bodyAndRest.subarray(length).toString('utf8');
+                const trimmed = body.trim();
+                if (trimmed) void this.handleLine(trimmed);
+                continue;
+            }
+
+            const nl = this.buffer.indexOf('\n');
+            if (nl === -1) return;
+            const line = this.buffer.slice(0, nl).trim();
+            this.buffer = this.buffer.slice(nl + 1);
+            if (!line) continue;
+            void this.handleLine(line);
         }
     }
 
@@ -106,6 +149,7 @@ export class MCPTransport {
                     this.handleInitialize(request);
                     break;
                 case 'initialized':
+                case 'notifications/initialized':
                     // Notification, no response needed
                     this.log('Client initialized');
                     break;

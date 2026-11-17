@@ -102,6 +102,13 @@ describe('extractHardcodedStrings', () => {
         expect(results.filter((r) => r.text.includes('provideTranslation'))).toHaveLength(0);
     });
 
+    it('should skip a script element that opens and closes on one line', () => {
+        const html = '<p>Visible sentence here</p><script>Please translate this hidden sentence</script>';
+        const results = extractHardcodedStrings(html, 'test.html');
+        expect(results.some((r) => r.text.includes('hidden sentence'))).toBe(false);
+        expect(results.some((r) => r.text.includes('Visible sentence'))).toBe(true);
+    });
+
     it('should skip content inside <pre> tags', () => {
         const html = `<pre>const x = this.i18n.translate('key');
 this is code

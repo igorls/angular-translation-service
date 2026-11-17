@@ -127,4 +127,36 @@ describe('generateTypes', () => {
         expect(output).toContain('nested:');
         expect(output).toContain('value: string');
     });
+
+    it('escapes quotes in keys and includes numeric leaves in the key union', () => {
+        writeFileSync(
+            join(INPUT_DIR, "o'clock.json"),
+            JSON.stringify({ "it's": 'Now', version: 2, 'lead.captured': 'A lead' }),
+        );
+
+        generateTypes({ input: INPUT_DIR, output: OUTPUT_FILE });
+
+        const output = readFileSync(OUTPUT_FILE, 'utf-8');
+        expect(output).toContain(`'o\\'clock'`);
+        expect(output).toContain(`'it\\'s': string`);
+        expect(output).toContain(`version: string`);
+        expect(output).toContain(`'o\\'clock:version'`);
+        expect(output).toContain(`'o\\'clock:lead.captured'`);
+    });
+
+    it('exits when a namespace file is not valid JSON', () => {
+        writeFileSync(join(INPUT_DIR, 'common.json'), '{');
+        const originalExit = process.exit;
+        let exitCode: number | undefined;
+        process.exit = ((code?: number) => {
+            exitCode = code;
+            throw new Error('exit');
+        }) as typeof process.exit;
+        try {
+            expect(() => generateTypes({ input: INPUT_DIR, output: OUTPUT_FILE })).toThrow('exit');
+            expect(exitCode).toBe(1);
+        } finally {
+            process.exit = originalExit;
+        }
+    });
 });

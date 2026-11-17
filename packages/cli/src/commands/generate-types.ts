@@ -41,17 +41,26 @@ export async function generateTypes(options: GenerateOptions): Promise<void> {
         const namespace = basename(file, '.json');
         namespaces.push(namespace);
 
-        const content = JSON.parse(readFileSync(join(inputDir, file), 'utf-8'));
+        const filePath = join(inputDir, file);
+        let content: unknown;
+        try {
+            content = JSON.parse(readFileSync(filePath, 'utf-8'));
+        } catch (err) {
+            const reason = err instanceof Error ? err.message : String(err);
+            console.error(`❌ Malformed JSON in ${filePath}: ${reason}`);
+            process.exit(1);
+            throw new Error(`Malformed JSON in ${filePath}: ${reason}`);
+        }
         const typeDef = generateTypeDefinition(content);
         const flatKeys = collectFlatKeys(content, namespace);
 
         const nsKey = /^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(namespace)
             ? namespace
-            : `'${namespace}'`;
+            : tsStringLiteral(namespace);
 
         typeDefinitions.push(`  ${nsKey}: ${typeDef};`);
 
-        const keyLiterals = flatKeys.map((k) => `'${k}'`).join(' | ') || 'never';
+        const keyLiterals = flatKeys.map((k) => tsStringLiteral(k)).join(' | ') || 'never';
         flatKeyDefinitions.push(`  ${nsKey}: ${keyLiterals};`);
     }
 
@@ -59,7 +68,7 @@ export async function generateTypes(options: GenerateOptions): Promise<void> {
 // Do not edit manually. Run: npx ats generate
 
 export const I18N_NAMESPACES = [
-${namespaces.map((n) => `  '${n}',`).join('\n')}
+${namespaces.map((n) => `  ${tsStringLiteral(n)},`).join('\n')}
 ] as const;
 
 export type I18nNamespace = typeof I18N_NAMESPACES[number];
@@ -104,17 +113,23 @@ declare module '@angular-translation-service/core' {
     console.log(`   ${namespaces.length} namespaces found.`);
 }
 
-function collectFlatKeys(obj: unknown, prefix: string): string[] {
+function tsStringLiteral(value: string): string {
+    return `'${value
+        .replace(/\\/g, '\\\\')
+        .replace(/'/g, "\\'")
+        .replace(/\r/g, '\\r')
+        .replace(/\n/g, '\\n')}'`;
+}
+
+function collectFlatKeys(obj: unknown, namespace: string, prefix = ''): string[] {
     if (typeof obj !== 'object' || obj === null) return [];
     const keys: string[] = [];
     for (const [key, value] of Object.entries(obj)) {
-        const fullKey = `${prefix}:${key}`;
-        if (typeof value === 'string') {
-            keys.push(fullKey);
+        const path = prefix ? `${prefix}.${key}` : key;
+        if (typeof value === 'string' || typeof value === 'number') {
+            keys.push(`${namespace}:${path}`);
         } else if (typeof value === 'object' && value !== null) {
-            keys.push(...collectFlatKeys(value, `${prefix}:${key}`).map((k) =>
-                k.replace(`${prefix}:${key}:`, `${prefix}:${key}.`),
-            ));
+            keys.push(...collectFlatKeys(value, namespace, path));
         }
     }
     return keys;
@@ -129,9 +144,9 @@ function generateTypeDefinition(obj: unknown, indent = 4): string {
     for (const [key, value] of Object.entries(obj)) {
         const propName = /^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(key)
             ? key
-            : `'${key}'`;
+            : tsStringLiteral(key);
 
-        if (typeof value === 'string') {
+        if (typeof value === 'string' || typeof value === 'number') {
             lines.push(`${spaces}${propName}: string;`);
         } else {
             lines.push(`${spaces}${propName}: ${generateTypeDefinition(value, indent + 2)};`);

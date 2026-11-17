@@ -10,7 +10,7 @@
 
 import { readdirSync, existsSync } from 'fs';
 import { join, resolve } from 'path';
-import { loadNamespaces, collectFlatKeys } from './utils';
+import { loadNamespaces, collectFlatKeys, getNestedValue } from './utils';
 import { resolveDefaultLang } from './resolve-default-lang';
 
 interface ValidateOptions {
@@ -94,15 +94,9 @@ export async function validateTranslations(options: ValidateOptions): Promise<Va
                     if (!defaultSet.has(key)) result.extra.push(key);
                 }
 
-                // Empty values
+                // Empty values. Longest-match so literal dotted keys are seen.
                 for (const key of targetKeys) {
-                    const parts = key.split('.');
-                    let value: unknown = targetData;
-                    for (const part of parts) {
-                        if (typeof value === 'object' && value !== null) {
-                            value = (value as Record<string, unknown>)[part];
-                        }
-                    }
+                    const value = getNestedValue(targetData, key);
                     if (value === '') result.empty.push(key);
                 }
             }
@@ -139,13 +133,22 @@ export async function validateTranslations(options: ValidateOptions): Promise<Va
             }
         }
 
-        // Check for namespaces in target that don't exist in default
-        for (const [ns] of targetNs) {
+        // Check for namespaces in target that don't exist in default.
+        // Include them in the returned report — previously they were only logged.
+        for (const [ns, data] of targetNs) {
             if (!defaultNs.has(ns)) {
+                const extraKeys = collectFlatKeys(data);
                 console.log(`📦 ${targetLang}/${ns}.json`);
                 console.log(`   ⚠️  Extra namespace not in ${defaultLang}`);
                 console.log('');
-                totalIssues++;
+                results.push({
+                    lang: targetLang,
+                    namespace: ns,
+                    missing: [],
+                    extra: extraKeys,
+                    empty: [],
+                });
+                totalIssues += Math.max(extraKeys.length, 1);
             }
         }
     }

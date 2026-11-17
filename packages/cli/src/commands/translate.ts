@@ -78,11 +78,10 @@ export async function translateKeys(options: TranslateOptions): Promise<void> {
         const ns = file.replace('.json', '');
         if (options.namespace && ns !== options.namespace) continue;
 
-        const defaultData = JSON.parse(readFileSync(join(defaultDir, file), 'utf-8')) as Record<string, unknown>;
+        const defaultPath = join(defaultDir, file);
+        const defaultData = readJsonObject(defaultPath);
         const targetFile = join(targetDir, file);
-        const targetData = existsSync(targetFile)
-            ? (JSON.parse(readFileSync(targetFile, 'utf-8')) as Record<string, unknown>)
-            : {};
+        const targetData = existsSync(targetFile) ? readJsonObject(targetFile) : {};
 
         const defaultKeys = collectFlatKeys(defaultData);
         const targetKeys = new Set(collectFlatKeys(targetData));
@@ -221,6 +220,20 @@ Reply with ONLY the translated JSON (no explanation, no markdown):`;
 /**
  * Extracts JSON from an LLM response, handling code fences and extra text.
  */
+function readJsonObject(filePath: string): Record<string, unknown> {
+    const raw = readFileSync(filePath, 'utf-8');
+    try {
+        const parsed = JSON.parse(raw) as unknown;
+        if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
+            throw new Error('expected a JSON object');
+        }
+        return parsed as Record<string, unknown>;
+    } catch (err) {
+        const reason = err instanceof Error ? err.message : String(err);
+        throw new Error(`Malformed JSON in ${filePath}: ${reason}`);
+    }
+}
+
 function parseJsonResponse(text: string): Record<string, string> {
     // Try direct parse first
     try {

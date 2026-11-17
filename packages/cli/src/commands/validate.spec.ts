@@ -130,4 +130,20 @@ describe('validateTranslations', () => {
         expect(enResult).toBeDefined();
         expect(enResult!.missing).toContain('footer');
     });
+
+    it('reports an empty literal dotted key and an extra namespace', async () => {
+        setupLanguages({
+            en: { common: { eventLabels: { 'lead.captured': 'A lead' } } },
+            'pt-BR': {
+                common: { eventLabels: { 'lead.captured': '' } },
+                onlyPt: { title: 'Extra' },
+            },
+        });
+
+        const results = await validateTranslations({ input: TEST_DIR });
+        const common = results.find((result) => result.namespace === 'common');
+        const extra = results.find((result) => result.namespace === 'onlyPt');
+        expect(common?.empty).toContain('eventLabels.lead.captured');
+        expect(extra?.extra).toContain('title');
+    });
 });
