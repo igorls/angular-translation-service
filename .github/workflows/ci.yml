@@ -12,9 +12,15 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      # Angular 22.2 engines: ^22.22.3 || ^24.15.0 || >=26.
+      # Bun 1.4.4 reports Node 26, which satisfies >=26 when the CLI runs under Bun.
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22.23.4'
+
       - uses: oven-sh/setup-bun@v2
         with:
-          bun-version: latest
+          bun-version: 1.4.4
 
       - name: Install dependencies
         run: bun install --frozen-lockfile
@@ -27,3 +33,25 @@ jobs:
 
       - name: Build CLI
         run: bun run build:cli
+
+  # Isolated installs. The workspace lockfile stays on Angular 22.2; this job
+  # checks the peerDependency claim for 19, 20, 21, and 22.
+  angular-peers:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        major: [19, 20, 21, 22]
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22.23.4'
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.4
+
+      - name: Build and test core against Angular ${{ matrix.major }}
+        run: bun scripts/verify-angular-peer.ts ${{ matrix.major }}
