@@ -7,24 +7,90 @@
  * 3. navigator.language / navigator.languages
  * 4. Default language
  */
+
+/**
+ * Pick the best supported tag for a single browser locale.
+ *
+ * Preference order:
+ * 1. Exact tag (`en-US` → `en-US`)
+ * 2. Exact base tag (`en-US` → `en`) over a different regional sibling
+ * 3. Another regional variant (`en-US` → `en-GB`) when the base tag is absent
+ */
+export function matchSupportedLanguage(
+    supportedLangs: readonly string[],
+    candidate: string,
+): string | undefined {
+    if (!candidate) return undefined;
+    if (supportedLangs.includes(candidate)) return candidate;
+
+    const base = candidate.split('-')[0];
+    if (!base) return undefined;
+    if (supportedLangs.includes(base)) return base;
+
+    return supportedLangs.find((lang) => lang.startsWith(`${base}-`));
+}
+
+/** First supported match across an ordered browser language list. */
+export function matchBrowserLanguages(
+    supportedLangs: readonly string[],
+    browserLangs: readonly string[],
+): string | undefined {
+    for (const browserLang of browserLangs) {
+        if (!browserLang) continue;
+        const match = matchSupportedLanguage(supportedLangs, browserLang);
+        if (match) return match;
+    }
+    return undefined;
+}
+
+/** localStorage reads can throw in private mode; treat that as "no preference". */
+export function readStorage(key: string): string | null {
+    try {
+        if (typeof localStorage === 'undefined') return null;
+        return localStorage.getItem(key);
+    } catch {
+        return null;
+    }
+}
+
+/** localStorage writes must not block a language switch. */
+export function writeStorage(key: string, value: string): void {
+    try {
+        if (typeof localStorage === 'undefined') return;
+        localStorage.setItem(key, value);
+    } catch {
+        // Privacy mode and quota errors are ignored.
+    }
+}
+
+function readCookie(key: string): string | undefined {
+    if (typeof document === 'undefined' || typeof document.cookie !== 'string') return undefined;
+    const escaped = key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const match = document.cookie.match(new RegExp(`(?:^|;\\s*)${escaped}=([^;]*)`));
+    if (!match?.[1]) return undefined;
+    try {
+        return decodeURIComponent(match[1]);
+    } catch {
+        return match[1];
+    }
+}
+
 export function detectLanguage(
     supportedLangs: string[],
     defaultLang: string,
     options?: { cookieKey?: string; storageKey?: string },
 ): string {
     // 1. Cookie
-    if (options?.cookieKey && typeof document !== 'undefined') {
-        const match = document.cookie.match(
-            new RegExp(`(?:^|;\\s*)${options.cookieKey}=([^;]*)`),
-        );
-        if (match?.[1] && supportedLangs.includes(match[1])) {
-            return match[1];
+    if (options?.cookieKey) {
+        const fromCookie = readCookie(options.cookieKey);
+        if (fromCookie && supportedLangs.includes(fromCookie)) {
+            return fromCookie;
         }
     }
 
     // 2. localStorage
-    if (options?.storageKey && typeof localStorage !== 'undefined') {
-        const stored = localStorage.getItem(options.storageKey);
+    if (options?.storageKey) {
+        const stored = readStorage(options.storageKey);
         if (stored && supportedLangs.includes(stored)) {
             return stored;
         }
@@ -33,19 +99,8 @@ export function detectLanguage(
     // 3. Browser detection
     if (typeof navigator !== 'undefined' && navigator.language) {
         const languages = navigator.languages ?? [navigator.language];
-        for (const browserLang of languages) {
-            if (!browserLang) continue;
-            // Exact match
-            if (supportedLangs.includes(browserLang)) {
-                return browserLang;
-            }
-            // Base language match (e.g., 'pt' from 'pt-BR')
-            const baseLang = browserLang.split('-')[0];
-            const match = supportedLangs.find(
-                (l) => l === baseLang || l.startsWith(baseLang + '-'),
-            );
-            if (match) return match;
-        }
+        const match = matchBrowserLanguages(supportedLangs, languages);
+        if (match) return match;
     }
 
     // 4. Default
