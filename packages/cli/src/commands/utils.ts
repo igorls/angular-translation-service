@@ -21,8 +21,18 @@ export function loadNamespaces(dir: string): Map<string, Record<string, unknown>
 
     for (const file of files) {
         const ns = file.replace('.json', '');
-        const content = JSON.parse(readFileSync(join(absDir, file), 'utf-8'));
-        result.set(ns, content);
+        const filePath = join(absDir, file);
+        const raw = readFileSync(filePath, 'utf-8');
+        try {
+            const content = JSON.parse(raw);
+            if (typeof content !== 'object' || content === null || Array.isArray(content)) {
+                throw new Error('expected a JSON object');
+            }
+            result.set(ns, content as Record<string, unknown>);
+        } catch (err) {
+            const reason = err instanceof Error ? err.message : String(err);
+            throw new Error(`Malformed JSON in ${filePath}: ${reason}`);
+        }
     }
 
     return result;
@@ -73,7 +83,13 @@ export function findFiles(dir: string, extensions: string[]): string[] {
             if (entry === 'node_modules' || entry === '.git' || entry === 'dist' || entry === '.angular') continue;
 
             const fullPath = join(currentDir, entry);
-            const stat = statSync(fullPath);
+            let stat;
+            try {
+                stat = statSync(fullPath);
+            } catch {
+                // Broken symlinks and unreadable entries should not abort the scan.
+                continue;
+            }
 
             if (stat.isDirectory()) {
                 walk(fullPath);
@@ -124,11 +140,38 @@ export function getNestedValue(obj: Record<string, unknown>, path: string): unkn
  */
 export function setNestedValue(obj: Record<string, unknown>, path: string, value: unknown): void {
     const parts = path.split('.');
+    if (parts.length === 0) return;
     let current = obj;
+    let i = 0;
 
-    for (let i = 0; i < parts.length - 1; i++) {
+    // Follow an existing longest-match key (so `"lead.captured"` is updated
+    // in place) and only create single-segment objects for missing tails.
+    while (i < parts.length - 1) {
+        let matchedEnd = -1;
+        for (let end = parts.length; end > i; end--) {
+            const candidate = parts.slice(i, end).join('.');
+            if (Object.prototype.hasOwnProperty.call(current, candidate)) {
+                matchedEnd = end;
+                break;
+            }
+        }
+        if (matchedEnd === -1) break;
+        const key = parts.slice(i, matchedEnd).join('.');
+        if (matchedEnd === parts.length) {
+            current[key] = value;
+            return;
+        }
+        const next = current[key];
+        if (typeof next !== 'object' || next === null || Array.isArray(next)) {
+            current[key] = {};
+        }
+        current = current[key] as Record<string, unknown>;
+        i = matchedEnd;
+    }
+
+    for (; i < parts.length - 1; i++) {
         const part = parts[i];
-        if (typeof current[part] !== 'object' || current[part] === null) {
+        if (typeof current[part] !== 'object' || current[part] === null || Array.isArray(current[part])) {
             current[part] = {};
         }
         current = current[part] as Record<string, unknown>;
@@ -143,31 +186,46 @@ export function setNestedValue(obj: Record<string, unknown>, path: string, value
  */
 export function removeNestedValue(obj: Record<string, unknown>, path: string): boolean {
     const parts = path.split('.');
+    if (parts.length === 0 || !path) return false;
     const stack: Array<{ obj: Record<string, unknown>; key: string }> = [];
     let current: unknown = obj;
+    let i = 0;
 
-    for (let i = 0; i < parts.length - 1; i++) {
-        if (typeof current !== 'object' || current === null) return false;
-        stack.push({ obj: current as Record<string, unknown>, key: parts[i] });
-        current = (current as Record<string, unknown>)[parts[i]];
-    }
-
-    if (typeof current !== 'object' || current === null) return false;
-    const lastKey = parts[parts.length - 1];
-    if (!(lastKey in (current as Record<string, unknown>))) return false;
-
-    delete (current as Record<string, unknown>)[lastKey];
-
-    // Clean up empty parents
-    for (let i = stack.length - 1; i >= 0; i--) {
-        const parent = stack[i];
-        const child = parent.obj[parent.key];
-        if (typeof child === 'object' && child !== null && Object.keys(child).length === 0) {
-            delete parent.obj[parent.key];
-        } else {
-            break;
+    while (i < parts.length) {
+        if (typeof current !== 'object' || current === null || Array.isArray(current)) return false;
+        const record = current as Record<string, unknown>;
+        let matchedEnd = -1;
+        for (let end = parts.length; end > i; end--) {
+            const candidate = parts.slice(i, end).join('.');
+            if (Object.prototype.hasOwnProperty.call(record, candidate)) {
+                matchedEnd = end;
+                break;
+            }
         }
+        if (matchedEnd === -1) return false;
+        const key = parts.slice(i, matchedEnd).join('.');
+        if (matchedEnd === parts.length) {
+            delete record[key];
+            for (let s = stack.length - 1; s >= 0; s--) {
+                const parent = stack[s];
+                const child = parent.obj[parent.key];
+                if (
+                    typeof child === 'object' &&
+                    child !== null &&
+                    !Array.isArray(child) &&
+                    Object.keys(child).length === 0
+                ) {
+                    delete parent.obj[parent.key];
+                } else {
+                    break;
+                }
+            }
+            return true;
+        }
+        stack.push({ obj: record, key });
+        current = record[key];
+        i = matchedEnd;
     }
 
-    return true;
+    return false;
 }

@@ -68,12 +68,24 @@ const SEMANTIC_ELEMENTS = new Set([
  * Extracts hardcoded string candidates from an HTML template.
  * Returns an array of candidates with heuristic scores.
  */
+/**
+ * Replace the contents of tags that should never be translated, preserving
+ * newlines so reported line numbers stay aligned with the source.
+ * Line-oriented skip tracking misses a tag that opens and closes on one line.
+ */
+function blankSkipRegions(html: string): string {
+    return html.replace(
+        /<(script|style|code|pre|svg|math|textarea)\b[^>]*>[\s\S]*?<\/\1>/gi,
+        (match) => match.replace(/[^\n]/g, ' '),
+    );
+}
+
 export function extractHardcodedStrings(
     html: string,
     filePath: string,
 ): ScanCandidate[] {
     const candidates: ScanCandidate[] = [];
-    const lines = html.split('\n');
+    const lines = blankSkipRegions(html).split('\n');
 
     // Track tag context via a simple stack
     const tagStack: string[] = [];
@@ -350,7 +362,7 @@ export function extractTranslatableAttributes(
     filePath: string,
 ): ScanCandidate[] {
     const candidates: ScanCandidate[] = [];
-    const lines = html.split('\n');
+    const lines = blankSkipRegions(html).split('\n');
 
     const attrNames = ['title', 'alt', 'aria-label', 'placeholder', 'aria-description', 'aria-placeholder'];
     // Build regex: attr="value" (not [attr] which is Angular binding)

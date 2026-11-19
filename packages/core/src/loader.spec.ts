@@ -32,6 +32,35 @@ describe('httpLoader', () => {
         expect(result).toEqual(data);
     });
 
+    it('should strip a trailing slash and encode path segments', async () => {
+        const mockFetch = mock(() =>
+            Promise.resolve({
+                ok: true,
+                json: () => Promise.resolve({ title: 'Hello' }),
+            } as Response),
+        );
+        globalThis.fetch = mockFetch as any;
+
+        const loader = httpLoader('/assets/i18n/');
+        await loader('pt-BR', 'my ns');
+
+        expect(mockFetch).toHaveBeenCalledWith('/assets/i18n/pt-BR/my%20ns.json');
+    });
+
+    it('should reject when the body is not JSON', async () => {
+        globalThis.fetch = mock(() =>
+            Promise.resolve({
+                ok: true,
+                status: 200,
+                statusText: 'OK',
+                json: () => Promise.reject(new Error('Unexpected token')),
+            } as Response),
+        ) as any;
+
+        const loader = httpLoader('/assets/i18n');
+        expect(loader('en', 'common')).rejects.toThrow('Unexpected token');
+    });
+
     it('should throw on non-OK response', async () => {
         globalThis.fetch = mock(() =>
             Promise.resolve({

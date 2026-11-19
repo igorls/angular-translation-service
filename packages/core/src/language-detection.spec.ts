@@ -77,6 +77,59 @@ describe('detectLanguage', () => {
 
     // ── Default fallback ──────────────────────────────────────────────
 
+    it('should prefer the exact base language over a regional sibling', () => {
+        Object.defineProperty(globalThis, 'navigator', {
+            value: { language: 'en-US', languages: ['en-US'] },
+            writable: true,
+            configurable: true,
+        });
+
+        const result = detectLanguage(['en-GB', 'en', 'fr'], 'fr');
+        expect(result).toBe('en');
+
+        Object.defineProperty(globalThis, 'navigator', {
+            value: undefined,
+            writable: true,
+            configurable: true,
+        });
+    });
+
+    it('should read a cookie whose name contains regex metacharacters', () => {
+        const originalDocument = globalThis.document;
+        (globalThis as { document: { cookie: string } }).document = {
+            cookie: 'theme=dark; lang.pref=pt-BR; other=1',
+        };
+
+        const result = detectLanguage(['en', 'pt-BR'], 'en', { cookieKey: 'lang.pref' });
+        expect(result).toBe('pt-BR');
+
+        if (originalDocument === undefined) {
+            delete (globalThis as { document?: unknown }).document;
+        } else {
+            (globalThis as { document: Document }).document = originalDocument;
+        }
+    });
+
+    it('should decode percent-encoded cookie values', () => {
+        (globalThis as { document: { cookie: string } }).document = {
+            cookie: 'lang=pt%2DBR',
+        };
+        const result = detectLanguage(['en', 'pt-BR'], 'en', { cookieKey: 'lang' });
+        expect(result).toBe('pt-BR');
+        delete (globalThis as { document?: unknown }).document;
+    });
+
+    it('should ignore localStorage failures and fall through', () => {
+        (globalThis as { localStorage: { getItem: () => string } }).localStorage = {
+            getItem: () => {
+                throw new Error('denied');
+            },
+        };
+        const result = detectLanguage(['en', 'pt-BR'], 'en', { storageKey: 'app-lang' });
+        expect(result).toBe('en');
+        delete (globalThis as { localStorage?: unknown }).localStorage;
+    });
+
     it('should return default language when nothing matches', () => {
         // No localStorage, no navigator
         const result = detectLanguage(['en', 'pt-BR'], 'en');

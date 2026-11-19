@@ -18,6 +18,7 @@ import {
     type TranslationParams,
 } from './types';
 import { createRecursiveProxy } from './recursive-proxy';
+import { matchBrowserLanguages, readStorage, writeStorage } from './language-detection';
 
 /** Type alias for the nested dictionary structure */
 type DictionaryMap = Map<string, Map<string, Record<string, unknown>>>;
@@ -91,6 +92,12 @@ export class TranslationService {
     /** Loading promises dedup: namespace -> Promise */
     private readonly loadingPromises = new Map<string, Promise<void>>();
 
+    /**
+     * Increments on every setLang() call. A switch that is still loading
+     * bails out when a newer call has superseded it.
+     */
+    private langSwitchSeq = 0;
+
     /** All namespaces ever requested (not just loaded) — fixes setLang() race condition (DT v3 #4) */
     private readonly requestedNamespaces = new Set<string>();
 
@@ -144,6 +151,7 @@ export class TranslationService {
         (instance as any).supportedLangs = Object.freeze([...config.supportedLangs]);
         (instance as any).dictionaries = signal(new Map() as DictionaryMap);
         (instance as any).loadingPromises = new Map<string, Promise<void>>();
+        (instance as any).langSwitchSeq = 0;
         (instance as any).requestedNamespaces = new Set<string>();
         (instance as any).instantUnrequestedNamespaceWarnings = new Set<string>();
         (instance as any).signalCache = new Map<string, Signal<string>>();
@@ -237,13 +245,29 @@ export class TranslationService {
             return;
         }
 
-        // Load all currently cached namespaces for the new language
-        const namespacesToLoad = this.getLoadedNamespaces();
-        await this.loadNamespaces(lang, namespacesToLoad);
+        const seq = ++this.langSwitchSeq;
 
-        // Persist preference
-        if (this.config.storageKey && typeof localStorage !== 'undefined') {
-            localStorage.setItem(this.config.storageKey, lang);
+        // Namespaces requested while this switch is awaiting a load are picked
+        // up on the next pass, before the visible language flips. Each namespace
+        // is attempted once: a reject or a non-dictionary payload is not stored,
+        // so waiting until the dictionary appears would refetch forever.
+        const attempted = new Set<string>();
+        for (;;) {
+            if (seq !== this.langSwitchSeq) return;
+            const pending = this.getLoadedNamespaces().filter(
+                (ns) => !attempted.has(ns) && !this.dictionaries().get(lang)?.has(ns),
+            );
+            if (pending.length === 0) break;
+            for (const ns of pending) attempted.add(ns);
+            await this.loadNamespaces(lang, pending);
+        }
+
+        if (seq !== this.langSwitchSeq) return;
+
+        // Persist preference. Storage failures (private mode, quota) must not
+        // leave the in-memory language on the previous value.
+        if (this.config.storageKey) {
+            writeStorage(this.config.storageKey, lang);
         }
 
         this.lang.set(lang);
@@ -275,24 +299,18 @@ export class TranslationService {
         if (ssrLang) return ssrLang;
 
         // 2. Persisted preference
-        if (this.config.storageKey && typeof localStorage !== 'undefined') {
-            const stored = localStorage.getItem(this.config.storageKey);
+        if (this.config.storageKey) {
+            const stored = readStorage(this.config.storageKey);
             if (stored && this.config.supportedLangs.includes(stored)) {
                 return stored;
             }
         }
 
-        // 3. Browser detection
+        // 3. Browser detection. Prefer an exact base tag (`en`) over a
+        // different regional sibling (`en-GB`) when the browser asks for `en-US`.
         if (this.config.detectLanguage && typeof navigator !== 'undefined' && navigator.language) {
-            const browserLang = navigator.language;
-            if (this.config.supportedLangs.includes(browserLang)) {
-                return browserLang;
-            }
-            // Try base language (e.g., 'pt' from 'pt-BR')
-            const baseLang = browserLang.split('-')[0];
-            const match = this.config.supportedLangs.find(
-                (l) => l === baseLang || l.startsWith(baseLang + '-'),
-            );
+            const languages = navigator.languages ?? [navigator.language];
+            const match = matchBrowserLanguages(this.config.supportedLangs, languages);
             if (match) return match;
         }
 
@@ -339,11 +357,14 @@ export class TranslationService {
                 uniqueChain.map((l) => this.config.loader(l, namespace)),
             );
 
-            // Check if at least one fetch succeeded
-            const hasData = results.some((r) => r.status === 'fulfilled');
-            if (!hasData) {
-                // All fetches failed — do NOT store empty data, let the namespace
-                // remain "unloaded" so client-side can retry via HTTP
+            // Ignore fulfilled payloads that are not plain objects (null, arrays,
+            // strings). Merging those used to throw and discard successful fallbacks.
+            const usable = results.some(
+                (r) => r.status === 'fulfilled' && isPlainRecord(r.value),
+            );
+            if (!usable) {
+                // All fetches failed or returned non-dictionaries — do NOT store
+                // empty data, so a later call can retry.
                 return;
             }
 
@@ -351,7 +372,7 @@ export class TranslationService {
             let merged: Record<string, unknown> = {};
             for (let i = results.length - 1; i >= 0; i--) {
                 const result = results[i];
-                if (result.status === 'fulfilled') {
+                if (result.status === 'fulfilled' && isPlainRecord(result.value)) {
                     merged = this.deepMerge(merged, result.value);
                 }
             }
@@ -453,6 +474,9 @@ export class TranslationService {
         // win when present as intermediate segments.
         const resolved = resolveDottedPath(nsData as Record<string, unknown>, path);
         if (typeof resolved === 'string') return resolved;
+        // Numeric leaves are valid catalog values (counts, versions). Stringify
+        // them instead of reporting the key as missing.
+        if (typeof resolved === 'number' && Number.isFinite(resolved)) return String(resolved);
 
         // Leaf is not a string — treat as missing key
         return this.handleMissingKey(key, currentLang, namespace);
@@ -473,10 +497,22 @@ export class TranslationService {
         text: string,
         params: Record<string, string | number>,
     ): string {
-        // [\w-]+ supports hyphenated params like {user-name} (DT v3 #8)
-        return text.replace(/\{\{?\s*([\w-]+)\s*\}?\}/g, (_, key) => {
-            return params[key]?.toString() ?? `{${key}}`;
-        });
+        // Match {name} and {{name}} only. The previous optional-brace pattern
+        // also rewrote tokens inside ICU-looking text such as `{# item}`.
+        // Numeric values including 0 are interpolated; nullish values keep a
+        // single-brace placeholder.
+        return text.replace(
+            /\{\{\s*([\w-]+)\s*\}\}|\{(\s*[\w-]+\s*)\}/g,
+            (full, doubleKey: string | undefined, singleKey: string | undefined) => {
+                const raw = doubleKey ?? singleKey;
+                if (raw === undefined) return full;
+                const key = raw.trim();
+                if (!Object.prototype.hasOwnProperty.call(params, key)) return `{${key}}`;
+                const value = params[key];
+                if (value === undefined || value === null) return `{${key}}`;
+                return String(value);
+            },
+        );
     }
 
     /**
@@ -504,8 +540,15 @@ export class TranslationService {
                 if (prop === '__ngContext__' || prop === '__ngSimpleChanges__') return undefined;
                 if (prop.startsWith('ng') && prop[2] === prop[2]?.toUpperCase()) return undefined;
 
-                const value = target[prop];
                 const childPath = path ? `${path}.${prop}` : prop;
+                const hasOwn = Object.prototype.hasOwnProperty.call(target, prop);
+                if (!hasOwn) {
+                    // Don't surface Object.prototype members (constructor, toString, …).
+                    if (prop === 'toString' || prop === 'valueOf') return () => '';
+                    return createRecursiveProxy(childPath);
+                }
+
+                const value = target[prop];
 
                 if (value === undefined) {
                     // Key not in dictionary — return safe proxy with full path for debugging
@@ -545,6 +588,13 @@ export class TranslationService {
      */
     setDictionaries(dicts: DictionaryMap): void {
         this.dictionaries.set(dicts);
+        // Hydrated namespaces were loaded on the server. Track them so a later
+        // setLang() reloads those lazy packs instead of dropping them.
+        for (const langDict of dicts.values()) {
+            for (const ns of langDict.keys()) {
+                this.requestedNamespaces.add(ns);
+            }
+        }
     }
 
     /**
@@ -586,4 +636,8 @@ export class TranslationService {
 
         return result;
     }
+}
+
+function isPlainRecord(value: unknown): value is Record<string, unknown> {
+    return typeof value === 'object' && value !== null && !Array.isArray(value);
 }

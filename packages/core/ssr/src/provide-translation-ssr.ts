@@ -1,6 +1,8 @@
 import {
     EnvironmentProviders,
+    inject,
     makeEnvironmentProviders,
+    REQUEST,
 } from '@angular/core';
 import { CURRENT_LANGUAGE } from '@angular-translation-service/core';
 
@@ -46,7 +48,13 @@ export function provideTranslationSSR(
     return makeEnvironmentProviders([
         {
             provide: CURRENT_LANGUAGE,
-            useFactory: () => config.langFromRequest(null),
+            useFactory: () => {
+                // Optional so prerender/SSG (no HTTP request) and unit tests
+                // still resolve. Previously the factory always passed null, so
+                // langFromRequest never saw the incoming request.
+                const req = inject(REQUEST, { optional: true });
+                return config.langFromRequest(req ?? null);
+            },
         },
     ]);
 }

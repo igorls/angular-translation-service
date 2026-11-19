@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'bun:test';
-import { mkdirSync, writeFileSync, rmSync } from 'fs';
+import { mkdirSync, symlinkSync, writeFileSync, rmSync } from 'fs';
 import { join } from 'path';
 import { checkTranslations, extractKeysFromSource } from './check';
 
@@ -222,5 +222,17 @@ describe('checkTranslations', () => {
             namespace: 'common',
             key: 'title',
         });
+    });
+
+    it('keeps scanning locales when one directory entry cannot be stat-ed', async () => {
+        const enDir = join(I18N_DIR, 'en');
+        mkdirSync(enDir, { recursive: true });
+        writeFileSync(join(enDir, 'common.json'), JSON.stringify({ title: 'Hello' }));
+        symlinkSync(join(I18N_DIR, 'does-not-exist'), join(I18N_DIR, 'broken'));
+        writeFileSync(join(SRC_DIR, 'app.ts'), `this.i18n.translate('common:title');`);
+
+        const result = await checkTranslations({ i18n: I18N_DIR, src: SRC_DIR });
+        expect(result.missing).not.toContain('common:title');
+        expect(result.definedKeys.has('common:title')).toBe(true);
     });
 });

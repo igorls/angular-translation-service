@@ -134,7 +134,13 @@ function childLocaleDirs(dir: string): Array<{ lang: string; dir: string }> {
     try {
         return readdirSync(dir)
             .map((entry) => ({ lang: entry, dir: join(dir, entry) }))
-            .filter((entry) => statSync(entry.dir).isDirectory() && directoryHasJsonFiles(entry.dir))
+            .filter((entry) => {
+                try {
+                    return statSync(entry.dir).isDirectory() && directoryHasJsonFiles(entry.dir);
+                } catch {
+                    return false;
+                }
+            })
             .sort((a, b) => a.lang.localeCompare(b.lang));
     } catch {
         return [];

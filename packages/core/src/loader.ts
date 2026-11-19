@@ -11,8 +11,9 @@ import { TranslationLoader } from './types';
  * })
  */
 export function httpLoader(basePath: string): TranslationLoader {
+    const normalizedBase = basePath.replace(/\/+$/, '');
     return async (lang: string, namespace: string) => {
-        const url = `${basePath}/${lang}/${namespace}.json`;
+        const url = `${normalizedBase}/${encodeURIComponent(lang)}/${encodeURIComponent(namespace)}.json`;
         const response = await fetch(url);
 
         if (!response.ok) {
