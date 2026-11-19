@@ -79,6 +79,73 @@ describe('language switching races', () => {
         expect(service.instant('common:title')).toBe('es');
     });
 
+    it('switches once when a namespace loader always rejects', async () => {
+        const calls = new Map<string, number>();
+        const loader = mock((lang: string, namespace: string) => {
+            const key = `${lang}/${namespace}`;
+            calls.set(key, (calls.get(key) ?? 0) + 1);
+            if (namespace === 'settings') return Promise.reject(new Error('offline'));
+            return Promise.resolve({ title: lang });
+        });
+        const service = createService({ loader, coreNamespaces: [] });
+        await service.ensureNamespaces(['common', 'settings']);
+        calls.clear();
+
+        await service.setLang('es');
+
+        expect(service.lang()).toBe('es');
+        expect(service.instant('common:title')).toBe('es');
+        expect(calls.get('es/common')).toBe(1);
+        expect(calls.get('es/settings')).toBe(1);
+        expect([...calls.values()].every((count) => count === 1)).toBe(true);
+    });
+
+    it('switches once when every namespace payload is null or empty', async () => {
+        const calls = new Map<string, number>();
+        const loader = mock((lang: string, namespace: string) => {
+            const key = `${lang}/${namespace}`;
+            calls.set(key, (calls.get(key) ?? 0) + 1);
+            if (namespace === 'settings') return Promise.resolve([]);
+            return Promise.resolve(null);
+        });
+        const service = createService({ loader, coreNamespaces: [] });
+        await service.ensureNamespaces(['common', 'settings']);
+        calls.clear();
+
+        await service.setLang('es');
+
+        expect(service.lang()).toBe('es');
+        expect(calls.get('es/common')).toBe(1);
+        expect(calls.get('es/settings')).toBe(1);
+    });
+
+    it('attempts a namespace requested mid-switch once when that load fails', async () => {
+        let releasePtCommon: ((value: Record<string, unknown>) => void) | undefined;
+        const calls: string[] = [];
+        const loader = mock((lang: string, namespace: string) => {
+            calls.push(`${lang}/${namespace}`);
+            if (lang === 'pt-BR' && namespace === 'common') {
+                return new Promise<Record<string, unknown>>((resolve) => {
+                    releasePtCommon = resolve;
+                });
+            }
+            if (namespace === 'settings') return Promise.reject(new Error('offline'));
+            return Promise.resolve({ title: 'Hello' });
+        });
+        const service = createService({ loader, coreNamespaces: [] });
+        await service.ensureNamespaces(['common']);
+
+        const switching = service.setLang('pt-BR');
+        await service.ensureNamespaces(['settings']);
+        releasePtCommon?.({ title: 'Olá' });
+        await switching;
+
+        expect(service.lang()).toBe('pt-BR');
+        expect(service.instant('common:title')).toBe('Olá');
+        expect(calls.filter((call) => call === 'pt-BR/settings')).toEqual(['pt-BR/settings']);
+        expect(calls.filter((call) => call === 'pt-BR/common')).toEqual(['pt-BR/common']);
+    });
+
     it('still switches language when localStorage.setItem throws', async () => {
         const loader = createMockLoader({
             en: { common: { title: 'Hello' } },

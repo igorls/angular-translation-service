@@ -248,14 +248,18 @@ export class TranslationService {
         const seq = ++this.langSwitchSeq;
 
         // Namespaces requested while this switch is awaiting a load are picked
-        // up on the next pass, before the visible language flips.
+        // up on the next pass, before the visible language flips. Each namespace
+        // is attempted once: a reject or a non-dictionary payload is not stored,
+        // so waiting until the dictionary appears would refetch forever.
+        const attempted = new Set<string>();
         for (;;) {
             if (seq !== this.langSwitchSeq) return;
-            const missing = this.getLoadedNamespaces().filter(
-                (ns) => !this.dictionaries().get(lang)?.has(ns),
+            const pending = this.getLoadedNamespaces().filter(
+                (ns) => !attempted.has(ns) && !this.dictionaries().get(lang)?.has(ns),
             );
-            if (missing.length === 0) break;
-            await this.loadNamespaces(lang, missing);
+            if (pending.length === 0) break;
+            for (const ns of pending) attempted.add(ns);
+            await this.loadNamespaces(lang, pending);
         }
 
         if (seq !== this.langSwitchSeq) return;
